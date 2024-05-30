@@ -1,0 +1,56 @@
+InS_StArT
+NE2000.COM
+1.1
+^Novell Ethernet NE2000,NE2000.COM,IE0000
+^Eagle NE2000,NE2000.COM,IE0000
+^Eagle NE2000PLUS,NE2000.COM,IE0000
+^Eagle NE2000PLUS 3,NE2000.COM,IE0000
+^Eagle NE2000PLUS T,NE2000.COM,IE0000
+^Microdyne NE2000,NE2000.COM,IE0000
+^Microdyne NE2000PLUS,NE2000.COM,IE0000
+^Microdyne NE2000PLUS T,NE2000.COM,IE0000
+^Microdyne NE2000PLUS 3,NE2000.COM,IE0000
+^National Semiconductor NE2000 InfoMover,NE2000.COM,IE0000
+^ATI AT-2000T Plus,NE2000.COM,IE0000
+^ATI AT-2000U Plus,NE2000.COM,IE0000
+?Please select the options that match your board's jumper settings.
+!RIE0000(IRQ)
+2
+@3
+4
+5
+10
+11
+12
+15
+!RIE0000(PORT)
+@300
+320
+340
+360
+240
+280
+2C0
+!OIE0000(MEM)
+D0000
+D4000
+D8000
+DC000
+C0000
+C4000
+C8000
+CC000
+$OIE0000(NODE ADDRESS)Optional Node Address
+0
+FFFFFFFFFFFF
+*RIE0000(FRAME)Media Frame Type(s)
+?NOTE: Ethernet_802.2 is now the default frame type for ODI drivers. Existing LANs may be using Ethernet_802.3.
+@Ethernet_802.2
+Ethernet_802.3
+Ethernet_II
+Ethernet_SNAP
+InS_EnD
+
+VeRsIoN=2.00  Novell NE2000 Ethernet MLID installation file.
+CoPyRiGhT=(c) Copyright 1993 - 1996, by Novell, Inc. All rights reserved.
+

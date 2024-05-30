@@ -1,0 +1,164 @@
+       Workstation-Drive-Printer-MIB DEFINITIONS ::= BEGIN
+
+       --
+       -- This MIB currently defines the NetWare File System Mount 
+       -- points and printer queues captured on a NetWare client.
+       --
+       -- Last Updated: March 8, 1994
+       --
+
+       IMPORTS
+          enterprises
+             FROM RFC1155-SMI
+
+          OBJECT-TYPE
+             FROM RFC-1212;
+
+
+       novell              OBJECT IDENTIFIER ::= { enterprises 23 }
+       mibDoc              OBJECT IDENTIFIER ::= { novell 2 }
+
+       nwDesktop           OBJECT IDENTIFIER ::= { mibDoc 22 }
+
+       nwdtFileSystem      OBJECT IDENTIFIER ::= { nwDesktop 1 }
+       nwdtDevice          OBJECT IDENTIFIER ::= { nwDesktop 2 }
+
+       --
+       -- The File System Mount Table
+       --
+
+       nwdtFSMountTable OBJECT-TYPE
+          SYNTAX SEQUENCE OF NwdtFSMountEntry
+          ACCESS not-accessible
+          STATUS mandatory
+          DESCRIPTION
+                 "A set of data for each accessible drive, whether
+                 local or remote."
+          ::= { nwdtFileSystem 1 }
+
+       nwdtFSMountEntry OBJECT-TYPE
+          SYNTAX NwdtFSMountEntry
+          ACCESS not-accessible
+          STATUS mandatory
+          DESCRIPTION
+                 "A set of data for a particular drive."
+          INDEX  { nwdtFSMountID }
+          ::= { nwdtFSMountTable 1 }
+
+       NwdtFSMountEntry ::= SEQUENCE {
+            nwdtFSMountID               INTEGER,
+            nwdtFSMountLocalName        OCTET STRING,
+            nwdtFSMountRemoteName       OCTET STRING
+          }
+
+
+       nwdtFSMountID OBJECT-TYPE
+          SYNTAX INTEGER
+          ACCESS read-only
+          STATUS mandatory
+          DESCRIPTION
+                 "A unique value for each accessible drive.  This
+                 value will be constant for the lifetime of the
+                 mapping."
+          ::= { nwdtFSMountEntry 1 }
+
+       nwdtFSMountLocalName OBJECT-TYPE
+          SYNTAX OCTET STRING
+          ACCESS read-only
+          STATUS mandatory
+          DESCRIPTION
+                 "The local name for the drive."
+          ::= { nwdtFSMountEntry 2 }
+
+       nwdtFSMountRemoteName OBJECT-TYPE
+          SYNTAX OCTET STRING
+          ACCESS read-only
+          STATUS mandatory
+          DESCRIPTION
+                 "The name of the remote point associated with this
+                 drive."
+          ::= { nwdtFSMountEntry 3 }
+
+
+       --
+       -- The Printer Table
+       --
+
+       nwdtPrinterTable OBJECT-TYPE
+          SYNTAX SEQUENCE OF NwdtPrinterEntry
+          ACCESS not-accessible
+          STATUS mandatory
+          DESCRIPTION
+                 "A set of data for each accessible printer, whether
+                 local or remote."
+          ::= { nwdtDevice 1 }
+
+       nwdtPrinterEntry OBJECT-TYPE
+          SYNTAX NwdtPrinterEntry
+          ACCESS not-accessible
+          STATUS mandatory
+          DESCRIPTION
+                 "A set of data for a particular printer."
+          INDEX  { nwdtPrinterID }
+          ::= { nwdtPrinterTable 1 }
+
+       NwdtPrinterEntry ::= SEQUENCE {
+            nwdtPrinterID               INTEGER,
+            nwdtPrinterType             INTEGER,
+            nwdtPrinterLocalName        OCTET STRING,
+            nwdtPrinterQueueName        OCTET STRING,
+            nwdtPrinterServerName       OCTET STRING
+          }
+
+       nwdtPrinterID OBJECT-TYPE
+          SYNTAX INTEGER
+          ACCESS read-only
+          STATUS mandatory
+          DESCRIPTION
+                 "A unique value for each accessible printer.  This
+                 value will be constant for the lifetime of the
+                 mapping."
+          ::= { nwdtPrinterEntry 1 }
+
+       nwdtPrinterType OBJECT-TYPE
+          SYNTAX INTEGER {
+                      other(1),
+                      local(2),
+                      netware(3),
+                      unixware(4)
+                 }
+          ACCESS read-only
+          STATUS mandatory
+          DESCRIPTION
+                 "The type of the printer."
+          ::= { nwdtPrinterEntry 2 }
+
+       nwdtPrinterLocalName OBJECT-TYPE
+          SYNTAX OCTET STRING
+          ACCESS read-only
+          STATUS mandatory
+          DESCRIPTION
+                 "The local name for the printer."
+          ::= { nwdtPrinterEntry 3 }
+
+       nwdtPrinterQueueName OBJECT-TYPE
+          SYNTAX OCTET STRING
+          ACCESS read-only
+          STATUS mandatory
+          DESCRIPTION
+                 "The name of the print queue associated with this
+                 printer.  Zero length string if printer is local."
+          ::= { nwdtPrinterEntry 4 }
+
+       nwdtPrinterServerName OBJECT-TYPE
+          SYNTAX OCTET STRING
+          ACCESS read-only
+          STATUS mandatory
+          DESCRIPTION
+                 "The name of the server containing the print queue.
+                 Zero length string if printer is local."
+          ::= { nwdtPrinterEntry 5 }
+
+       END
+
+
