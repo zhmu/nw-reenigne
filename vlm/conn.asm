@@ -10,10 +10,7 @@ data_68e        equ     954Bh                   ;*
 data_84e        equ     3Eh
 data_85e        equ     3Fh
 
-callf           macro   loc
-                ; push    cs
-                call    loc
-endm
+include common.inc
 
 ;------------------------------------------------------------  seg_a   ----
 
@@ -21,43 +18,28 @@ seg_a           segment byte public
                 assume cs:seg_a  , ds:seg_a
 
                 dw      0, seg_c
-                dw      70h, seg_a
-                db      3Dh, 01h
-                dw      seg_a
-                db       9Bh, 01h
-                dw      seg_a
-                db      0BCh, 01h
-                dw      seg_a
-                db       13h, 02h
-                dw      seg_a
-                db       3Fh, 02h
-                dw      seg_a
-                db      0AAh, 02h
-                dw      seg_a
-                db      0AFh, 02h
-                dw      seg_a
-                db      0FFh, 03h
-                dw      seg_a
-                db       0Ch, 04h
-                dw      seg_a
-                db       3Ah, 05h
-                dw      seg_a
-                db       0Eh, 05h
-                dw      seg_a
-                db      0E8h, 05h
-                dw      seg_a
-                db       2Dh, 06h
-                dw      seg_a
-                db       7Ah, 06h
-                dw      seg_a
-                db       9Ch, 06h
-                dw      seg_a
-                db      0C5h, 09h
-                dw      seg_a
-                db      0F1h, 09h
-                dw      seg_a
-                db       00h, 00h, 00h, 00h, 4Eh, 56h
-                db       6Ch, 6Dh, 10h, 00h
+                dw      offset loc_0070, seg_a
+                dw      offset loc_013d, seg_a
+                dw      offset loc_019b, seg_a
+                dw      offset sub_1, seg_a
+                dw      offset sub_2, seg_a
+                dw      offset sub_3, seg_a
+                dw      offset sub_5, seg_a
+                dw      offset sub_6, seg_a
+                dw      offset loc_03ff, seg_a
+                dw      offset loc_040c, seg_a
+                dw      offset sub_18, seg_a
+                dw      offset sub_17, seg_a
+                dw      offset sub_20, seg_a
+                dw      offset sub_21, seg_a
+                dw      offset loc_067a, seg_a
+                dw      offset sub_22, seg_a
+                dw      offset loc_09c5, seg_a
+                dw      offset loc_09f1, seg_a
+                dw      0, 0
+                db      "NVlm"
+                dw      VLMID_CONN
+
 data_7          dw      offset loc_2            ; Data table (indexed access)
 data_8          dw      offset loc_4
 data_9          dw      offset loc_1
@@ -71,13 +53,15 @@ data_16         dw      offset loc_11
 data_17         dw      offset loc_1
 data_18         dw      offset loc_1
 data_19         dw      offset loc_12
-data_20         dw      0FB83h                  ; Data table (indexed access)
+
+loc_0070:
+                dw      0FB83h                  ; Data table (indexed access)
                 db       0Dh, 72h, 04h
 
 ;컴컴� Indexed Entry Point 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
 
 loc_1::
-                mov     ax,8811h
+                mov     ax,STATUS_NONEXISTANT_FUNC_CALLED
                 retf
                                                 ;* No entry point to code
                 shl     bx,1
@@ -212,6 +196,7 @@ loc_14::
                 xor     ax,ax
                 retf
                                                 ;* No entry point to code
+loc_013d:
                 or      cx,cx
                 jnz     loc_19
                 push    ax
@@ -257,7 +242,8 @@ loc_18::
 loc_19::
                 xor     ax,ax
                 retf
-                                                ;* No entry point to code
+
+loc_019b:
                 push    cx
                 push    si
                 push    di
@@ -710,11 +696,13 @@ sub_16          proc    near
                 retn
 sub_16          endp
 
+loc_03ff:
                 db      0B3h, 02h,0E9h,0ADh,0FEh
 data_30         dw      offset loc_48           ; Data table (indexed access)
 data_31         dw      offset loc_46
 data_32         dw      offset loc_46
 data_33         dw      offset loc_54
+loc_040c:
                 db       2Eh, 38h, 3Eh,0B5h, 0Ah, 73h
                 db       04h,0B8h, 36h, 88h
 
@@ -1115,7 +1103,7 @@ loc_76::
                 jmp     short loc_75
 sub_21          endp
 
-                                                ;* No entry point to code
+loc_067a:
                 push    ds
                 mov     ax,seg_a
                 mov     ds,ax
@@ -1141,7 +1129,7 @@ sub_22          proc    far
 loc_77::
                 cmp     bx,8
                 jb      loc_78
-                mov     ax,8811h
+                mov     ax,STATUS_NONEXISTANT_FUNC_CALLED
                 retf
 loc_78::
                 push    dx
@@ -1637,7 +1625,7 @@ loc_125::
                 retn
 sub_29          endp
 
-                                                ;* No entry point to code
+loc_09c5:
                 push    bx
                 push    cx
                 push    dx
@@ -1664,7 +1652,8 @@ loc_126::
                 pop     cx
                 pop     bx
                 retf
-                                                ;* No entry point to code
+
+loc_09f1:
                 push    bx
                 push    dx
                 push    si

@@ -1,19 +1,19 @@
 include  common.inc
 
-
 ;------------------------------------------------------------  seg_a   ----
 
 seg_a           segment byte public
                 assume cs:seg_a  , ds:seg_a
 
                 dw      0, seg_b
-                dw      38h, seg_a
-                dw      88h, seg_a
-                dw      8bh, seg_a
-                dw      0bah, seg_a
+                dw      offset loc_0038, seg_a
+                dw      offset loc_0088, seg_a
+                dw      offset loc_008b, seg_a
+                dw      offset loc_00ba, seg_a
+                dw      0, 0
+                db      "NVlm"
+                dw      VLMID_SECURITY
 
-                db       00h, 00h, 00h, 00h, 4Eh, 56h
-                db       6Ch, 6Dh, 61h, 00h
 data_1          dw      offset loc_2            ; Data table (indexed access)
 data_2          dw      offset loc_1
 data_3          dw      offset loc_4
@@ -27,6 +27,8 @@ data_10         dw      offset loc_1
 data_11         dw      offset loc_1
 data_12         dw      offset loc_1
 data_13         dw      offset loc_6
+
+loc_0038:
                 db       83h,0FBh, 0Dh, 72h, 04h
 
 ;컴컴� Indexed Entry Point 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
@@ -70,7 +72,7 @@ loc_6::
                 mov     ax,seg_a
                 mov     ds,ax
                 push    bp
-                mov     bp,61h
+                mov     bp,VLMID_SECURITY
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -85,10 +87,12 @@ loc_6::
                 pop     cx
                 xor     ax,ax
                 retf
-                                                ;* No entry point to code
+
+loc_0088:
                 xor     ax,ax
                 retf
-                                                ;* No entry point to code
+
+loc_008b:
                 push    cx
                 push    si
                 push    di
@@ -114,6 +118,8 @@ loc_7::
                 jcxz    $+2
                 db       69h, 01h, 6Fh, 01h,0ABh, 01h
                 db       39h, 02h, 42h, 02h, 46h, 02h
+
+loc_00ba:
                 db       3Ch, 07h, 73h, 14h
                 db      'PQRSTUVW'
                 db       1Eh, 06h, 32h,0E4h, 93h, 03h
@@ -154,7 +160,7 @@ loc_8::
                 jcxz    loc_9
                 mov     bh,14h
                 push    bp
-                mov     bp,61h
+                mov     bp,VLMID_SECURITY
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -165,7 +171,7 @@ loc_8::
                 mov     bh,14h
                 or      dl,20h                  ; ' '
                 push    bp
-                mov     bp,61h
+                mov     bp,VLMID_SECURITY
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -311,7 +317,7 @@ loc_21::
                 jmp     short loc_19
                                                 ;* No entry point to code
                 push    bp
-                mov     bp,61h
+                mov     bp,VLMID_SECURITY
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -1896,7 +1902,7 @@ loc_30::
                 mov     data_42,bx
                 mov     word ptr data_42+2,ax
                 push    bp
-                mov     bp,61h
+                mov     bp,VLMID_SECURITY
                 push    bp
                 mov     bp,10h
                 push    bp

@@ -44,24 +44,20 @@ seg_a           segment byte public
                 assume cs:seg_a  , ds:seg_a
 
                 dw      0h, seg_c
-                dw      0deh, seg_a
-                dw      13fh, seg_a
-                dw      1f7h, seg_a
-                dw      218h, seg_a
-                dw      4b6h, seg_a
-                dw      54ch, seg_a
-                db      0F7h, 0Ch
-                dw      seg_a
-                db      0FBh, 0Ch
-                dw      seg_a
-                db       27h, 0Dh
-data_28         dw      seg_a
-                db      0D1h, 11h
-                dw      seg_a
-                db       18h, 12h
-                dw      seg_a
-                db       00h, 00h, 00h, 00h, 4Eh, 56h
-                db       6Ch, 6Dh, 21h, 00h
+                dw      offset loc_00de, seg_a
+                dw      offset loc_013f, seg_a
+                dw      offset loc_01f7, seg_a
+                dw      offset loc_0218, seg_a
+                dw      offset loc_04b6, seg_a
+                dw      offset sub_12, seg_a
+                dw      offset loc_0cf7, seg_a
+                dw      offset loc_0cfb, seg_a
+                dw      offset loc_0d27, seg_a
+                dw      offset loc_11d1, seg_a
+                dw      offset loc_1218, seg_a
+                dw      0, 0
+                db      "NVlm"
+                dw      VLMID_IPXNCP
 
 ;ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 ;                              SUBROUTINE
@@ -69,7 +65,7 @@ data_28         dw      seg_a
 
 sub_1           proc    near
                 push    bp
-                mov     bp,21h
+                mov     bp,VLMID_IPXNCP
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -87,7 +83,7 @@ sub_1           endp
 
 sub_2           proc    near
                 push    bp
-                mov     bp,21h
+                mov     bp,VLMID_IPXNCP
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -105,7 +101,7 @@ sub_2           endp
 
 sub_3           proc    near
                 push    bp
-                mov     bp,21h
+                mov     bp,VLMID_IPXNCP
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -123,7 +119,7 @@ sub_3           endp
 
 sub_4           proc    near
                 push    bp
-                mov     bp,21h
+                mov     bp,VLMID_IPXNCP
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -141,7 +137,7 @@ sub_4           endp
 
 sub_5           proc    near
                 push    bp
-                mov     bp,21h
+                mov     bp,VLMID_IPXNCP
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -159,7 +155,7 @@ sub_5           endp
 
 sub_6           proc    near
                 push    bp
-                mov     bp,21h
+                mov     bp,VLMID_IPXNCP
                 push    bp
                 mov     bp,1
                 push    bp
@@ -177,7 +173,7 @@ sub_6           endp
 
 sub_7           proc    near
                 push    bp
-                mov     bp,21h
+                mov     bp,VLMID_IPXNCP
                 push    bp
                 mov     bp,61h
                 push    bp
@@ -195,7 +191,7 @@ sub_7           endp
 
 sub_8           proc    near
                 push    bp
-                mov     bp,21h
+                mov     bp,VLMID_IPXNCP
                 push    bp
                 mov     bp,30h
                 push    bp
@@ -208,7 +204,9 @@ sub_8           endp
 
 data_29         dw      offset loc_3            ; Data table (indexed access)
 data_30         dw      offset loc_4
-data_31         dw      0FB83h                  ; Data table (indexed access)
+
+loc_00de:
+                dw      0FB83h                  ; Data table (indexed access)
                 db       02h, 72h, 04h,0B8h, 11h, 88h
                 db      0CBh, 03h,0DBh, 2Eh,0FFh,0A7h
                 db      0DAh, 00h
@@ -267,7 +265,7 @@ loc_ret_6::
 
 sub_9           proc    near
                 push    bp
-                mov     bp,21h
+                mov     bp,VLMID_IPXNCP
                 push    bp
                 mov     bp,1
                 push    bp
@@ -281,7 +279,8 @@ sub_9           endp
 
 loc_ret_7::
                 retf
-                                                ;* No entry point to code
+
+loc_013f:
                 cmp     byte ptr cs:data_49,0
                 je      loc_ret_7
                 push    bx
@@ -363,7 +362,8 @@ loc_14::
                 pop     cx
                 pop     bx
                 retf
-                                                ;* No entry point to code
+
+loc_01f7:
                 push    cx
                 push    si
                 push    di
@@ -385,7 +385,8 @@ loc_15::
                 pop     cx
                 xor     ax,ax
                 retf
-                                                ;* No entry point to code
+
+loc_0218:
                 push    bp
                 mov     bp,sp
                 sub     sp,8
@@ -454,7 +455,7 @@ loc_18::
                 mov     di,43Ah
                 mov     bx,0
                 push    bp
-                mov     bp,21h
+                mov     bp,VLMID_IPXNCP
                 push    bp
                 mov     bp,32h
                 push    bp
@@ -536,7 +537,7 @@ loc_27::
                 mov     cx,[bp-0Ch]
                 mov     dx,[bp-0Eh]
                 push    bp
-                mov     bp,21h
+                mov     bp,VLMID_IPXNCP
                 push    bp
                 mov     bp,30h
                 push    bp
@@ -549,7 +550,7 @@ loc_27::
                 cmp     byte ptr ds:data_2e,0
                 jne     loc_28
                 push    bp
-                mov     bp,21h
+                mov     bp,VLMID_IPXNCP
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -678,7 +679,7 @@ loc_41::
                 retn
 sub_10          endp
 
-                                                ;* No entry point to code
+loc_04b6:
                 push    bp
                 mov     bp,sp
                 sub     sp,18h
@@ -993,7 +994,7 @@ loc_63::
                 push    si
                 mov     ds,cx
                 cld
-                mov     si,offset data_28
+                mov     si,26h
                 movsw
                 movsw
                 movsw
@@ -1032,7 +1033,7 @@ loc_67::
                 mov     es:data_130,ax
                 xor     bx,bx
                 push    bp
-                mov     bp,21h
+                mov     bp,VLMID_IPXNCP
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -1072,7 +1073,7 @@ loc_71::
                 mov     ax,[bp-10h]
                 mov     bx,7
                 push    bp
-                mov     bp,21h
+                mov     bp,VLMID_IPXNCP
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -1173,7 +1174,7 @@ loc_84::
                 call    sub_3
                 mov     byte ptr data_90,0
                 push    bp
-                mov     bp,21h
+                mov     bp,VLMID_IPXNCP
                 push    bp
                 mov     bp,60h
                 push    bp
@@ -1290,7 +1291,7 @@ loc_100::
                 inc     data_66
                 mov     bx,3
                 push    bp
-                mov     bp,21h
+                mov     bp,VLMID_IPXNCP
                 push    bp
                 mov     bp,1
                 push    bp
@@ -1602,7 +1603,7 @@ loc_124::
                 mov     ds,ax
                 mov     es,data_44
                 push    bp
-                mov     bp,21h
+                mov     bp,VLMID_IPXNCP
                 push    bp
                 mov     bp,30h
                 push    bp
@@ -1612,7 +1613,7 @@ loc_124::
                 pop     bp
                 mov     bh,5
                 push    bp
-                mov     bp,21h
+                mov     bp,VLMID_IPXNCP
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -1677,10 +1678,11 @@ loc_130::
                 retn
 sub_16          endp
 
-                                                ;* No entry point to code
+loc_0cf7:
                 mov     ax,8836h
                 retf
-                                                ;* No entry point to code
+
+loc_0cfb:
                 push    bx
                 push    es
                 mov     bx,seg seg_a
@@ -1701,6 +1703,8 @@ data_39         dw      offset loc_134
 data_40         dw      offset loc_163
 data_41         dw      offset loc_187
 data_42         dw      offset loc_173
+
+loc_0d27:
                 db       83h,0FBh, 05h, 72h, 04h,0B8h
                 db       11h, 88h,0CBh, 03h,0DBh, 2Eh
                 db      0FFh,0A7h, 1Dh
@@ -2286,7 +2290,7 @@ loc_190::
                 retn
 sub_19          endp
 
-                                                ;* No entry point to code
+loc_11d1:
                 push    ds
                 assume  ds:seg_a
                 mov     ds,cs:data_44
@@ -2323,7 +2327,8 @@ loc_192::
                 pop     cx
                 pop     ds
                 retf
-                                                ;* No entry point to code
+
+loc_1218:
                 or      bx,bx
                 jz      loc_193
                 mov     ax,8836h
@@ -2454,7 +2459,7 @@ sub_22          endp
 sub_23          proc    near
                 mov     bx,1
                 push    bp
-                mov     bp,21h
+                mov     bp,VLMID_IPXNCP
                 push    bp
                 mov     bp,1
                 push    bp
@@ -2530,7 +2535,7 @@ sub_24          proc    near
 loc_203::
                 mov     bx,2
                 push    bp
-                mov     bp,21h
+                mov     bp,VLMID_IPXNCP
                 push    bp
                 mov     bp,1
                 push    bp
@@ -2555,7 +2560,7 @@ loc_205::
                 mov     dx,ax
                 mov     bx,2
                 push    bp
-                mov     bp,21h
+                mov     bp,VLMID_IPXNCP
                 push    bp
                 mov     bp,1
                 push    bp

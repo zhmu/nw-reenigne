@@ -46,21 +46,19 @@ seg_a           segment byte public
                 assume cs:seg_a  , ds:seg_a
 
                 dw      0, seg_c
-                dw      159h, seg_a
-                dw      07A5h, seg_a
-                dw      07FCh, seg_a
-                dw      0A40h, seg_a
-                dw      0904h, seg_a
-data_34         dw      930h
-data_35         dw      seg_a
-                db      0, 0, 0, 0
-data_36         dw      564Eh, 6D6Ch
+                dw      offset sub_16, seg_a
+                dw      offset loc_07a5, seg_a
+                dw      offset loc_07fc, seg_a
+                dw      offset loc_0a40, seg_a
+                dw      offset loc_0904, seg_a
+                dw      offset loc_0930, seg_a
+                dw      0, 0
+                db      "NVlm"
+                dw      VLMID_NETX
 
 ;컴컴� Indexed Entry Point 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
 
-loc_2::
-                push    ax
-                add     [di-43h],dl
+                db      55h, 0bdh
                 push    ax
                 add     [di-43h],dl
                 add     [bx+si],ax
@@ -77,7 +75,7 @@ loc_2::
 
 sub_3           proc    near
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,43h
                 push    bp
@@ -95,7 +93,7 @@ sub_3           endp
 
 sub_4           proc    near
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -113,7 +111,7 @@ sub_4           endp
 
 sub_5           proc    near
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -131,7 +129,7 @@ sub_5           endp
 
 sub_6           proc    near
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,42h
                 push    bp
@@ -149,7 +147,7 @@ sub_6           endp
 
 sub_7           proc    near
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,30h
                 push    bp
@@ -167,7 +165,7 @@ sub_7           endp
 
 sub_8           proc    near
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,30h
                 push    bp
@@ -185,7 +183,7 @@ sub_8           endp
 
 sub_9           proc    near
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,30h
                 push    bp
@@ -203,7 +201,7 @@ sub_9           endp
 
 sub_10          proc    near
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,42h
                 push    bp
@@ -221,7 +219,7 @@ sub_10          endp
 
 sub_11          proc    near
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,42h
                 push    bp
@@ -239,7 +237,7 @@ sub_11          endp
 
 sub_12          proc    near
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,21h
                 push    bp
@@ -257,7 +255,7 @@ sub_12          endp
 
 sub_13          proc    near
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,40h
                 push    bp
@@ -275,7 +273,7 @@ sub_13          endp
 
 sub_14          proc    near
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,40h
                 push    bp
@@ -409,7 +407,7 @@ loc_11::
                 jne     loc_12
                 mov     bx,0
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,43h
                 push    bp
@@ -1241,7 +1239,7 @@ loc_89::
                 jmp     short loc_88
 sub_26          endp
 
-                                                ;* No entry point to code
+loc_07a5:
                 push    bx
                 push    cx
                 push    dx
@@ -1294,7 +1292,8 @@ loc_92::
                 pop     cx
                 pop     bx
                 retf
-                                                ;* No entry point to code
+
+loc_07fc:
                 push    cx
                 push    si
                 push    di
@@ -1445,7 +1444,7 @@ loc_ret_97::
                 retn
 sub_28          endp
 
-                                                ;* No entry point to code
+loc_0904:
                 push    bx
                 push    ds
                 push    es
@@ -1470,6 +1469,8 @@ loc_98::
 data_92         dw      offset loc_99           ; Data table (indexed access)
 data_93         dw      offset loc_103
 data_94         dw      offset loc_101
+
+loc_0930:
                 db       83h,0FBh, 03h, 72h, 04h,0B8h
                 db       11h, 88h,0CBh, 53h, 1Eh, 50h
                 db       0Eh, 1Fh, 58h, 03h,0DBh, 2Eh
@@ -1625,7 +1626,7 @@ sub_30          proc    near
                 retn
 sub_30          endp
 
-                                                ;* No entry point to code
+loc_0a40:
                 sti
                 mov     bx,ds:[0]
                 cmp     bh,19h
@@ -1640,8 +1641,8 @@ loc_111::
                 sub     bl,0B3h
                 xor     bh,bh
                 add     bx,bx
-                mov     data_34,sp
-                mov     data_35,ss
+                mov     ds:[18h],sp
+                mov     ds:[1Ah],ss
                 push    ds
                 pop     ss
                 mov     sp,0A10h
@@ -1696,7 +1697,7 @@ loc_116::
                 mov     cx,di
                 call    sub_9
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,43h
                 push    bp
@@ -1969,7 +1970,7 @@ loc_133::
                 jcxz    loc_134
                 repne   scasb
                 jnz     loc_134
-                mov     si,offset data_35
+                mov     si,1Ah
                 sub     si,cx
                 dec     si
                 cmp     ah,byte ptr ss:[2E4h][bp+si]
@@ -2811,13 +2812,13 @@ loc_190::
                 stosb
                 mov     ax,5F04h
                 pushf
-                call    dword ptr data_36
+                call    dword ptr ds:[20h]
                 mov     ax,5F03h
                 mov     bx,4
                 mov     cx,4E57h
                 mov     di,6DCh
                 pushf
-                call    dword ptr data_36
+                call    dword ptr ds:[20h]
                 jc      loc_198
                 xor     ax,ax
                 jmp     short loc_198
@@ -3220,7 +3221,7 @@ loc_232::
                 mov     cx,bx
                 mov     ax,2
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,43h
                 push    bp
@@ -3277,7 +3278,7 @@ loc_238::
                 pop     si
                 jz      loc_239
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -3290,7 +3291,7 @@ loc_238::
                 lea     si,[bp+si+26h]
                 mov     dl,8
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,30h
                 push    bp
@@ -3308,7 +3309,7 @@ loc_239::
                 jmp     short loc_235
 loc_240::
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -3453,7 +3454,7 @@ loc_254::
                 pop     ds
                 mov     bh,3
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -3520,7 +3521,7 @@ loc_262::
 loc_263::
                 mov     bx,2
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,43h
                 push    bp
@@ -3564,8 +3565,8 @@ sub_48          endp
 sub_49          proc    near
                 mov     word ptr ss:[35Eh][bp],sp
                 mov     word ptr ss:[360h][bp],ss
-                mov     ss,data_35
-                mov     sp,data_34
+                mov     ss,ds:[1Ah]
+                mov     sp,ds:[18h]
                 mov     ax,50h
                 push    ax
                 push    cx
@@ -3895,7 +3896,7 @@ loc_282::
                 call    sub_24
                 mov     cx,bx
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,40h
                 push    bp
@@ -3979,7 +3980,7 @@ loc_287::
 sub_51          proc    near
                 mov     bx,3
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,40h
                 push    bp
@@ -4298,7 +4299,7 @@ loc_311::
                 push    bx
                 xor     bx,bx
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,43h
                 push    bp
@@ -4366,7 +4367,7 @@ loc_316::
                 jne     loc_318
                 mov     bx,6
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -4383,7 +4384,7 @@ loc_316::
                 cmp     cx,0FFFFh
                 jne     loc_317
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,30h
                 push    bp
@@ -4395,7 +4396,7 @@ loc_316::
 loc_317::
                 mov     bh,2
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,20h
                 push    bp
@@ -4409,7 +4410,7 @@ loc_318::
                 mov     ax,1
                 mov     bx,1
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,1
                 push    bp
@@ -4428,7 +4429,7 @@ loc_318::
                 push    ax
                 mov     bx,6
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -4447,7 +4448,7 @@ loc_318::
                 cmp     cx,0FFFFh
                 jne     loc_319
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,30h
                 push    bp
@@ -4459,7 +4460,7 @@ loc_318::
 loc_319::
                 mov     bh,2
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,20h
                 push    bp
@@ -4471,7 +4472,7 @@ loc_320::
                 xor     ax,ax
                 mov     bx,7
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -4515,7 +4516,7 @@ loc_322::
                                                 ;* No entry point to code
                 xor     bx,bx
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,43h
                 push    bp
@@ -4578,7 +4579,7 @@ sub_52          endp
                                                 ;* No entry point to code
                 mov     bx,0
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -4680,7 +4681,7 @@ sub_53          proc    near
                 push    bx
                 xor     bx,bx
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,42h
                 push    bp
@@ -4718,7 +4719,7 @@ loc_338::
                 xor     dh,dh
                 xor     bx,bx
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,42h
                 push    bp
@@ -4839,7 +4840,7 @@ loc_346::
                 inc     dx
 loc_347::
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,42h
                 push    bp
@@ -4888,7 +4889,7 @@ loc_350::
 
 sub_54          proc    near
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,30h
                 push    bp
@@ -4906,7 +4907,7 @@ sub_54          endp
 
 sub_55          proc    near
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -4930,7 +4931,7 @@ loc_351::
                 pop     es
                 mov     di,65Dh
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,40h
                 push    bp
@@ -5177,7 +5178,7 @@ sub_56          endp
                 jmp     loc_354
                                                 ;* No entry point to code
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,41h
                 push    bp
@@ -5302,7 +5303,7 @@ loc_377::
                 mov     byte ptr ds:[65Bh][bx],cl
                 xor     cx,cx
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -5398,7 +5399,7 @@ data_224        dw      offset loc_234
 data_225        dw      2A4h
 data_226        dw      2C4h
 data_227        dw      2E4h
-data_228        dw      offset loc_2
+data_228        dw      24h
 data_229        dw      124h
 data_230        dw      304h
 data_231        dw      337h
@@ -5542,16 +5543,13 @@ data_301        db      0
                 db      23 dup (0)
 data_302        db      0
                 db      12 dup (0)
-data_303        db      4Dh
-                db       53h, 44h, 4Fh, 53h, 00h, 56h
-data_304        db      30h
-                db      2Eh
-data_305        dw      3030h
+data_303        db      "MSDOS",0
+                db      "V"
+data_304        db      "0."
+data_305        dw      "00"
                 db      0
-data_306        db      49h
-                db       42h, 4Dh, 5Fh, 50h, 43h, 00h
-data_307        db      49h
-                db       42h, 4Dh
+data_306        db      "IBM_PC",0
+data_307        db      "IBM"
                 db      18 dup (0)
                 db       15h, 04h, 00h
 data_309        db      0, 0
@@ -6696,7 +6694,7 @@ loc_447::
                 xor     ax,ax
                 mov     bx,4
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,40h
                 push    bp
@@ -6712,7 +6710,7 @@ loc_447::
                 mov     di,0E59h
                 mov     bx,4
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,40h
                 push    bp
@@ -6833,7 +6831,7 @@ loc_452::
                 mov     es:[si+6],es
                 mov     word ptr es:[si+8],10B6h
                 mov     es:[si+0Ah],es
-                mov     bx,offset data_34
+                mov     bx,18h
                 push    es
                 call    dword ptr data_169
                 pop     es
@@ -6841,7 +6839,7 @@ loc_453::
                 mov     bx,cs:data_375
                 mov     dx,cs:data_376
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,42h
                 push    bp
@@ -6874,7 +6872,7 @@ loc_455::
                 int     2Fh                     ; ??INT Non-standard interrupt
                 mov     bx,offset data_239
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,43h
                 push    bp

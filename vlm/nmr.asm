@@ -25,15 +25,15 @@ seg_a           segment byte public
                 assume cs:seg_a  , ds:seg_a
 
                 dw      0h, seg_c
-                dw      03dh, seg_a
-                dw      056h, seg_a
-                dw      0c5h, seg_a
-                dw      0480h, seg_a
-                dw      049dh, seg_a
-                dw      0e6h, seg_a
-
+                dw      offset loc_003d, seg_a
+                dw      offset loc_0056, seg_a
+                dw      offset loc_00c5, seg_a
+                dw      offset loc_0480, seg_a
+                dw      offset loc_049d, seg_a
+                dw      offset loc_00e6, seg_a
                 dw      0, 0
-                db       4Eh, 56h, 6Ch, 6Dh
+                db      "NVlm"
+                ; note: no VLM ID present for this module!
 
 ;ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 ;                              SUBROUTINE
@@ -42,7 +42,7 @@ seg_a           segment byte public
 sub_2           proc    near
                 mov     bx,0
                 push    bp
-                mov     bp,100h
+                mov     bp,VLMID_NMR
                 push    bp
                 mov     bp,1
                 push    bp
@@ -54,6 +54,8 @@ sub_2           proc    near
 sub_2           endp
 
 data_7          dw      offset loc_1            ; Data table (indexed access)
+
+loc_003d:
                 db       83h,0FBh, 01h, 72h, 04h,0B8h
                 db       11h, 88h,0CBh,0D1h,0E3h, 2Eh
                 db      0FFh,0A7h, 3Bh, 00h
@@ -65,7 +67,8 @@ loc_1::
                 mov     cx,15h
                 xor     ax,ax
                 retf
-                                                ;* No entry point to code
+
+loc_0056:
                 push    bx
                 push    cx
                 push    dx
@@ -126,7 +129,8 @@ loc_4::
                 pop     cx
                 pop     bx
                 retf
-                                                ;* No entry point to code
+
+loc_00c5:
                 push    cx
                 push    si
                 push    di
@@ -148,7 +152,8 @@ loc_5::
                 pop     cx
                 xor     ax,ax
                 retf
-                                                ;* No entry point to code
+
+loc_00e6:
                 mov     es,dx
                 xchg    di,bx
                 jmp     word ptr data_24[si]    ;*14 entries
@@ -717,7 +722,10 @@ loc_46::
                 pop     bx
                 cli
                 retf
-                db       00h,0BEh, 7Eh, 05h, 8Eh,0C2h
+                db       00h
+
+loc_0480:
+                db      0BEh, 7Eh, 05h, 8Eh, 0C2h
                 db      0B8h
                 dw      seg_a
                 db       8Eh,0D8h, 8Bh,0FBh,0B9h, 6Ah
@@ -1047,7 +1055,7 @@ sub_12          endp
 sub_13          proc    near
                 mov     ax,0
                 push    ax
-                mov     ax,100h
+                mov     ax,VLMID_NMR
                 push    ax
                 mov     ax,5
                 push    ax
@@ -1781,6 +1789,8 @@ loc_96::
                 rol     dl,1
                 or      dl,dl
                 inc     dl
+
+loc_049d:
                 mov     [bx+0Eh],dl
                 call    sub_19
                 mov     [bx+13h],al
@@ -3956,10 +3966,8 @@ data_99         dw      0
 data_100        dw      0
 data_101        dw      0, 0
 data_103        dw      seg_b
-                db       4Eh, 4Dh, 52h, 2Eh, 4Dh, 53h
-                db       47h, 00h
-                db       4Eh, 4Dh, 52h
-                db      0
+                db      "NMR.MSG",0
+                db      "NMR",0
 data_105        dw      0
                 db      0, 0
 data_107        dw      0, 0

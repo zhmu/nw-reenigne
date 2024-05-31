@@ -32,40 +32,31 @@ seg_a           segment byte public
                 assume cs:seg_a  , ds:seg_a
 
                 dw      0h, seg_c
-                dw      6ah, seg_a
-                dw      0c3h, seg_a
-                dw      0dah
+                dw      offset loc_006a, seg_a
+                dw      offset loc_00c3, seg_a
+                dw      offset loc_00da, seg_a
+                dw      offset loc_00fb, seg_a
+                dw      offset loc_0136, seg_a
+                dw      offset sub_4,    seg_a
+                dw      offset loc_0290, seg_a
+                dw      offset loc_02ee, seg_a
+                dw      offset loc_031f, seg_a
+                dw      offset loc_035f, seg_a
+                dw      0, 0
 
-data_23         dw      seg_a
-data_24         dw      0FBh
-data_25         dw      seg_a
-data_26         dw      136h
-data_27         dw      seg_a
-                db       9Fh, 01h
-data_28         dw      seg_a
-data_29         dw      290h
-                dw      seg_a
-data_30         dw      2EEh
-data_31         dw      seg_a
-data_32         db      1Fh
-                db      3
-data_33         dw      seg_a
-data_34         dw      35Fh
-data_35         dw      seg_a
-data_36         dw      0
-                db      0
-data_37         db      0
-                db      4Eh
-data_38         dw      6C56h
-data_39         dw      416Dh
-data_40         dw      5500h
-data_41         dw      41BDh
-data_42         dw      5500h
-                db      0BDh, 20h, 00h, 55h
-data_43         dw      6BDh
-data_44         dw      5500h
-                db       2Eh,0FFh, 1Eh, 40h, 0Ch, 5Dh
-                db      0C3h
+                db      'NVlm'
+                dw      VLMID_FIO
+
+                push    bp
+                mov     bp,VLMID_FIO
+                push    bp
+                mov     bp,20h
+                push    bp
+                mov     bp,6
+                push    bp
+                call    dword ptr cs:data_152
+                pop     bp
+                retn
 
 ;ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 ;                              SUBROUTINE
@@ -73,7 +64,7 @@ data_44         dw      5500h
 
 sub_3           proc    near
                 push    bp
-                mov     bp,41h
+                mov     bp,VLMID_FIO
                 push    bp
                 mov     bp,20h
                 push    bp
@@ -90,6 +81,8 @@ data_47         dw      offset loc_4
 data_48         dw      offset loc_6
 data_49         dw      offset loc_1
 data_50         dw      offset loc_7
+
+loc_006a:
                 db       83h,0FBh, 06h, 72h, 04h
 
 ;ÄÄÄÄÄ Indexed Entry Point ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
@@ -153,7 +146,8 @@ loc_10::
                 pop     ds
                 pop     di
                 jmp     short loc_3
-                                                ;* No entry point to code
+
+loc_00c3:
                 cmp     cs:data_150,0
                 je      loc_11
                 call    sub_28
@@ -164,7 +158,8 @@ loc_11::
 loc_12::
                 xor     ax,ax
                 retf
-                                                ;* No entry point to code
+
+loc_00da:
                 push    cx
                 push    si
                 push    di
@@ -186,7 +181,8 @@ loc_13::
                 pop     cx
                 xor     ax,ax
                 retf
-                                                ;* No entry point to code
+
+loc_00fb:
                 call    sub_12
                 cmp     byte ptr cs:data_146,0
                 jne     loc_14
@@ -217,7 +213,8 @@ loc_15::
 loc_16::
                 xor     ax,ax
                 retf
-                                                ;* No entry point to code
+
+loc_0136:
                 push    bx
                 push    dx
                 push    si
@@ -353,7 +350,7 @@ sub_5           proc    near
                 mov     ds,cs:data_151
                 assume  ds:seg_b
                 mov     data_186,cx
-                mov     si,offset data_37
+                mov     si,2fh
                 xchg    si,di
                 push    ds
                 push    es
@@ -408,7 +405,7 @@ sub_5           proc    near
                 retn
 sub_5           endp
 
-                                                ;* No entry point to code
+loc_0290:
                 push    cx
                 push    si
                 push    ds
@@ -452,7 +449,8 @@ loc_29::
                 pop     si
                 pop     cx
                 retf
-                                                ;* No entry point to code
+
+loc_02ee:
                 push    cx
                 push    si
                 push    ds
@@ -478,7 +476,8 @@ loc_31::
                 call    sub_17
 loc_32::
                 jmp     short loc_29
-                                                ;* No entry point to code
+
+loc_031f:
                 push    ax
                 push    cx
                 push    dx
@@ -521,7 +520,8 @@ loc_35::
                 pop     ax
                 xor     ax,ax
                 retf
-                                                ;* No entry point to code
+
+loc_035f:
                 push    si
                 push    ds
                 mov     ds,cs:data_151
@@ -700,7 +700,7 @@ sub_8           proc    near
 
 sub_9::
                 push    di
-                mov     si,offset data_37
+                mov     si,2fh
                 xchg    si,di
                 lodsw
                 mov     cx,3
@@ -1268,7 +1268,7 @@ sub_17          endp
 sub_18          proc    near
                 mov     ax,41h
                 push    ax
-                push    data_30
+                push    ds:[20h]
                 call    dword ptr cs:data_154
                 pop     ax
                 add     sp,2
@@ -1310,10 +1310,10 @@ sub_19          proc    near
                 mov     ax,ds
                 stosw
 loc_91::
-                mov     ax,data_41
+                mov     ax,ds:[37h]
                 xchg    ah,al
                 push    ax
-                mov     dx,data_31
+                mov     dx,ds:[22h]
                 shr     ax,1
                 mov     ax,0
                 pushf
@@ -1324,7 +1324,7 @@ loc_91::
                 sbb     dx,0
                 pop     ax
                 mov     bx,0FFFFh
-                test    bl,data_32
+                test    bl,byte ptr ds:[24h]
                 jnz     loc_92
                 and     ax,0FFFh
                 neg     ax
@@ -1332,8 +1332,8 @@ loc_91::
                 xchg    bx,ax
 loc_92::
                 xchg    bx,ax
-                mov     bx,data_35
-                cmp     data_36,0
+                mov     bx,ds:[2Ah]
+                cmp     ds:[2Ch],0
                 je      loc_93
                 mov     bx,0FFFFh
 loc_93::
@@ -1346,28 +1346,28 @@ loc_94::
                 xchg    dx,ax
 loc_95::
                 mov     dx,ax
-                mov     cx,data_43
+                mov     cx,ds:[3Fh]
                 sub     ax,cx
                 jnc     loc_96
                 add     cx,ax
 loc_96::
                 mov     ax,dx
                 sub     ax,cx
-                sub     data_43,cx
-                mov     data_26,cx
-                sub     data_44,ax
-                mov     data_28,ax
+                sub     ds:[3Fh],cx
+                mov     ds:[14h],cx
+                sub     ds:[41h],ax
+                mov     ds:[1Ah],ax
                 xchg    dh,dl
-                mov     data_42,dx
-                mov     cx,data_30
+                mov     ds:[39h],dx
+                mov     cx,ds:[20h]
                 push    ds
                 mov     ds,cx
                 mov     dx,ds:data_13e
                 pop     ds
                 cmp     dx,33h
                 jne     loc_97
-                mov     ax,data_35
-                mov     data_39,ax
+                mov     ax,ds:[2Ah]
+                mov     ds:[33h],ax
 loc_97::
                 mov     al,48h                  ; 'H'
                 mov     bx,301h
@@ -1376,38 +1376,38 @@ loc_97::
 ;*              call    sub_2                   ;*
                 db      0E8h, 57h,0F6h
                 jnz     loc_101
-                mov     cx,data_29
+                mov     cx,ds:[1Ch]
                 xchg    ch,cl
-                add     data_33,cx
-                adc     data_34,0
-                mov     ax,data_26
+                add     ds:[26h],cx
+                adc     ds:[28h],0
+                mov     ax,ds:[14h]
                 sub     ax,cx
                 jnc     loc_98
                 neg     ax
-                sub     data_28,ax
-                add     data_27,ax
+                sub     ds:[1Ah],ax
+                add     ds:[16h],ax
                 xor     ax,ax
 loc_98::
-                mov     data_26,ax
-                add     data_24,cx
-                mov     ax,data_41
+                mov     ds:[14h],ax
+                add     ds:[10h],cx
+                mov     ax,ds:[37h]
                 xchg    ah,al
-                mov     bx,data_40
+                mov     bx,ds:[35h]
                 xchg    bh,bl
                 add     ax,cx
                 adc     bx,0
                 xchg    bh,bl
-                mov     data_40,bx
+                mov     ds:[35h],bx
                 xchg    ah,al
-                mov     data_41,ax
+                mov     ds:[37h],ax
                 xchg    ch,cl
-                cmp     data_42,cx
+                cmp     ds:[39h],cx
                 xchg    ch,cl
                 jnz     loc_99
-                sub     data_35,cx
-                sbb     data_36,0
-                mov     ax,data_35
-                or      ax,data_36
+                sub     ds:[2Ah],cx
+                sbb     ds:[2Ch],0
+                mov     ax,ds:[2Ah]
+                or      ax,ds:[2Ch]
                 jz      loc_99
                 jmp     loc_91
 loc_99::
@@ -1417,10 +1417,10 @@ loc_100::
                 retn
 loc_101::
                 push    ax
-                mov     ax,data_26
-                add     data_43,ax
-                mov     ax,data_28
-                add     data_44,ax
+                mov     ax,ds:[14h]
+                add     ds:[3Fh],ax
+                mov     ax,ds:[1Ah]
+                add     ds:[41h],ax
                 pop     ax
                 cmp     ah,89h
                 je      loc_100
@@ -1433,7 +1433,7 @@ loc_101::
                 test    byte ptr ds:data_17e,2
                 pop     ds
                 jnz     loc_104
-                test    data_32,0FFh
+                test    byte ptr ds:[24h],0FFh
                 jz      loc_104
                 push    ds
                 mov     ds,cx
@@ -1449,7 +1449,7 @@ loc_102::
                 mov     dx,ds:data_19e
                 pop     ds
 loc_103::
-                mov     data_31,dx
+                mov     ds:[22h],dx
                 jmp     loc_91
 loc_104::
                 cmp     al,16h
@@ -1484,11 +1484,11 @@ sub_20          proc    near
                 mov     ax,0Dh
                 stosw
 loc_106::
-                mov     ax,data_41
+                mov     ax,ds:[37h]
                 xchg    ah,al
-                mov     dx,data_31
+                mov     dx,ds:[22h]
                 mov     bx,0FFFFh
-                test    bl,data_32
+                test    bl,byte ptr ds:[24h]
                 jnz     loc_107
                 and     ax,0FFFh
                 neg     ax
@@ -1496,8 +1496,8 @@ loc_106::
                 xchg    bx,ax
 loc_107::
                 xchg    bx,ax
-                mov     bx,data_35
-                cmp     data_36,0
+                mov     bx,ds:[2Ah]
+                cmp     ds:[2Ch],0
                 je      loc_108
                 mov     bx,0FFFFh
 loc_108::
@@ -1510,28 +1510,28 @@ loc_109::
                 xchg    dx,ax
 loc_110::
                 mov     dx,ax
-                mov     cx,data_44
+                mov     cx,ds:[41h]
                 sub     ax,cx
                 jnc     loc_111
                 add     cx,ax
 loc_111::
                 mov     ax,dx
                 sub     ax,cx
-                sub     data_44,cx
-                mov     data_23,cx
-                sub     data_43,ax
-                mov     data_26,ax
+                sub     ds:[41h],cx
+                mov     ds:[0Eh],cx
+                sub     ds:[3Fh],ax
+                mov     ds:[14h],ax
                 xchg    dh,dl
-                mov     data_42,dx
-                mov     cx,data_30
+                mov     ds:[39h],dx
+                mov     cx,ds:[20h]
                 push    ds
                 mov     ds,cx
                 mov     dx,ds:data_13e
                 pop     ds
                 cmp     dx,33h
                 jne     loc_112
-                mov     ax,data_35
-                mov     data_39,ax
+                mov     ax,ds:[2Ah]
+                mov     ds:[33h],ax
 loc_112::
                 mov     al,49h                  ; 'I'
                 mov     bx,303h
@@ -1539,34 +1539,34 @@ loc_112::
 ;*              call    sub_2                   ;*
                 db      0E8h,0ECh,0F4h
                 jnz     loc_116
-                mov     cx,data_42
+                mov     cx,ds:[39h]
                 xchg    ch,cl
-                add     data_33,cx
-                adc     data_34,0
-                mov     ax,data_23
+                add     ds:[26h],cx
+                adc     ds:[28h],0
+                mov     ax,ds:[0Eh]
                 sub     ax,cx
                 jnc     loc_113
                 neg     ax
-                sub     data_26,ax
-                add     data_24,ax
+                sub     ds:[14h],ax
+                add     ds:[10h],ax
                 xor     ax,ax
 loc_113::
-                mov     data_23,ax
+                mov     ds:[0Eh],ax
                 add     word ptr ds:[0Ah],cx
-                mov     ax,data_41
+                mov     ax,ds:[37h]
                 xchg    ah,al
-                mov     bx,data_40
+                mov     bx,ds:[35h]
                 xchg    bh,bl
                 add     ax,cx
                 adc     bx,0
                 xchg    bh,bl
-                mov     data_40,bx
+                mov     ds:[35h],bx
                 xchg    ah,al
-                mov     data_41,ax
-                sub     data_35,cx
-                sbb     data_36,0
-                mov     ax,data_35
-                or      ax,data_36
+                mov     ds:[37h],ax
+                sub     ds:[2Ah],cx
+                sbb     ds:[2Ch],0
+                mov     ax,ds:[2Ah]
+                or      ax,ds:[2Ch]
                 jz      loc_114
                 jmp     loc_106
 loc_114::
@@ -1576,10 +1576,10 @@ loc_115::
                 retn
 loc_116::
                 push    ax
-                mov     ax,data_23
-                add     data_44,ax
-                mov     ax,data_26
-                add     data_43,ax
+                mov     ax,ds:[0Eh]
+                add     ds:[41h],ax
+                mov     ax,ds:[14h]
+                add     ds:[3Fh],ax
                 pop     ax
                 cmp     ah,89h
                 je      loc_115
@@ -1592,7 +1592,7 @@ loc_116::
                 test    byte ptr ds:data_10e,2
                 pop     ds
                 jnz     loc_119
-                test    data_32,0FFh
+                test    byte ptr ds:[24h],0FFh
                 jz      loc_119
                 push    ds
                 mov     ds,cx
@@ -1608,7 +1608,7 @@ loc_117::
                 mov     dx,ds:data_12e
                 pop     ds
 loc_118::
-                mov     data_31,dx
+                mov     ds:[22h],dx
                 jmp     loc_106
 loc_119::
                 cmp     al,16h
@@ -1667,10 +1667,10 @@ sub_21          proc    near
                 mov     word ptr [bx+si+4],8
                 mov     bh,bl
                 mov     bl,42h                  ; 'B'
-                mov     cx,data_30
+                mov     cx,ds:[20h]
                 mov     al,2
                 push    bp
-                mov     bp,41h
+                mov     bp,VLMID_FIO
                 push    bp
                 mov     bp,61h
                 push    bp
@@ -1688,7 +1688,7 @@ sub_21          endp
 
 sub_22          proc    near
                 push    bp
-                mov     bp,41h
+                mov     bp,VLMID_FIO
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -1754,7 +1754,7 @@ loc_123::
                 mov     dx,1
                 mov     al,65h                  ; 'e'
                 push    bp
-                mov     bp,41h
+                mov     bp,VLMID_FIO
                 push    bp
                 mov     bp,21h
                 push    bp
@@ -1926,7 +1926,7 @@ loc_135::
                 mov     cx,bp
                 mov     bx,offset data_174
                 push    bp
-                mov     bp,41h
+                mov     bp,VLMID_FIO
                 push    bp
                 mov     bp,21h
                 push    bp
@@ -2079,7 +2079,7 @@ loc_144::
                 pop     ds
                 mov     es:data_287,dl
                 mov     bx,1
-                mov     bp,41h
+                mov     bp,VLMID_FIO
                 push    bp
                 mov     bp,1
                 push    bp
@@ -2154,7 +2154,7 @@ loc_145::
                 jnz     loc_147
 loc_146::
                 mov     bx,2
-                mov     bp,41h
+                mov     bp,VLMID_FIO
                 push    bp
                 mov     bp,1
                 push    bp
@@ -2169,8 +2169,8 @@ loc_146::
                 retn
 loc_147::
                 push    ax
-                mov     cx,data_30
-                mov     bp,41h
+                mov     cx,ds:[20h]
+                mov     bp,VLMID_FIO
                 push    bp
                 mov     bp,30h
                 push    bp
@@ -2197,14 +2197,14 @@ loc_148::
                 mov     word ptr ds:[68Ah],1
                 mov     cx,word ptr ds:[658h]
                 add     cx,8
-                mov     data_23,cx
+                mov     ds:[0Eh],cx
                 mov     ax,word ptr ds:[646h]
                 sub     ax,cx
-                cmp     data_36,0
+                cmp     ds:[2Ch],0
                 jne     loc_149
-                cmp     ax,data_35
+                cmp     ax,ds:[2Ah]
                 jb      loc_149
-                mov     ax,data_35
+                mov     ax,ds:[2Ah]
 loc_149::
                 add     cx,ax
                 mov     word ptr ds:[65Ah],ax
@@ -2234,12 +2234,12 @@ loc_152::
                 jnz     loc_154
                 mov     bx,word ptr ds:[704h]
                 xchg    bh,bl
-                add     data_33,bx
-                adc     data_34,ax
-                sub     data_35,bx
-                sbb     data_36,ax
+                add     ds:[26h],bx
+                adc     ds:[28h],ax
+                sub     ds:[2Ah],bx
+                sbb     ds:[2Ch],ax
                 jnz     loc_156
-                cmp     data_35,ax
+                cmp     ds:[2Ah],ax
                 jne     loc_156
 loc_153::
                 sub     ax,ax
@@ -2263,22 +2263,22 @@ loc_156::
                 adc     dl,al
                 mov     word ptr ds:[6F8h],cx
                 mov     word ptr ds:[6F6h],dx
-                add     data_24,bx
+                add     ds:[10h],bx
                 jc      loc_159
 loc_157::
-                sub     data_43,bx
+                sub     ds:[3Fh],bx
                 jnc     loc_158
-                mov     bx,data_43
+                mov     bx,ds:[3Fh]
                 neg     bx
-                mov     data_43,ax
-                add     data_27,bx
-                sub     data_44,bx
+                mov     ds:[3Fh],ax
+                add     ds:[16h],bx
+                sub     ds:[41h],bx
 loc_158::
                 and     ch,3
                 mov     byte ptr ds:[658h],ch
                 jmp     loc_148
 loc_159::
-                add     data_25,1000h
+                add     ds:[12h],1000h
                 jmp     short loc_157
 sub_30          endp
 
@@ -2305,7 +2305,7 @@ sub_31          proc    near
                 and     byte ptr ds:[0BF5h],0DFh
 loc_160::
                 inc     cs:data_157
-                mov     bx,offset data_28
+                mov     bx,1Ah
                 call    dword ptr ds:[5D4h]
                 mov     word ptr ds:[662h],ax
                 mov     ax,word ptr ds:[630h]
@@ -2473,7 +2473,7 @@ sub_33::
                 movsw
                 movsw
                 pop     si
-                mov     cx,data_30
+                mov     cx,ds:[20h]
                 push    es
                 mov     es,cx
                 cld
@@ -2568,11 +2568,11 @@ loc_185::
                 mov     cx,18h
                 mov     ax,word ptr ds:[652h]
                 sub     ax,cx
-                cmp     data_36,0
+                cmp     ds:[2Ch],0
                 jne     loc_186
-                cmp     data_35,ax
+                cmp     ds:[2Ah],ax
                 ja      loc_186
-                mov     ax,data_35
+                mov     ax,ds:[2Ah]
 loc_186::
                 add     cx,ax
                 mov     word ptr ds:[65Ah],ax
@@ -2603,12 +2603,12 @@ loc_188::
                 or      ax,ax
                 jnz     loc_189
                 mov     bx,word ptr ds:[65Ah]
-                add     data_33,bx
-                adc     data_34,ax
-                sub     data_35,bx
-                sbb     data_36,ax
+                add     ds:[26h],bx
+                adc     ds:[28h],ax
+                sub     ds:[2Ah],bx
+                sbb     ds:[2Ch],ax
                 jnz     loc_190
-                cmp     data_35,ax
+                cmp     ds:[2Ah],ax
                 jne     loc_190
                 sub     ax,ax
 loc_189::
@@ -2623,18 +2623,18 @@ loc_190::
                 mov     word ptr ds:[75Eh],cx
                 mov     word ptr ds:[75Ch],dx
                 add     word ptr ds:[0Ah],bx
-                sub     data_44,bx
+                sub     ds:[41h],bx
                 jnc     loc_191
-                mov     bx,data_44
+                mov     bx,ds:[41h]
                 neg     bx
-                mov     data_44,ax
-                sub     data_43,bx
-                add     data_24,bx
+                mov     ds:[41h],ax
+                sub     ds:[3Fh],bx
+                add     ds:[10h],bx
                 jc      loc_192
 loc_191::
                 jmp     loc_185
 loc_192::
-                add     data_25,1000h
+                add     ds:[12h],1000h
                 jmp     short loc_191
 sub_34          endp
 
@@ -2729,7 +2729,7 @@ loc_199::
                 sub     dx,bp
                 lea     di,[si+2Ah]
                 mov     bx,ax
-                sub     ax,data_44
+                sub     ax,ds:[41h]
                 jnc     loc_200
                 inc     word ptr [si+22h]
                 add     bx,word ptr ds:[0Ah]
@@ -2747,8 +2747,8 @@ loc_200::
                 inc     word ptr [si+22h]
                 mov     [di+4],dx
                 mov     cx,4
-                mov     bx,data_25
-                add     ax,data_24
+                mov     bx,ds:[12h]
+                add     ax,ds:[10h]
                 adc     ch,ch
                 shl     ch,cl
                 add     bh,ch
@@ -2952,7 +2952,7 @@ sub_37          proc    near
                 or      byte ptr ds:[0BF4h],8
                 dec     byte ptr ds:[0BF9h]
                 jz      loc_229
-                mov     cx,data_30
+                mov     cx,ds:[20h]
                 push    ds
                 mov     ds,cx
                 test    byte ptr ds:data_14e,8
@@ -3021,7 +3021,7 @@ sub_38          proc    near
                 cmp     byte ptr ds:[0BF9h],al
                 jne     loc_230
                 push    ds
-                mov     ax,data_30
+                mov     ax,ds:[20h]
                 mov     ds,ax
                 or      byte ptr ds:data_14e,8
                 pop     ds
@@ -3154,7 +3154,7 @@ loc_243::
                 je      loc_244
                 cmp     word ptr ds:[88h][si],0
                 jne     loc_244
-                mov     cx,data_30
+                mov     cx,ds:[20h]
                 mov     dx,word ptr ds:[84h][si]
                 mov     ax,[si+4Eh]
                 xchg    ah,al
@@ -3163,7 +3163,7 @@ loc_243::
                 add     si,2Eh
                 mov     al,4
                 push    bp
-                mov     bp,41h
+                mov     bp,VLMID_FIO
                 push    bp
                 mov     bp,61h
                 push    bp
@@ -4417,7 +4417,7 @@ loc_333::
                 mov     data_285,cl
                 mov     bx,0
                 push    bp
-                mov     bp,41h
+                mov     bp,VLMID_FIO
                 push    bp
                 mov     bp,21h
                 push    bp

@@ -28,26 +28,19 @@ seg_a           segment byte public
 
                                                 ;* No entry point to code
                 dw      0h, seg_c
-                db       4Ch, 00h
-                dw      seg_a
-                db       53h, 02h
-                dw      seg_a
-                db       9Dh, 02h
-                dw      seg_a
-                db      0BEh, 02h
-                dw      seg_a
-                db       10h, 03h
-                dw      seg_a
-                db      0E4h, 03h
-                dw      seg_a
-                db      0BAh, 05h
-                dw      seg_a
-                db      0DDh, 05h
-                dw      seg_a
-                db       4Ah, 06h
-                dw      seg_a
-                db       00h, 00h, 00h, 00h, 4Eh, 56h
-                db       6Ch, 6Dh, 43h, 00h
+                dw      offset loc_004c, seg_a
+                dw      offset loc_0253, seg_a
+                dw      offset loc_029d, seg_a
+                dw      offset sub_3, seg_a
+                dw      offset sub_4, seg_a
+                dw      offset loc_03e4, seg_a
+                dw      offset loc_05ba, seg_a
+                dw      offset loc_05dd, seg_a
+                dw      offset loc_064a, seg_a
+                dw      0, 0
+                db      "NVlm"
+                dw      VLMID_GENERAL
+
 data_12         dw      offset loc_1            ; Data table (indexed access)
 data_13         dw      offset loc_2
 data_14         dw      offset loc_5
@@ -61,6 +54,8 @@ data_21         dw      offset loc_5
 data_22         dw      offset loc_5
 data_23         dw      offset loc_5
 data_24         dw      offset loc_14
+
+loc_004c:
                 db       83h,0FBh, 0Dh, 72h, 04h,0B8h
                 db       11h, 88h,0CBh, 55h, 8Bh,0ECh
                 db      'PQRSTUVW'
@@ -116,7 +111,7 @@ loc_4::
 ;ÄÄÄÄÄ Indexed Entry Point ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 
 loc_5::
-                mov     ax,8811h
+                mov     ax,STATUS_NONEXISTANT_FUNC_CALLED
                 jmp     short loc_4
 
 ;ÄÄÄÄÄ Indexed Entry Point ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
@@ -136,7 +131,7 @@ loc_7::
                 jnz     loc_4
                 mov     bx,0
                 push    bp
-                mov     bp,43h
+                mov     bp,VLMID_GENERAL
                 push    bp
                 mov     bp,50h
                 push    bp
@@ -151,7 +146,7 @@ loc_7::
                 xor     dx,dx
                 mov     bx,2
                 push    bp
-                mov     bp,43h
+                mov     bp,VLMID_GENERAL
                 push    bp
                 mov     bp,30h
                 push    bp
@@ -300,7 +295,7 @@ loc_24::
                 mov     ax,5C5Ch
                 stosw
                 push    bp
-                mov     bp,43h
+                mov     bp,VLMID_GENERAL
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -348,7 +343,7 @@ sub_2           proc    near
                 retn
 sub_2           endp
 
-                                                ;* No entry point to code
+loc_0253:
                 push    bx
                 push    cx
                 push    dx
@@ -362,7 +357,7 @@ sub_2           endp
                 mov     al,21h                  ; '!'
                 mov     bx,0
                 push    bp
-                mov     bp,43h
+                mov     bp,VLMID_GENERAL
                 push    bp
                 mov     bp,1
                 push    bp
@@ -392,7 +387,8 @@ loc_28::
                 pop     cx
                 pop     bx
                 retf
-                                                ;* No entry point to code
+
+loc_029d:
                 push    cx
                 push    si
                 push    di
@@ -432,7 +428,7 @@ loc_30::
                 jnz     loc_33
                 jcxz    loc_31
                 push    bp
-                mov     bp,43h
+                mov     bp,VLMID_GENERAL
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -448,7 +444,7 @@ loc_31::
                 mov     data_61,cx
                 mov     bx,1
                 push    bp
-                mov     bp,43h
+                mov     bp,VLMID_GENERAL
                 push    bp
                 mov     bp,50h
                 push    bp
@@ -596,6 +592,8 @@ data_32         dw      offset loc_45
 data_33         dw      offset loc_48
 data_34         dw      offset loc_60
 data_35         dw      offset loc_65
+
+loc_03e4:
                 db       83h,0FBh, 06h, 72h, 04h,0B8h
                 db       11h, 88h,0CBh, 53h, 1Eh, 50h
                 db      0B8h
@@ -620,7 +618,7 @@ loc_42::
                 push    es
                 mov     dx,cx
                 push    bp
-                mov     bp,43h
+                mov     bp,VLMID_GENERAL
                 push    bp
                 mov     bp,50h
                 push    bp
@@ -772,7 +770,7 @@ loc_60::
                 push    es
                 mov     bx,0
                 push    bp
-                mov     bp,43h
+                mov     bp,VLMID_GENERAL
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -843,7 +841,7 @@ loc_65::
                 xor     dx,dx
                 mov     bx,2
                 push    bp
-                mov     bp,43h
+                mov     bp,VLMID_GENERAL
                 push    bp
                 mov     bp,30h
                 push    bp
@@ -872,6 +870,8 @@ loc_68::
                 pop     dx
                 pop     bx
                 jmp     loc_54
+
+loc_05ba:
                 db      0CBh
 
 ;ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
@@ -902,7 +902,7 @@ loc_ret_71::
                 retn
 sub_5           endp
 
-                                                ;* No entry point to code
+loc_05dd:
                 cld
                 push    ax
                 push    cx
@@ -979,7 +979,8 @@ loc_79::
                 pop     cx
                 pop     ax
                 retf
-                                                ;* No entry point to code
+
+loc_064a:
                 push    ds
                 mov     ax,seg_a
                 mov     ds,ax
@@ -1341,7 +1342,7 @@ loc_95::
                 mov     bx,5
                 xor     ax,ax
                 push    ax
-                mov     ax,43h
+                mov     ax,VLMID_GENERAL
                 push    ax
                 mov     ax,6
                 push    ax
@@ -1588,13 +1589,9 @@ data_114        db      0
                 db      9 dup (0)
 data_116        dw      0
 data_117        db      0
-                db       49h, 42h, 4Dh, 5Fh, 50h, 43h
-                db       00h
-data_118        db      49h
-                db       42h, 4Dh, 00h, 00h
-data_119        db      4Dh
-                db       53h, 44h, 4Fh, 53h
-                db      0, 0, 0
+                db      "IBM_PC",0
+data_118        db      "IBM",0,0
+data_119        db      "MSDOS",0,0,0
 data_121        db      0
                 db      31 dup (0)
 data_122        db      0

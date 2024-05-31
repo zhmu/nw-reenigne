@@ -58,40 +58,25 @@ seg_a           segment byte public
 
                                                 ;* No entry point to code
                 dw      0, seg_d
-                db      0DCh, 00h
-                dw      seg_a
-                db      0B1h, 08h
-                dw      seg_a
-                db      0F5h, 00h
-                dw      seg_a
-                db       4Ch, 01h
-                dw      seg_a
-                db       4Ch, 01h
-                dw      seg_a
-                db       4Ch, 01h
-                dw      seg_a
-                db       3Ah, 06h
-                dw      seg_a
-                db       4Ch, 01h
-                dw      seg_a
-                db      0E9h, 05h
-                dw      seg_a
-                db      0FEh, 02h
-                dw      seg_a
-                db       6Bh, 08h
-                dw      seg_a
-                db       7Fh, 08h
-                dw      seg_a
-                db       93h, 08h
-                dw      seg_a
-                db       49h, 05h
-                dw      seg_a
-                db       4Ch, 01h
-                dw      seg_a
-                db      0EAh, 07h
-                dw      seg_a
-                db       00h, 00h, 00h, 00h, 4Eh, 56h
-                db       6Ch, 6Dh, 30h, 00h
+                dw      offset loc_00dc, seg_a
+                dw      offset loc_08b1, seg_a
+                dw      offset loc_00f5, seg_a
+                dw      offset loc_014c, seg_a
+                dw      offset loc_014c, seg_a
+                dw      offset loc_014c, seg_a
+                dw      offset loc_62, seg_a
+                dw      offset loc_014c, seg_a
+                dw      offset loc_05e9, seg_a
+                dw      offset loc_02fe, seg_a
+                dw      offset loc_086b, seg_a
+                dw      offset loc_087f, seg_a
+                dw      offset loc_0893, seg_a
+                dw      offset sub_8, seg_a
+                dw      offset loc_014c, seg_a
+                dw      offset loc_07ea, seg_a
+                dw      0, 0
+                db      "NVlm"
+                dw      VLMID_NWP
 
 ;ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 ;                              SUBROUTINE
@@ -99,7 +84,7 @@ seg_a           segment byte public
 
 sub_1           proc    near
                 push    bp
-                mov     bp,30h
+                mov     bp,VLMID_NWP
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -117,7 +102,7 @@ sub_1           endp
 
 sub_2           proc    near
                 push    bp
-                mov     bp,30h
+                mov     bp,VLMID_NWP
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -135,7 +120,7 @@ sub_2           endp
 
 sub_3           proc    near
                 push    bp
-                mov     bp,30h
+                mov     bp,VLMID_NWP
                 push    bp
                 mov     bp,20h
                 push    bp
@@ -153,7 +138,7 @@ sub_3           endp
 
 sub_4           proc    near
                 push    bp
-                mov     bp,30h
+                mov     bp,VLMID_NWP
                 push    bp
                 mov     bp,20h
                 push    bp
@@ -171,7 +156,7 @@ sub_4           endp
 
 sub_5           proc    near
                 push    bp
-                mov     bp,30h
+                mov     bp,VLMID_NWP
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -189,7 +174,7 @@ sub_5           endp
 
 sub_6           proc    near
                 push    bp
-                mov     bp,30h
+                mov     bp,VLMID_NWP
                 push    bp
                 mov     bp,1
                 push    bp
@@ -207,7 +192,7 @@ sub_6           endp
 
 sub_7           proc    near
                 push    bp
-                mov     bp,30h
+                mov     bp,VLMID_NWP
                 push    bp
                 mov     bp,61h
                 push    bp
@@ -219,6 +204,8 @@ sub_7           proc    near
 sub_7           endp
 
 data_13         dw      offset loc_5            ; Data table (indexed access)
+
+loc_00dc:
                 db       83h,0FBh, 01h, 72h, 04h,0B8h
                 db       11h, 88h,0CBh,0D1h,0E3h, 2Eh
                 db      0FFh,0A7h,0DAh, 00h
@@ -230,7 +217,8 @@ loc_5::
                 mov     cx,15h
                 xor     ax,ax
                 retf
-                                                ;* No entry point to code
+
+loc_00f5:
                 push    cx
                 push    si
                 push    di
@@ -268,7 +256,7 @@ loc_7::
                 xor     bx,bx
                 mov     di,3CEh
                 push    bp
-                mov     bp,30h
+                mov     bp,VLMID_NWP
                 push    bp
                 mov     bp,20h
                 push    bp
@@ -281,6 +269,8 @@ loc_7::
                 pop     bx
                 pop     ds
                 pop     ax
+
+loc_014c:
                 cmp     byte ptr cs:data_49e,0
                 je      loc_7
                 push    bp
@@ -370,7 +360,7 @@ loc_19::
                 jz      loc_13
                 push    bx
                 push    ds
-                mov     ax,30h
+                mov     ax,VLMID_NWP
                 push    ax
                 push    dx
                 push    word ptr [bp-2]
@@ -411,7 +401,7 @@ loc_24::
                 push    ax
                 mov     bx,0
                 push    bp
-                mov     bp,30h
+                mov     bp,VLMID_NWP
                 push    bp
                 mov     bp,31h
                 push    bp
@@ -422,7 +412,7 @@ loc_24::
                 jz      loc_25
                 mov     bx,0
                 push    bp
-                mov     bp,30h
+                mov     bp,VLMID_NWP
                 push    bp
                 mov     bp,32h
                 push    bp
@@ -436,7 +426,7 @@ loc_24::
 loc_25::
                 pop     ax
                 push    bp
-                mov     bp,30h
+                mov     bp,VLMID_NWP
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -458,7 +448,7 @@ loc_27::
                 pop     bx
                 mov     dl,6
                 push    bp
-                mov     bp,30h
+                mov     bp,VLMID_NWP
                 push    bp
                 mov     bp,20h
                 push    bp
@@ -474,7 +464,7 @@ loc_28::
                 or      dx,dx
                 jnz     loc_27
                 push    bp
-                mov     bp,30h
+                mov     bp,VLMID_NWP
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -492,6 +482,7 @@ data_18         dw      offset loc_46
 data_19         dw      offset loc_49
 data_20         dw      203h
 data_21         dw      offset loc_29
+loc_02fe:
                 db       83h,0FBh, 06h, 72h
 
 ;ÄÄÄÄÄ Indexed Entry Point ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
@@ -708,7 +699,7 @@ loc_50::
                 mov     di,450h
                 mov     bx,1
                 push    bp
-                mov     bp,30h
+                mov     bp,VLMID_NWP
                 push    bp
                 mov     bp,21h
                 push    bp
@@ -808,7 +799,7 @@ loc_56::
                 mov     bx,[bp+LOCAL_2]
                 mov     dx,[bp+LOCAL_3]
                 push    bp
-                mov     bp,30h
+                mov     bp,VLMID_NWP
                 push    bp
                 mov     bp,20h
                 push    bp
@@ -853,12 +844,12 @@ loc_60::
                 jmp     short loc_56
 sub_8           endp
 
-                                                ;* No entry point to code
+loc_05e9:
                 push    bx
                 push    dx
                 mov     bx,0Bh
                 push    bp
-                mov     bp,30h
+                mov     bp,VLMID_NWP
                 push    bp
                 mov     bp,42h
                 push    bp
@@ -870,7 +861,7 @@ sub_8           endp
                 xor     dx,dx
                 mov     bx,dx
                 push    bp
-                mov     bp,30h
+                mov     bp,VLMID_NWP
                 push    bp
                 mov     bp,20h
                 push    bp
@@ -881,7 +872,7 @@ sub_8           endp
                 jnz     loc_61
                 mov     bh,3
                 push    bp
-                mov     bp,30h
+                mov     bp,VLMID_NWP
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -1101,6 +1092,8 @@ sub_9           endp
 data_29         dw      offset loc_83           ; Data table (indexed access)
                 db      0FEh, 07h, 16h
                 db      8, '1', 8, '8', 8, 'V', 8, 'g', 8
+
+loc_07ea:
                 db      '<'
                 db       07h, 72h, 04h,0B8h, 11h, 88h
                 db      0CBh, 53h, 33h,0DBh, 8Ah,0D8h
@@ -1188,9 +1181,11 @@ loc_87::
 loc_88::
                 pop     bx
                 jmp     loc_62
+
+loc_086b:
                                                 ;* No entry point to code
                 push    bp
-                mov     bp,30h
+                mov     bp,VLMID_NWP
                 push    bp
                 mov     bp,31h
                 push    bp
@@ -1199,9 +1194,10 @@ loc_88::
                 call    dword ptr cs:data_40e
                 pop     bp
                 retf
-                                                ;* No entry point to code
+ 
+ loc_087f:
                 push    bp
-                mov     bp,30h
+                mov     bp,VLMID_NWP
                 push    bp
                 mov     bp,32h
                 push    bp
@@ -1211,8 +1207,9 @@ loc_88::
                 pop     bp
                 retf
                                                 ;* No entry point to code
+ loc_0893:
                 push    bp
-                mov     bp,30h
+                mov     bp,VLMID_NWP
                 push    bp
                 mov     bp,33h
                 push    bp
@@ -1232,7 +1229,8 @@ sub_10          proc    near
                 retn
 sub_10          endp
 
-                                                ;* No entry point to code
+
+loc_08b1:
                 mov     ax,seg_a
                 mov     ds,ax
                 mov     ds,ds:data_39e
@@ -1240,7 +1238,7 @@ sub_10          endp
                 mov     al,28h                  ; '('
                 mov     bx,0
                 push    bp
-                mov     bp,30h
+                mov     bp,VLMID_NWP
                 push    bp
                 mov     bp,1
                 push    bp
@@ -1252,7 +1250,7 @@ sub_10          endp
                 mov     al,10h
                 mov     bx,0
                 push    bp
-                mov     bp,30h
+                mov     bp,VLMID_NWP
                 push    bp
                 mov     bp,1
                 push    bp
@@ -1682,7 +1680,7 @@ sub_23          proc    near
                 push    bp
                 xor     bp,bp
                 push    bp
-                mov     bp,30h
+                mov     bp,VLMID_NWP
                 push    bp
                 mov     bp,7
                 push    bp
@@ -1714,7 +1712,7 @@ loc_108::
                 mov     bx,5
                 xor     ax,ax
                 push    ax
-                mov     ax,30h
+                mov     ax,VLMID_NWP
                 push    ax
                 mov     ax,0Ah
                 push    ax
@@ -2139,7 +2137,7 @@ loc_124::
                 mov     si,3D4h
                 xor     bx,bx
                 push    bp
-                mov     bp,30h
+                mov     bp,VLMID_NWP
                 push    bp
                 mov     bp,20h
                 push    bp

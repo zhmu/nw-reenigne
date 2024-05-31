@@ -1,8 +1,6 @@
 ; The following equates show data references outside the range of the program.
 
-data_1e         equ     156h
-data_15e        equ     220h                    ;*
-data_16e        equ     22Ah                    ;*
+include common.inc
 
 ;------------------------------------------------------------  seg_a   ----
 
@@ -11,32 +9,30 @@ seg_a           segment byte public
 
                 dw      0000h,    seg_b
                 dw      loc_0038, seg_a
-                dw      51h
-                dw      seg_a
-                db       54h, 00h
-                dw      seg_a
-                db       75h, 00h
-                dw      seg_a
-                db       75h, 00h
-                dw      seg_a
-                db       75h, 00h
-                dw      seg_a
-                db       75h, 00h
-                dw      seg_a
-                db       75h, 00h
-                dw      seg_a
-                db       75h, 00h
-                dw      seg_a
-                db       75h, 00h
-                dw      seg_a
-                db       00h, 00h, 00h, 00h, 4Eh, 56h
-                db       6Ch, 6Dh, 20h, 00h
+                dw      loc_0051, seg_a
+                dw      loc_0054, seg_a
+                dw      loc_0075, seg_a
+                dw      loc_0075, seg_a
+                dw      loc_0075, seg_a
+                dw      loc_0075, seg_a
+                dw      loc_0075, seg_a
+                dw      loc_0075, seg_a
+                dw      loc_0075, seg_a
+                dw      0, 0
+                db      "NVlm"
+                dw      VLMID_TRANS
 data_5          dw      offset loc_1            ; Data table (indexed access)
 
 loc_0038:
-                db       83h,0FBh, 01h, 72h, 04h,0B8h
-                db       11h, 88h,0CBh,0D1h,0E3h, 2Eh
-                db      0FFh,0A7h, 36h, 00h
+                cmp     bx,1
+                jc      loc_0041
+                mov     ax,STATUS_NONEXISTANT_FUNC_CALLED
+                retf
+
+loc_0041:
+                shl     bx,1
+                jmp     cs:[bx+offset data_5]
+
 
 ;ƒƒƒƒƒ Indexed Entry Point ƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒ
 
@@ -45,10 +41,12 @@ loc_1:
                 mov     cx,15h
                 xor     ax,ax
                 retf
-                                                ;* No entry point to code
+
+loc_0051:
                 xor     ax,ax
                 retf
-                                                ;* No entry point to code
+
+loc_0054:
                 push    cx
                 push    si
                 push    di
@@ -70,7 +68,8 @@ loc_2:
                 pop     cx
                 xor     ax,ax
                 retf
-                                                ;* No entry point to code
+
+loc_0075:
                 push    bp
                 mov     bp,sp
                 sub     sp,12h
@@ -124,7 +123,7 @@ loc_5:
                 mov     ds,[bp-0Ch]
                 jmp     short loc_3
 loc_6:
-                mov     bx,data_1e
+                mov     bx,offset data_10
                 mov     dx,[bx]
 loc_7:
                 push    bx
@@ -286,13 +285,13 @@ loc_10:
                 retf
 loc_11:
                 ja      loc_13
-                cmp     byte ptr ds:data_16e,0
+                cmp     byte ptr ds:data_23,0
                 jne     loc_12
                 mov     cx,20h
                 mov     bx,1
                 assume  ds:seg_a
                 mov     dx,es:data_10
-                call    dword ptr ds:data_15e
+                call    dword ptr ds:data_18
 loc_12:
                 xor     ax,ax
                 call    sub_1
@@ -304,7 +303,7 @@ loc_12:
                 retf
 loc_13:
                 call    sub_1
-                mov     si,seg_a+41h        ; 8F9Fh             ; TODO
+                mov     si,seg_a+41h
                 sub     si,seg_a
                 sub     si,cx
                 sub     si,dx
@@ -317,7 +316,7 @@ loc_13:
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
 sub_1           proc    near
-                mov     si,seg_a+41h            ; 8F9Fh                ; TODO
+                mov     si,seg_a+41h
                 sub     si,seg_b
                 mov     cx,seg seg_b
                 sub     cx,seg_b

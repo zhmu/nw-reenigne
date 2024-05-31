@@ -31,36 +31,23 @@ seg_a           segment byte public
 
                                                 ;* No entry point to code
                 dw      0h, seg_c
-                db      0D6h, 00h
-                dw      seg_a
-                db      0B0h, 0Ch
-                dw      seg_a
-                db       65h, 01h
-                dw      seg_a
-                db       65h, 07h
-                dw      seg_a
-                db      0D1h, 0Bh
-                dw      seg_a
-                db       18h, 08h
-                dw      seg_a
-                db      0FEh, 07h
-                dw      seg_a
-                db       64h, 03h
-                dw      seg_a
-                db       86h, 01h
-                dw      seg_a
-                db       8Dh, 08h
-                dw      seg_a
-                db      0E4h, 0Ah
-                dw      seg_a
-                db      0B3h, 0Ah
-                dw      seg_a
-                db       85h, 0Ch
-                dw      seg_a
-                db       1Ah, 03h
-                dw      seg_a
-                db       00h, 00h, 00h, 00h, 4Eh, 56h
-                db       6Ch, 6Dh, 42h, 00h
+                dw      offset loc_00d6, seg_a
+                dw      offset loc_0cb0, seg_a
+                dw      offset loc_0165, seg_a
+                dw      offset loc_0765, seg_a
+                dw      offset sub_15, seg_a
+                dw      offset loc_0818, seg_a
+                dw      offset loc_07fe, seg_a
+                dw      offset sub_8, seg_a
+                dw      offset sub_7, seg_a
+                dw      offset sub_9, seg_a
+                dw      offset sub_11, seg_a
+                dw      offset loc_0ab3, seg_a
+                dw      offset loc_0c85, seg_a
+                dw      offset loc_031a, seg_a
+                dw      0, 0
+                db      "NVlm"
+                dw      VLMID_PRINT
 
 ;ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 ;                              SUBROUTINE
@@ -69,7 +56,7 @@ seg_a           segment byte public
 sub_1           proc    near
                 mov     ax,17h
                 push    bp
-                mov     bp,42h
+                mov     bp,VLMID_PRINT
                 push    bp
                 mov     bp,20h
                 push    bp
@@ -87,7 +74,7 @@ sub_1           endp
 
 sub_2           proc    near
                 push    bp
-                mov     bp,42h
+                mov     bp,VLMID_PRINT
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -105,7 +92,7 @@ sub_2           endp
 
 sub_3           proc    near
                 push    bp
-                mov     bp,42h
+                mov     bp,VLMID_PRINT
                 push    bp
                 mov     bp,1
                 push    bp
@@ -123,7 +110,7 @@ sub_3           endp
 
 sub_4           proc    near
                 push    bp
-                mov     bp,42h
+                mov     bp,VLMID_PRINT
                 push    bp
                 mov     bp,1
                 push    bp
@@ -182,6 +169,8 @@ data_20         dw      offset loc_3
 data_21         dw      offset loc_3
 data_22         dw      offset loc_3
 data_23         dw      offset loc_8
+
+loc_00d6:
                 db       83h,0FBh, 0Ch, 72h, 04h
 
 ;ÄÄÄÄÄ Indexed Entry Point ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
@@ -278,7 +267,8 @@ loc_10::
                 pop     cx
                 pop     bx
                 retf
-                                                ;* No entry point to code
+
+loc_0165:
                 push    cx
                 push    si
                 push    di
@@ -485,13 +475,13 @@ loc_26::
                 jmp     loc_16
 sub_7           endp
 
-                                                ;* No entry point to code
+loc_031a:
                 push    cx
                 push    di
                 push    es
                 mov     cx,0FACEh
                 push    bp
-                mov     bp,42h
+                mov     bp,VLMID_PRINT
                 push    bp
                 mov     bp,1
                 push    bp
@@ -551,7 +541,7 @@ sub_8           proc    far
                 mov     al,2
                 mov     bx,2
                 push    bp
-                mov     bp,42h
+                mov     bp,VLMID_PRINT
                 push    bp
                 mov     bp,43h
                 push    bp
@@ -600,7 +590,7 @@ loc_35::
                 mov     cx,0Ah
                 mov     di,340h
                 push    bp
-                mov     bp,42h
+                mov     bp,VLMID_PRINT
                 push    bp
                 mov     bp,40h
                 push    bp
@@ -717,7 +707,7 @@ loc_45::
                 mov     dx,[bp-2]
                 mov     bx,3
                 push    bp
-                mov     bp,42h
+                mov     bp,VLMID_PRINT
                 push    bp
                 mov     bp,30h
                 push    bp
@@ -787,7 +777,7 @@ loc_53::
                 mov     cx,[bx+4]
                 push    bx
                 push    bp
-                mov     bp,42h
+                mov     bp,VLMID_PRINT
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -1004,7 +994,7 @@ loc_68::
                 jmp     loc_49
 sub_8           endp
 
-                                                ;* No entry point to code
+loc_0765:
                 push    bp
                 mov     bp,sp
                 push    ax
@@ -1093,7 +1083,8 @@ loc_78::
                 mov     [bp-4],cx
                 xor     ax,ax
                 jmp     short loc_70
-                                                ;* No entry point to code
+
+loc_07fe:
                 push    ds
                 mov     ax,seg_a
                 mov     ds,ax
@@ -1107,7 +1098,8 @@ loc_80::
                 xor     ax,ax
                 pop     ds
                 retf
-                                                ;* No entry point to code
+
+loc_0818:
                 call    sub_18
                 jz      loc_82
                 push    cx
@@ -1196,7 +1188,7 @@ sub_9           proc    far
                 xor     ch,ch
                 mov     bx,0
                 push    bp
-                mov     bp,42h
+                mov     bp,VLMID_PRINT
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -1412,7 +1404,7 @@ loc_99::
                 mov     bx,0
                 mov     si,67Bh
                 push    bp
-                mov     bp,42h
+                mov     bp,VLMID_PRINT
                 push    bp
                 mov     bp,20h
                 push    bp
@@ -1455,7 +1447,7 @@ loc_102::
                 retn
 sub_10          endp
 
-                                                ;* No entry point to code
+loc_0ab3:
                 push    bx
                 push    si
                 push    di
@@ -1577,7 +1569,7 @@ sub_12          proc    near
                 push    bx
                 xchg    bx,dx
                 push    bp
-                mov     bp,42h
+                mov     bp,VLMID_PRINT
                 push    bp
                 mov     bp,41h
                 push    bp
@@ -1695,7 +1687,7 @@ loc_112::
                 mov     es,cs:data_42
                 mov     di,340h
                 push    bp
-                mov     bp,42h
+                mov     bp,VLMID_PRINT
                 push    bp
                 mov     bp,40h
                 push    bp
@@ -1775,7 +1767,7 @@ sub_17          proc    near
                 jmp     short loc_115
 sub_17          endp
 
-                                                ;* No entry point to code
+loc_0c85:
                 push    di
                 push    es
                 mov     ax,seg_a
@@ -1796,6 +1788,8 @@ sub_17          endp
                 xor     ax,ax
                 retf
                 db      8 dup (0)
+
+loc_0cb0:
                 db       1Eh, 06h, 53h, 51h, 52h, 2Eh
                 db       8Eh, 1Eh,0E8h, 0Dh,0E3h, 5Bh
                 db      0B0h, 17h,0BBh, 00h, 00h, 55h
@@ -2086,7 +2080,7 @@ loc_128::
                 push    bp
                 mov     bp,0
                 push    bp
-                mov     bp,42h
+                mov     bp,VLMID_PRINT
                 push    bp
                 mov     bp,0Ah
                 push    bp
@@ -2284,7 +2278,7 @@ sub_26          proc    near
                 push    bp
                 mov     bp,0
                 push    bp
-                mov     bp,42h
+                mov     bp,VLMID_PRINT
                 push    bp
                 mov     bp,0Bh
                 push    bp

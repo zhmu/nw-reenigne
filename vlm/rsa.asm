@@ -44,15 +44,17 @@ include  common.inc
 seg_a           segment byte public
                 assume cs:seg_a  , ds:seg_a
 
-		dw	0h, seg_c
-		dw	20h, seg_a
-		dw	39h, seg_a
-		dw	3ch, seg_a
-		dw	5dh, seg_a
-		dw	0, 0
-
-                db       4Eh, 56h, 6Ch, 6Dh, 34h, 00h
+                dw	    0h, seg_c
+                dw      offset loc_0020, seg_a
+                dw      offset loc_0039, seg_a
+                dw      offset loc_003c, seg_a
+                dw      offset loc_005d, seg_a
+                dw      0, 0
+                db      "NVlm"
+                dw      VLMID_RSA
 data_40         dw      offset loc_1            ; Data table (indexed access)
+
+loc_0020:
                 db       83h,0FBh, 01h, 72h, 04h,0B8h
                 db       11h, 88h,0CBh,0D1h,0E3h, 2Eh
                 db      0FFh,0A7h, 1Eh, 00h
@@ -64,10 +66,12 @@ loc_1::
                 mov     cx,15h
                 xor     ax,ax
                 retf
-                                                ;* No entry point to code
+
+loc_0039:
                 xor     ax,ax
                 retf
-                                                ;* No entry point to code
+
+loc_003c:
                 push    cx
                 push    si
                 push    di
@@ -89,7 +93,8 @@ loc_2::
                 pop     cx
                 xor     ax,ax
                 retf
-                                                ;* No entry point to code
+
+loc_005d:
                 push    bp
                 mov     bp,sp
                 push    ax
@@ -103,7 +108,7 @@ loc_2::
                 push    ds
                 push    es
                 push    bp
-                mov     bp,34h
+                mov     bp,VLMID_RSA
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -116,7 +121,7 @@ loc_2::
 loc_3::
                 mov     bx,1
                 push    bp
-                mov     bp,34h
+                mov     bp,VLMID_RSA
                 push    bp
                 mov     bp,1
                 push    bp
@@ -134,7 +139,7 @@ loc_3::
                 mov     bx,2
                 mov     cx,408h
                 push    bp
-                mov     bp,34h
+                mov     bp,VLMID_RSA
                 push    bp
                 mov     bp,30h
                 push    bp
@@ -186,7 +191,7 @@ loc_3::
                 jnz     loc_5
                 mov     bh,3
                 push    bp
-                mov     bp,34h
+                mov     bp,VLMID_RSA
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -200,7 +205,7 @@ loc_4::
 loc_5::
                 mov     bx,2
                 push    bp
-                mov     bp,34h
+                mov     bp,VLMID_RSA
                 push    bp
                 mov     bp,1
                 push    bp
@@ -4983,7 +4988,7 @@ LOCAL_1         =       -2                      ; bp+0FFFEh
                 mov     bx,8
                 mov     ax,3Bh
                 push    bp
-                mov     bp,34h
+                mov     bp,VLMID_RSA
                 push    bp
                 mov     bp,32h
                 push    bp
@@ -5103,7 +5108,7 @@ loc_207::
                 mov     bx,8
                 mov     ax,3Ch
                 push    bp
-                mov     bp,34h
+                mov     bp,VLMID_RSA
                 push    bp
                 mov     bp,32h
                 push    bp

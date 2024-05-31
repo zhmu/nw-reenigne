@@ -86,27 +86,19 @@ seg_a           segment byte public
                 assume cs:seg_a  , ds:seg_a
 
                 dw      0, seg_c
-                dw      0274h, seg_a
-
-                dw      02e1h, seg_a
-                db       6Bh, 03h
-                dw      seg_a
-                db       8Ch, 03h
-                dw      seg_a
-                db       79h, 04h
-                dw      seg_a
-                db      2, 5
-                dw      seg_a
-                db      0F4h, 00h
-                dw      seg_a
-                db       14h, 01h
-                dw      seg_a
-                db       56h, 05h
-                dw      seg_a
-                db       0Dh, 05h
-                dw      seg_a
-                db       00h, 00h, 00h, 00h, 4Eh, 56h
-                db       6Ch, 6Dh, 40h, 00h
+                dw      offset loc_26, seg_a
+                dw      offset loc_02e1, seg_a
+                dw      offset loc_036b, seg_a
+                dw      offset loc_038c, seg_a
+                dw      offset loc_0479, seg_a
+                dw      offset loc_0502, seg_a
+                dw      offset loc_00f4, seg_a
+                dw      offset loc_0114, seg_a
+                dw      offset loc_0556, seg_a
+                dw      offset loc_050d, seg_a
+                dw      0, 0
+                db      "NVlm"
+                dw      VLMID_REDIR
 
 ;ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 ;                              SUBROUTINE
@@ -115,7 +107,7 @@ seg_a           segment byte public
 sub_2           proc    near
                 mov     bx,0
                 push    bp
-                mov     bp,40h
+                mov     bp,VLMID_REDIR
                 push    bp
                 mov     bp,1
                 push    bp
@@ -133,7 +125,7 @@ sub_2           endp
 
 sub_3           proc    near
                 push    bp
-                mov     bp,40h
+                mov     bp,VLMID_REDIR
                 push    bp
                 mov     bp,1
                 push    bp
@@ -151,7 +143,7 @@ sub_3           endp
 
 sub_4           proc    near
                 push    bp
-                mov     bp,40h
+                mov     bp,VLMID_REDIR
                 push    bp
                 mov     bp,43h
                 push    bp
@@ -171,7 +163,7 @@ sub_5           proc    near
 loc_4::
                 mov     bh,2
                 push    bp
-                mov     bp,40h
+                mov     bp,VLMID_REDIR
                 push    bp
                 mov     bp,20h
                 push    bp
@@ -189,7 +181,7 @@ sub_5           endp
 
 sub_6           proc    near
                 push    bp
-                mov     bp,40h
+                mov     bp,VLMID_REDIR
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -207,7 +199,7 @@ sub_6           endp
 
 sub_7           proc    near
                 push    bp
-                mov     bp,40h
+                mov     bp,VLMID_REDIR
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -226,7 +218,7 @@ sub_7           endp
 sub_8           proc    near
                 mov     bx,5
                 push    bp
-                mov     bp,40h
+                mov     bp,VLMID_REDIR
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -244,7 +236,7 @@ sub_8           endp
 
 sub_9           proc    near
                 push    bp
-                mov     bp,40h
+                mov     bp,VLMID_REDIR
                 push    bp
                 mov     bp,42h
                 push    bp
@@ -262,7 +254,7 @@ sub_9           endp
 
 sub_10          proc    near
                 push    bp
-                mov     bp,40h
+                mov     bp,VLMID_REDIR
                 push    bp
                 mov     bp,42h
                 push    bp
@@ -275,6 +267,8 @@ sub_10          endp
 
                                                 ;* No entry point to code
                 xchg    bx,bx
+
+loc_00f4:
                 mov     byte ptr ds:[68Ah],0
                 mov     ax,seg_a
                 mov     es,ax
@@ -288,6 +282,8 @@ data_80         dw      offset loc_16
 data_81         dw      offset loc_17
 data_82         dw      offset loc_20
 data_83         dw      offset loc_25
+
+loc_0114:
                 db       83h,0FBh, 07h, 72h, 04h,0B8h
                 db       11h, 88h,0CBh, 03h,0DBh, 2Eh
                 db      0FFh,0A7h, 06h, 01h
@@ -566,7 +562,8 @@ loc_32::
                 pop     ds
                 xor     ax,ax
                 retf
-                                                ;* No entry point to code
+
+loc_02e1:
                 push    bx
                 push    cx
                 push    dx
@@ -619,7 +616,7 @@ loc_36::
                 mov     al,es:[bx]
                 sub     al,41h                  ; 'A'
                 push    bp
-                mov     bp,40h
+                mov     bp,VLMID_REDIR
                 push    bp
                 mov     bp,43h
                 push    bp
@@ -642,7 +639,8 @@ loc_39::
                 pop     cx
                 pop     bx
                 retf
-                                                ;* No entry point to code
+
+loc_036b:
                 push    cx
                 push    si
                 push    di
@@ -664,7 +662,8 @@ loc_40::
                 pop     cx
                 xor     ax,ax
                 retf
-                                                ;* No entry point to code
+
+loc_038c:
                 push    dx
                 push    ds
                 push    si
@@ -784,7 +783,8 @@ loc_48::
                 call    sub_8
                 pop     ax
                 jmp     short loc_46
-                                                ;* No entry point to code
+
+loc_0479:
                 push    dx
                 push    ds
                 push    si
@@ -868,7 +868,7 @@ loc_52::
                 retn
 sub_11          endp
 
-                                                ;* No entry point to code
+loc_0502:
                 call    sub_38
                 mov     ax,0FFFFh
                 jc      loc_ret_53
@@ -876,7 +876,8 @@ sub_11          endp
 
 loc_ret_53::
                 retf
-                                                ;* No entry point to code
+
+loc_050d:
                 push    bx
                 push    dx
                 push    si
@@ -918,7 +919,8 @@ loc_55::
 loc_56::
                 mov     ax,8836h
                 jmp     short loc_54
-                                                ;* No entry point to code
+
+loc_0556:
                 push    bx
                 push    cx
                 push    dx
@@ -1234,7 +1236,7 @@ loc_80::
                 call    sub_6
                 jz      loc_82
                 push    bp
-                mov     bp,40h
+                mov     bp,VLMID_REDIR
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -1245,7 +1247,7 @@ loc_80::
                 pop     bp
                 jnz     loc_81
                 push    bp
-                mov     bp,40h
+                mov     bp,VLMID_REDIR
                 push    bp
                 mov     bp,30h
                 push    bp
@@ -1257,7 +1259,7 @@ loc_80::
                 or      al,al
                 jz      loc_82
                 push    bp
-                mov     bp,40h
+                mov     bp,VLMID_REDIR
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -1294,7 +1296,7 @@ loc_83::
                 pop     ds
                 mov     bx,1
                 push    bp
-                mov     bp,40h
+                mov     bp,VLMID_REDIR
                 push    bp
                 mov     bp,30h
                 push    bp
@@ -1337,7 +1339,7 @@ loc_89::
                 xor     dx,dx
                 mov     dl,0
                 push    bp
-                mov     bp,40h
+                mov     bp,VLMID_REDIR
                 push    bp
                 mov     bp,32h
                 push    bp
@@ -1376,7 +1378,7 @@ loc_90::
                 xor     dx,dx
                 mov     dl,1
                 push    bp
-                mov     bp,40h
+                mov     bp,VLMID_REDIR
                 push    bp
                 mov     bp,32h
                 push    bp
@@ -1430,7 +1432,7 @@ loc_95::
                 xor     dx,dx
                 mov     dl,0
                 push    bp
-                mov     bp,40h
+                mov     bp,VLMID_REDIR
                 push    bp
                 mov     bp,32h
                 push    bp
@@ -1553,7 +1555,7 @@ loc_100::
                 xor     dx,dx
                 mov     dl,1
                 push    bp
-                mov     bp,40h
+                mov     bp,VLMID_REDIR
                 push    bp
                 mov     bp,32h
                 push    bp
@@ -1721,7 +1723,7 @@ loc_111::
                 jc      loc_113
                 mov     bx,0
                 push    bp
-                mov     bp,40h
+                mov     bp,VLMID_REDIR
                 push    bp
                 mov     bp,42h
                 push    bp
@@ -1793,7 +1795,7 @@ loc_118::
                 retn
 loc_119::
                 push    bp
-                mov     bp,40h
+                mov     bp,VLMID_REDIR
                 push    bp
                 mov     bp,30h
                 push    bp
@@ -2245,7 +2247,7 @@ loc_141::
                 cmp     dx,0FCh
                 je      loc_142
                 push    bp
-                mov     bp,40h
+                mov     bp,VLMID_REDIR
                 push    bp
                 mov     bp,42h
                 push    bp
@@ -2285,7 +2287,7 @@ loc_144::
                 push    es
                 pop     ds
                 push    bp
-                mov     bp,40h
+                mov     bp,VLMID_REDIR
                 push    bp
                 mov     bp,41h
                 push    bp
@@ -2321,7 +2323,7 @@ loc_146::
                 push    es
                 pop     ds
                 push    bp
-                mov     bp,40h
+                mov     bp,VLMID_REDIR
                 push    bp
                 mov     bp,41h
                 push    bp
@@ -2348,7 +2350,7 @@ loc_ret_148::
                 mov     dx,es:[di+1Bh]
                 mov     si,es:[di+1Dh]
                 push    bp
-                mov     bp,40h
+                mov     bp,VLMID_REDIR
                 push    bp
                 mov     bp,41h
                 push    bp
@@ -3472,7 +3474,7 @@ loc_221::
                 mov     dx,[di+1Bh]
                 mov     si,[di+1Dh]
                 push    bp
-                mov     bp,40h
+                mov     bp,VLMID_REDIR
                 push    bp
                 mov     bp,41h
                 push    bp
@@ -4221,7 +4223,7 @@ sub_30          endp
                 mov     di,77Ah
                 mov     cx,8
                 push    bp
-                mov     bp,40h
+                mov     bp,VLMID_REDIR
                 push    bp
                 mov     bp,50h
                 push    bp
@@ -4244,7 +4246,7 @@ loc_287::
                 jne     loc_289
                 mov     bx,6
                 push    bp
-                mov     bp,40h
+                mov     bp,VLMID_REDIR
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -4261,7 +4263,7 @@ loc_287::
                 cmp     cx,0FFFFh
                 jne     loc_288
                 push    bp
-                mov     bp,40h
+                mov     bp,VLMID_REDIR
                 push    bp
                 mov     bp,30h
                 push    bp
@@ -4312,7 +4314,7 @@ loc_290::
                 push    ax
                 mov     bx,6
                 push    bp
-                mov     bp,40h
+                mov     bp,VLMID_REDIR
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -4331,7 +4333,7 @@ loc_290::
                 cmp     cx,0FFFFh
                 jne     loc_291
                 push    bp
-                mov     bp,40h
+                mov     bp,VLMID_REDIR
                 push    bp
                 mov     bp,30h
                 push    bp
@@ -4346,7 +4348,7 @@ loc_292::
                 xor     ax,ax
                 mov     bx,7
                 push    bp
-                mov     bp,40h
+                mov     bp,VLMID_REDIR
                 push    bp
                 mov     bp,10h
                 push    bp
@@ -4368,7 +4370,7 @@ loc_295::
                 retf
                                                 ;* No entry point to code
                 push    bp
-                mov     bp,40h
+                mov     bp,VLMID_REDIR
                 push    bp
                 mov     bp,41h
                 push    bp
@@ -5726,7 +5728,7 @@ loc_422::
                 stosw
                 mov     di,0A3Ch
                 push    bp
-                mov     bp,40h
+                mov     bp,VLMID_REDIR
                 push    bp
                 mov     bp,41h
                 push    bp
@@ -7078,7 +7080,7 @@ loc_506::
                 mov     ds:data_38e,ax
                 mov     bx,0
                 push    bp
-                mov     bp,40h
+                mov     bp,VLMID_REDIR
                 push    bp
                 mov     bp,43h
                 push    bp
