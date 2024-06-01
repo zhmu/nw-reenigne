@@ -37,13 +37,13 @@ seg_a           segment byte public
 
 sub_1           proc    near
                 push    bp
-                mov     bp,60h
+                mov     bp,VLMID_AUTO
                 push    bp
-                mov     bp,20h
+                mov     bp,VLMID_TRANS
                 push    bp
                 mov     bp,6
                 push    bp
-                call    dword ptr cs:data_35
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
 sub_1           endp
@@ -55,13 +55,13 @@ sub_1           endp
 
 sub_2           proc    near
                 push    bp
-                mov     bp,60h
+                mov     bp,VLMID_AUTO
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,8
                 push    bp
-                call    dword ptr cs:data_35
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
 sub_2           endp
@@ -73,13 +73,13 @@ sub_2           endp
 
 sub_3           proc    near
                 push    bp
-                mov     bp,60h
+                mov     bp,VLMID_AUTO
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,9
                 push    bp
-                call    dword ptr cs:data_35
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
 sub_3           endp
@@ -91,13 +91,13 @@ sub_3           endp
 
 sub_4           proc    near
                 push    bp
-                mov     bp,60h
+                mov     bp,VLMID_AUTO
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,0Dh
                 push    bp
-                call    dword ptr cs:data_35
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
 sub_4           endp
@@ -109,13 +109,13 @@ sub_4           endp
 
 sub_5           proc    near
                 push    bp
-                mov     bp,60h
+                mov     bp,VLMID_AUTO
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,7
                 push    bp
-                call    dword ptr cs:data_35
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
 sub_5           endp
@@ -127,13 +127,13 @@ sub_5           endp
 
 sub_6           proc    near
                 push    bp
-                mov     bp,60h
+                mov     bp,VLMID_AUTO
                 push    bp
-                mov     bp,42h
+                mov     bp,VLMID_PRINT
                 push    bp
                 mov     bp,4
                 push    bp
-                call    dword ptr cs:data_35
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
 sub_6           endp
@@ -171,13 +171,13 @@ loc_2::
                 mul     dx
                 mov     si,77h
                 push    bp
-                mov     bp,60h
+                mov     bp,VLMID_AUTO
                 push    bp
-                mov     bp,20h
+                mov     bp,VLMID_TRANS
                 push    bp
                 mov     bp,8
                 push    bp
-                call    dword ptr cs:data_35
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
 loc_3::
                 mov     byte ptr es:data_52,0
@@ -337,24 +337,24 @@ loc_13::
                 mov     bh,0Ch
                 call    sub_2
                 push    bp
-                mov     bp,60h
+                mov     bp,VLMID_AUTO
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,0Ch
                 push    bp
-                call    dword ptr cs:data_35
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 push    cx
                 mov     ax,1
                 push    bp
-                mov     bp,60h
+                mov     bp,VLMID_AUTO
                 push    bp
-                mov     bp,43h
+                mov     bp,VLMID_GENERAL
                 push    bp
                 mov     bp,4
                 push    bp
-                call    dword ptr cs:data_35
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 mov     ax,cx
                 pop     cx
@@ -365,13 +365,13 @@ loc_13::
                 xor     cx,cx
                 mov     ax,2
                 push    bp
-                mov     bp,60h
+                mov     bp,VLMID_AUTO
                 push    bp
-                mov     bp,43h
+                mov     bp,VLMID_GENERAL
                 push    bp
                 mov     bp,4
                 push    bp
-                call    dword ptr cs:data_35
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 pop     cx
 loc_14::
@@ -386,13 +386,13 @@ loc_14::
                 pop     ds
                 push    ax
                 push    bp
-                mov     bp,60h
+                mov     bp,VLMID_AUTO
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,0Bh
                 push    bp
-                call    dword ptr cs:data_35
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 pop     ax
 loc_15::
@@ -408,13 +408,13 @@ loc_16::
                 mov     dx,1
                 push    ax
                 push    bp
-                mov     bp,60h
+                mov     bp,VLMID_AUTO
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,0Ah
                 push    bp
-                call    dword ptr cs:data_35
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 pop     ax
                 jnz     loc_17
@@ -442,13 +442,13 @@ loc_19::
                 mov     si,0AFh
                 mov     byte ptr [si],0
                 push    bp
-                mov     bp,60h
+                mov     bp,VLMID_AUTO
                 push    bp
                 mov     bp,dx
                 push    bp
                 mov     bp,8
                 push    bp
-                call    dword ptr cs:data_35
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 pop     ds
                 jnz     loc_23
@@ -456,13 +456,13 @@ loc_19::
 loc_20::
                 mov     bx,0Bh
                 push    bp
-                mov     bp,60h
+                mov     bp,VLMID_AUTO
                 push    bp
                 mov     bp,dx
                 push    bp
                 mov     bp,0Ch
                 push    bp
-                call    dword ptr cs:data_35
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 jnz     loc_23
 loc_21::
@@ -471,13 +471,13 @@ loc_22::
                 call    sub_9
                 mov     bx,0Dh
                 push    bp
-                mov     bp,60h
+                mov     bp,VLMID_AUTO
+                push    bp
+                mov     bp,VLMID_EXE
                 push    bp
                 mov     bp,1
                 push    bp
-                mov     bp,1
-                push    bp
-                call    dword ptr cs:data_35
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 jmp     loc_16
 loc_23::
@@ -550,13 +550,13 @@ loc_26::
                 add     di,cs:data_42
                 inc     di
                 push    bp
-                mov     bp,60h
+                mov     bp,VLMID_AUTO
                 push    bp
-                mov     bp,31h
+                mov     bp,VLMID_BIND
                 push    bp
                 mov     bp,8
                 push    bp
-                call    dword ptr cs:data_35
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 push    ax
                 lahf
@@ -881,13 +881,13 @@ loc_49::
                 mov     ax,seg_a
                 mov     ds,ax
                 push    bp
-                mov     bp,60h
+                mov     bp,VLMID_AUTO
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,0Fh
                 push    bp
-                call    dword ptr cs:data_35
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 mov     data_45,cx
                 mov     data_46,dx
@@ -1046,13 +1046,13 @@ loc_53::
                 mov     al,5Ch                  ; '\'
                 xor     cx,cx
                 push    bp
-                mov     bp,60h
+                mov     bp,VLMID_AUTO
                 push    bp
-                mov     bp,40h
+                mov     bp,VLMID_REDIR
                 push    bp
                 mov     bp,6
                 push    bp
-                call    dword ptr cs:data_35
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 pushf
                 mov     dx,bx
@@ -1127,13 +1127,13 @@ sub_13          proc    near
                 mov     si,0AFh
                 mov     dl,8
                 push    bp
-                mov     bp,60h
+                mov     bp,VLMID_AUTO
                 push    bp
                 mov     bp,ax
                 push    bp
                 mov     bp,4
                 push    bp
-                call    dword ptr cs:data_35
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 pop     si
                 pop     ds
@@ -1157,13 +1157,13 @@ sub_14          proc    near
                 push    ax
                 mov     bx,0
                 push    bp
-                mov     bp,60h
+                mov     bp,VLMID_AUTO
                 push    bp
-                mov     bp,50h
+                mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,1
                 push    bp
-                call    dword ptr cs:data_35
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 pop     ax
                 jnz     loc_60
@@ -1255,7 +1255,7 @@ data_32         db      2
                 db      0
 data_33         db      0
 data_34         dw      seg_b
-data_35         dw      0, 0
+vlm_call_ptr    dw      0, 0
 data_37         dw      0
 data_38         dw      128 dup (0)
 data_39         db      0
@@ -1337,8 +1337,7 @@ data_53         dw      0
                 db      0, 0, 0, 0, 0, 0
                 dw      seg_b
                 db      38 dup (0)
-data_55         dw      0
-data_56         dw      0
+vlm_call_ptr2   dw      0, 0
 data_57         dw      0
 data_58         dw      0
 data_59         dw      0                       ; segment storage
@@ -1489,17 +1488,17 @@ loc_70::
                 mov     es,ax
                 push    bx
                 push    es
-                mov     ax,7A20h
+                mov     ax,7A20h                ; vlm: get call address
                 mov     bx,0
-                int     2Fh                     ; ??INT Non-standard interrupt
+                int     2Fh
                 mov     ax,es
                 mov     cx,seg seg_b
                 mov     es,cx
-                mov     es:data_55,bx
-                mov     es:data_56,ax
+                mov     word ptr es:vlm_call_ptr2,bx
+                mov     word ptr es:vlm_call_ptr2+2,ax
                 pop     es
-                mov     word ptr es:data_35,bx
-                mov     word ptr es:data_35+2,ax
+                mov     word ptr es:vlm_call_ptr,bx
+                mov     word ptr es:vlm_call_ptr+2,ax
                 mov     data_81,bx
                 mov     word ptr data_81+2,ax
                 push    bp

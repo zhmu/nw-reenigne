@@ -1988,11 +1988,11 @@ sub_20          proc    near
                 push    bp
                 mov     bp,0
                 push    bp
-                mov     bp,1
+                mov     bp,VLMID_EXE
                 push    bp
                 mov     bp,4
                 push    bp
-                call    dword ptr cs:data_94
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
 sub_20          endp
@@ -2084,7 +2084,7 @@ loc_128::
                 push    bp
                 mov     bp,0Ah
                 push    bp
-                call    dword ptr cs:data_94
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 jnz     loc_134
 loc_129::
@@ -2282,7 +2282,7 @@ sub_26          proc    near
                 push    bp
                 mov     bp,0Bh
                 push    bp
-                call    dword ptr cs:data_94
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 pop     bx
                 retn
@@ -2487,7 +2487,7 @@ data_89         db      0
 data_90         db      0
 data_91         db      0
 data_92         dw      0, 0
-data_94         dw      0, 0
+vlm_call_ptr    dw      0, 0
 data_96         dw      0, 0
 data_98         dw      0, 0
 data_100        dw      0, 0
@@ -2662,8 +2662,8 @@ loc_161::
                 mov     cx,es
                 mov     ax,seg_b
                 mov     es,ax
-                mov     word ptr es:data_94,bx
-                mov     word ptr es:data_94+2,cx
+                mov     word ptr es:vlm_call_ptr,bx
+                mov     word ptr es:vlm_call_ptr+2,cx
                 mov     ax,seg_a
                 mov     es,ax
                 push    bx

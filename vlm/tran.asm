@@ -88,18 +88,18 @@ loc_0075:
                 mov     [bp-2],ax
                 mov     bh,0Fh
                 push    bp
-                mov     bp,20h
+                mov     bp,VLMID_TRANS
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,7
                 push    bp
-                call    dword ptr cs:data_8
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 jnz     loc_3
                 or      dx,dx
                 jz      loc_6
-                mov     ax,20h
+                mov     ax,VLMID_TRANS
                 push    ax
                 push    dx
                 push    word ptr [bp-2]
@@ -108,7 +108,7 @@ loc_0075:
                 mov     cx,[bp-8]
                 mov     dx,[bp-0Ah]
                 mov     ds,[bp-0Ch]
-                call    dword ptr cs:data_8
+                call    dword ptr cs:vlm_call_ptr
 loc_3:
                 add     sp,12h
                 pop     bp
@@ -129,13 +129,13 @@ loc_7:
                 push    bx
                 mov     bh,0Fh
                 push    bp
-                mov     bp,20h
+                mov     bp,VLMID_TRANS
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,8
                 push    bp
-                call    dword ptr cs:data_8
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 pop     bx
                 jnz     loc_3
@@ -143,7 +143,7 @@ loc_7:
                 jz      loc_5
                 push    bx
                 push    ds
-                mov     ax,20h
+                mov     ax,VLMID_TRANS
                 push    ax
                 push    dx
                 push    word ptr [bp-2]
@@ -152,7 +152,7 @@ loc_7:
                 mov     cx,[bp-8]
                 mov     dx,[bp-0Ah]
                 mov     ds,[bp-0Ch]
-                call    dword ptr cs:data_8
+                call    dword ptr cs:vlm_call_ptr
                 or      al,al
                 jnz     loc_8
                 jmp     short loc_4
@@ -169,7 +169,7 @@ loc_8:
                 db      14 dup (0)
 data_7          db      2
                 db      0
-data_8          dw      0, 0
+vlm_call_ptr    dw      0, 0
 data_10         dw      21h, 22h, 0, 0
 data_12         db      0
                 db      0, 0, 0
@@ -208,10 +208,10 @@ loc_9:
                 mov     cx,es
                 mov     ax,seg_a
                 mov     es,ax
-                mov     word ptr es:data_8,bx
-                mov     word ptr es:data_8+2,cx
-                mov     data_20,bx
-                mov     data_21,cx
+                mov     word ptr es:vlm_call_ptr,bx
+                mov     word ptr es:vlm_call_ptr+2,cx
+                mov     word ptr vlm_call_ptr2,bx
+                mov     word ptr vlm_call_ptr2+2,cx
                 push    bx
                 push    ds
                 mov     ax,256h
@@ -434,8 +434,7 @@ copyright       db      'CoPyRiGhT=(C) Copyright 1993 - 1'
                 db      '  All Rights Reserved.'
                 db      8 dup (0)
 data_18         dw      0, 0
-data_20         dw      0
-data_21         dw      0
+vlm_call_ptr2   dw      0, 0
 data_22         dw      0
 data_23         db      0FFh
                 db      'DOSRQSTR.MSG', 0

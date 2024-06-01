@@ -3,10 +3,12 @@ callf           macro   loc
                 call    loc
 endm
 
+VLMID_EXE       equ     1h
 VLMID_CONN      equ     10h
 VLMID_TRANS     equ     20h
 VLMID_IPXNCP    equ     21h
 VLMID_NWP       equ     30h
+VLMID_BIND      equ     31h
 VLMID_NDS       equ     32h
 VLMID_PNW       equ     33h
 VLMID_RSA       equ     34h

@@ -22,7 +22,7 @@ data_36e        equ     0AE4h                   ;*
 data_37e        equ     0AE5h                   ;*
 data_38e        equ     0AE6h                   ;*
 data_39e        equ     0AF6h                   ;*
-data_40e        equ     0AF8h                   ;*
+vlm_call_ptr2        equ     0AF8h                   ;*
 data_42e        equ     0AFCh                   ;*
 data_43e        equ     0AFEh                   ;*
 data_44e        equ     0B00h                   ;*
@@ -90,7 +90,7 @@ sub_1           proc    near
                 push    bp
                 mov     bp,7
                 push    bp
-                call    dword ptr cs:data_40e
+                call    dword ptr cs:vlm_call_ptr2
                 pop     bp
                 retn
 sub_1           endp
@@ -108,7 +108,7 @@ sub_2           proc    near
                 push    bp
                 mov     bp,0Ah
                 push    bp
-                call    dword ptr cs:data_40e
+                call    dword ptr cs:vlm_call_ptr2
                 pop     bp
                 retn
 sub_2           endp
@@ -126,7 +126,7 @@ sub_3           proc    near
                 push    bp
                 mov     bp,6
                 push    bp
-                call    dword ptr cs:data_40e
+                call    dword ptr cs:vlm_call_ptr2
                 pop     bp
                 retn
 sub_3           endp
@@ -144,7 +144,7 @@ sub_4           proc    near
                 push    bp
                 mov     bp,9
                 push    bp
-                call    dword ptr cs:data_40e
+                call    dword ptr cs:vlm_call_ptr2
                 pop     bp
                 retn
 sub_4           endp
@@ -162,7 +162,7 @@ sub_5           proc    near
                 push    bp
                 mov     bp,8
                 push    bp
-                call    dword ptr cs:data_40e
+                call    dword ptr cs:vlm_call_ptr2
                 pop     bp
                 retn
 sub_5           endp
@@ -180,7 +180,7 @@ sub_6           proc    near
                 push    bp
                 mov     bp,1
                 push    bp
-                call    dword ptr cs:data_40e
+                call    dword ptr cs:vlm_call_ptr2
                 pop     bp
                 retn
 sub_6           endp
@@ -198,7 +198,7 @@ sub_7           proc    near
                 push    bp
                 mov     bp,4
                 push    bp
-                call    dword ptr cs:data_40e
+                call    dword ptr cs:vlm_call_ptr2
                 pop     bp
                 retn
 sub_7           endp
@@ -262,7 +262,7 @@ loc_7::
                 push    bp
                 mov     bp,0Ah
                 push    bp
-                call    dword ptr cs:data_40e
+                call    dword ptr cs:vlm_call_ptr2
                 pop     bp
                 pop     es
                 pop     di
@@ -310,7 +310,7 @@ loc_9::
                 mov     bx,[bp-6]
                 mov     dx,[bp-0Ah]
                 mov     ds,[bp-0Ch]
-                call    dword ptr cs:data_40e
+                call    dword ptr cs:vlm_call_ptr2
                 jz      loc_10
                 cmp     ax,8855h
                 jne     loc_11
@@ -368,7 +368,7 @@ loc_19::
                 mov     bx,[bp-6]
                 mov     dx,[bp-0Ah]
                 mov     ds,[bp-0Ch]
-                call    dword ptr cs:data_40e
+                call    dword ptr cs:vlm_call_ptr2
                 or      al,al
                 jnz     loc_20
                 jmp     short loc_12
@@ -407,7 +407,7 @@ loc_24::
                 push    bp
                 mov     bp,1
                 push    bp
-                call    dword ptr cs:data_40e
+                call    dword ptr cs:vlm_call_ptr2
                 pop     bp
                 jz      loc_25
                 mov     bx,0
@@ -418,7 +418,7 @@ loc_24::
                 push    bp
                 mov     bp,1
                 push    bp
-                call    dword ptr cs:data_40e
+                call    dword ptr cs:vlm_call_ptr2
                 pop     bp
                 jz      loc_25
                 pop     ax
@@ -432,7 +432,7 @@ loc_25::
                 push    bp
                 mov     bp,4
                 push    bp
-                call    dword ptr cs:data_40e
+                call    dword ptr cs:vlm_call_ptr2
                 pop     bp
                 jz      loc_26
                 jmp     loc_15
@@ -454,7 +454,7 @@ loc_27::
                 push    bp
                 mov     bp,4
                 push    bp
-                call    dword ptr cs:data_40e
+                call    dword ptr cs:vlm_call_ptr2
                 pop     bp
                 jz      loc_23
 loc_28::
@@ -470,7 +470,7 @@ loc_28::
                 push    bp
                 mov     bp,6
                 push    bp
-                call    dword ptr cs:data_40e
+                call    dword ptr cs:vlm_call_ptr2
                 pop     bp
                 mov     ax,8847h
                 jmp     loc_15
@@ -705,7 +705,7 @@ loc_50::
                 push    bp
                 mov     bp,0Ah
                 push    bp
-                call    dword ptr cs:data_40e
+                call    dword ptr cs:vlm_call_ptr2
                 pop     bp
                 jmp     short loc_52
 loc_51::
@@ -805,7 +805,7 @@ loc_56::
                 push    bp
                 mov     bp,6
                 push    bp
-                call    dword ptr cs:data_40e
+                call    dword ptr cs:vlm_call_ptr2
                 pop     bp
                 jnz     loc_59
                 jmp     short loc_56
@@ -855,7 +855,7 @@ loc_05e9:
                 push    bp
                 mov     bp,1
                 push    bp
-                call    dword ptr cs:data_40e
+                call    dword ptr cs:vlm_call_ptr2
                 pop     bp
                 mov     al,19h
                 xor     dx,dx
@@ -867,7 +867,7 @@ loc_05e9:
                 push    bp
                 mov     bp,6
                 push    bp
-                call    dword ptr cs:data_40e
+                call    dword ptr cs:vlm_call_ptr2
                 pop     bp
                 jnz     loc_61
                 mov     bh,3
@@ -878,7 +878,7 @@ loc_05e9:
                 push    bp
                 mov     bp,9
                 push    bp
-                call    dword ptr cs:data_40e
+                call    dword ptr cs:vlm_call_ptr2
                 pop     bp
                 mov     bx,5
                 call    sub_6
@@ -1191,7 +1191,7 @@ loc_086b:
                 push    bp
                 mov     bp,0Bh
                 push    bp
-                call    dword ptr cs:data_40e
+                call    dword ptr cs:vlm_call_ptr2
                 pop     bp
                 retf
  
@@ -1203,7 +1203,7 @@ loc_086b:
                 push    bp
                 mov     bp,0Ch
                 push    bp
-                call    dword ptr cs:data_40e
+                call    dword ptr cs:vlm_call_ptr2
                 pop     bp
                 retf
                                                 ;* No entry point to code
@@ -1215,7 +1215,7 @@ loc_086b:
                 push    bp
                 mov     bp,0Dh
                 push    bp
-                call    dword ptr cs:data_40e
+                call    dword ptr cs:vlm_call_ptr2
                 pop     bp
                 retf
                 db      0CBh
@@ -1244,7 +1244,7 @@ loc_08b1:
                 push    bp
                 mov     bp,4
                 push    bp
-                call    dword ptr cs:data_40e
+                call    dword ptr cs:vlm_call_ptr2
                 pop     bp
                 jnz     loc_89
                 mov     al,10h
@@ -1256,7 +1256,7 @@ loc_08b1:
                 push    bp
                 mov     bp,4
                 push    bp
-                call    dword ptr cs:data_40e
+                call    dword ptr cs:vlm_call_ptr2
                 pop     bp
                 jz      loc_91
 loc_89::
@@ -1684,7 +1684,7 @@ sub_23          proc    near
                 push    bp
                 mov     bp,7
                 push    bp
-                call    dword ptr data_74
+                call    dword ptr vlm_call_ptr
                 pop     bp
 loc_106::
                 jmp     short loc_111
@@ -1697,11 +1697,11 @@ loc_107::
                 mov     bh,12h
                 xor     ax,ax
                 push    ax
-                mov     ax,10h
+                mov     ax,VLMID_CONN
                 push    ax
                 mov     ax,7
                 push    ax
-                call    dword ptr data_74
+                call    dword ptr vlm_call_ptr
                 jnz     loc_110
                 or      dl,dl
                 jz      loc_110
@@ -1716,7 +1716,7 @@ loc_108::
                 push    ax
                 mov     ax,0Ah
                 push    ax
-                call    dword ptr data_74
+                call    dword ptr vlm_call_ptr
                 or      cx,cx
                 jnz     loc_111
 loc_109::
@@ -1724,11 +1724,11 @@ loc_109::
                 mov     bh,12h
                 xor     ax,ax
                 push    ax
-                mov     ax,10h
+                mov     ax,VLMID_CONN
                 push    ax
                 mov     ax,9
                 push    ax
-                call    dword ptr data_74
+                call    dword ptr vlm_call_ptr
 loc_110::
                 xor     cx,cx
                 mov     data_90,cx
@@ -1736,11 +1736,11 @@ loc_110::
                 mov     dl,1
                 xor     ax,ax
                 push    ax
-                mov     ax,10h
+                mov     ax,VLMID_CONN
                 push    ax
                 mov     ax,0Ah
                 push    ax
-                call    dword ptr data_74
+                call    dword ptr vlm_call_ptr
                 jnz     loc_111
                 mov     data_90,cx
 loc_111::
@@ -1865,7 +1865,7 @@ loc_118::
 sub_24          endp
 
                 db      0, 0, 0, 0, 0
-data_74         dw      0, 0
+vlm_call_ptr    dw      0, 0
 data_76         dw      0, 0
                 db      'S2S2S2S2S2S2S2S2S2S2S2S2S2S2S2S2'
                 db      'S2S2S2S2S2S2S2S2S2S2S2S2S2S2S2S2'
@@ -2004,12 +2004,12 @@ loc_119::
                 mov     cx,es
                 mov     ax,seg_c
                 mov     es,ax
-                mov     word ptr es:data_74,bx
-                mov     word ptr es:data_74+2,cx
+                mov     word ptr es:vlm_call_ptr,bx
+                mov     word ptr es:vlm_call_ptr+2,cx
                 mov     ax,seg_a
                 mov     es,ax
-                mov     es:data_40e,bx
-                mov     word ptr es:data_40e+2,cx
+                mov     word ptr es:vlm_call_ptr2,bx
+                mov     word ptr es:vlm_call_ptr2+2,cx
                 mov     data_129,bx
                 mov     word ptr data_129+2,cx
                 push    es

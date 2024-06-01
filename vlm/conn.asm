@@ -298,13 +298,13 @@ locloop_21::
 loc_22::
                 mov     dl,1
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
-                mov     bp,30h
+                mov     bp,VLMID_NWP
                 push    bp
                 mov     bp,5
                 push    bp
-                call    dword ptr cs:data_53
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 mov     es,cx
 loc_23::
@@ -365,13 +365,13 @@ sub_3           proc    far
                 callf   sub_17
                 mov     bx,3
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
+                push    bp
+                mov     bp,VLMID_EXE
                 push    bp
                 mov     bp,1
                 push    bp
-                mov     bp,1
-                push    bp
-                call    dword ptr cs:data_53
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 mov     dl,1
                 call    sub_26
@@ -466,13 +466,13 @@ loc_31::
 loc_32::
                 mov     bx,6
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
-                mov     bp,32h
+                mov     bp,VLMID_NDS
                 push    bp
                 mov     bp,0Ch
                 push    bp
-                call    dword ptr cs:data_53
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
 
 loc_ret_33::
@@ -1694,13 +1694,13 @@ loc_127::
                 pop     cx
                 mov     bx,2
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
+                push    bp
+                mov     bp,VLMID_EXE
                 push    bp
                 mov     bp,1
                 push    bp
-                mov     bp,1
-                push    bp
-                call    dword ptr cs:data_53
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 xor     ax,ax
 loc_128::
@@ -1722,7 +1722,7 @@ data_49         dw      0
 data_50         dw      0
 data_51         db      0
 data_52         dw      seg_b
-data_53         dw      0, 0
+vlm_call_ptr    dw      0, 0
 data_55         db      2
                 db       00h, 02h, 00h, 02h, 00h, 02h
                 db       00h, 10h, 02h, 00h, 20h, 03h
@@ -1800,10 +1800,10 @@ loc_129::
                 int     2Fh                     ; ??INT Non-standard interrupt
                 mov     cx,es
                 pop     es
-                mov     word ptr es:data_53,bx
-                mov     word ptr es:data_53+2,cx
-                mov     data_74,bx
-                mov     data_75,cx
+                mov     word ptr es:vlm_call_ptr,bx
+                mov     word ptr es:vlm_call_ptr+2,cx
+                mov     word ptr vlm_call_ptr2,bx
+                mov     word ptr vlm_call_ptr2+2,cx
                 push    bx
                 push    ds
                 mov     ax,292h
@@ -2042,8 +2042,7 @@ copyright       db      'CoPyRiGhT=(C) Copyright 1993 - 1'
                 db      '996 Novell, Inc.'
                 db      '  All Rights Reserved.'
                 db      0, 0, 0, 0, 0, 0
-data_74         dw      0
-data_75         dw      0
+vlm_call_ptr2   dw      0, 0
 data_76         dw      0, 0
 data_78         dw      0
                 db      'NETWARE DOS REQUESTER', 0

@@ -44,11 +44,11 @@ sub_2           proc    near
                 push    bp
                 mov     bp,VLMID_NMR
                 push    bp
-                mov     bp,1
+                mov     bp,VLMID_EXE
                 push    bp
                 mov     bp,4
                 push    bp
-                call    dword ptr cs:data_13
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
 sub_2           endp
@@ -860,7 +860,7 @@ data_8          db      2
 data_9          dw      seg_b
 data_10         db      0, 0
 data_11         dw      0, 0
-data_13         dw      0, 0
+vlm_call_ptr    dw      0, 0
                 db      256 dup (0)
 data_15         dw      0, 0
 data_17         dw      0, 0
@@ -908,11 +908,11 @@ sub_9           proc    near
                 push    bp
                 mov     bp,0
                 push    bp
-                mov     bp,1
+                mov     bp,VLMID_EXE
                 push    bp
                 mov     bp,4
                 push    bp
-                call    dword ptr cs:data_61
+                call    dword ptr cs:vlm_call_ptr2
                 pop     bp
                 retn
 sub_9           endp
@@ -1065,7 +1065,7 @@ sub_13          proc    near
                 mov     di,data_55
                 mov     bx,data_56
                 inc     data_51
-                call    dword ptr data_61
+                call    dword ptr vlm_call_ptr2
                 retn
 sub_13          endp
 
@@ -1238,7 +1238,7 @@ data_56         dw      0
 data_57         dw      0                       ; segment storage
 data_58         dw      seg_b
 data_59         dw      0, 0
-data_61         dw      0, 0
+vlm_call_ptr2   dw      0, 0
                 db      0, 0, 0, 0
 data_64         dw      0, 0
 data_66         dw      0, 0
@@ -1316,14 +1316,14 @@ loc_75::
                 int     2Fh                     ; ??INT Non-standard interrupt
                 mov     cx,es
                 pop     es
-                mov     word ptr es:data_13,bx
-                mov     word ptr es:data_13+2,cx
+                mov     word ptr es:vlm_call_ptr,bx
+                mov     word ptr es:vlm_call_ptr+2,cx
                 mov     data_99,bx
                 mov     data_100,cx
                 mov     ax,seg_b
                 mov     es,ax
-                mov     word ptr es:data_61,bx
-                mov     word ptr es:data_61+2,cx
+                mov     word ptr es:vlm_call_ptr2,bx
+                mov     word ptr es:vlm_call_ptr2+2,cx
                 mov     ax,seg_a
                 mov     es,ax
                 push    es

@@ -67,11 +67,11 @@ sub_1           proc    near
                 push    bp
                 mov     bp,VLMID_IPXNCP
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,0Ah
                 push    bp
-                call    dword ptr cs:data_45
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
 sub_1           endp
@@ -85,11 +85,11 @@ sub_2           proc    near
                 push    bp
                 mov     bp,VLMID_IPXNCP
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,7
                 push    bp
-                call    dword ptr cs:data_45
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
 sub_2           endp
@@ -103,11 +103,11 @@ sub_3           proc    near
                 push    bp
                 mov     bp,VLMID_IPXNCP
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,8
                 push    bp
-                call    dword ptr cs:data_45
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
 sub_3           endp
@@ -121,11 +121,11 @@ sub_4           proc    near
                 push    bp
                 mov     bp,VLMID_IPXNCP
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,9
                 push    bp
-                call    dword ptr cs:data_45
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
 sub_4           endp
@@ -139,11 +139,11 @@ sub_5           proc    near
                 push    bp
                 mov     bp,VLMID_IPXNCP
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,6
                 push    bp
-                call    dword ptr cs:data_45
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
 sub_5           endp
@@ -157,11 +157,11 @@ sub_6           proc    near
                 push    bp
                 mov     bp,VLMID_IPXNCP
                 push    bp
-                mov     bp,1
+                mov     bp,VLMID_EXE
                 push    bp
                 mov     bp,4
                 push    bp
-                call    dword ptr cs:data_45
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
 sub_6           endp
@@ -175,11 +175,11 @@ sub_7           proc    near
                 push    bp
                 mov     bp,VLMID_IPXNCP
                 push    bp
-                mov     bp,61h
+                mov     bp,VLMID_SECURITY
                 push    bp
                 mov     bp,4
                 push    bp
-                call    dword ptr cs:data_45
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
 sub_7           endp
@@ -193,11 +193,11 @@ sub_8           proc    near
                 push    bp
                 mov     bp,VLMID_IPXNCP
                 push    bp
-                mov     bp,30h
+                mov     bp,VLMID_NWP
                 push    bp
                 mov     bp,10h
                 push    bp
-                call    dword ptr cs:data_45
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
 sub_8           endp
@@ -267,11 +267,11 @@ sub_9           proc    near
                 push    bp
                 mov     bp,VLMID_IPXNCP
                 push    bp
-                mov     bp,1
+                mov     bp,VLMID_EXE
                 push    bp
                 mov     bp,4
                 push    bp
-                call    dword ptr cs:data_45
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
 sub_9           endp
@@ -457,11 +457,11 @@ loc_18::
                 push    bp
                 mov     bp,VLMID_IPXNCP
                 push    bp
-                mov     bp,32h
+                mov     bp,VLMID_NDS
                 push    bp
                 mov     bp,0Fh
                 push    bp
-                call    dword ptr cs:data_45
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
 loc_19::
                 mov     es:data_120,300h
@@ -539,11 +539,11 @@ loc_27::
                 push    bp
                 mov     bp,VLMID_IPXNCP
                 push    bp
-                mov     bp,30h
+                mov     bp,VLMID_NWP
                 push    bp
                 mov     bp,6
                 push    bp
-                call    dword ptr cs:data_45
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 pushf
                 mov     ds,cx
@@ -552,11 +552,11 @@ loc_27::
                 push    bp
                 mov     bp,VLMID_IPXNCP
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,4
                 push    bp
-                call    dword ptr cs:data_45
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 mov     ds,cx
                 mov     di,[bp-8]
@@ -1035,11 +1035,11 @@ loc_67::
                 push    bp
                 mov     bp,VLMID_IPXNCP
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,10h
                 push    bp
-                call    dword ptr cs:data_45
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 mov     es:data_146,bl
 loc_68::
@@ -1075,11 +1075,11 @@ loc_71::
                 push    bp
                 mov     bp,VLMID_IPXNCP
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,10h
                 push    bp
-                call    dword ptr cs:data_45
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
 loc_72::
                 mov     bx,8
@@ -1176,11 +1176,11 @@ loc_84::
                 push    bp
                 mov     bp,VLMID_IPXNCP
                 push    bp
-                mov     bp,60h
+                mov     bp,VLMID_AUTO
                 push    bp
                 mov     bp,4
                 push    bp
-                call    dword ptr cs:data_45
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 jnz     loc_86
                 jmp     loc_117
@@ -1293,11 +1293,11 @@ loc_100::
                 push    bp
                 mov     bp,VLMID_IPXNCP
                 push    bp
-                mov     bp,1
+                mov     bp,VLMID_EXE
                 push    bp
                 mov     bp,1
                 push    bp
-                call    dword ptr cs:data_45
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 call    sub_5
                 mov     es:data_131,0
@@ -1605,21 +1605,21 @@ loc_124::
                 push    bp
                 mov     bp,VLMID_IPXNCP
                 push    bp
-                mov     bp,30h
+                mov     bp,VLMID_NWP
                 push    bp
                 mov     bp,7
                 push    bp
-                call    dword ptr cs:data_45
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 mov     bh,5
                 push    bp
                 mov     bp,VLMID_IPXNCP
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,9
                 push    bp
-                call    dword ptr cs:data_45
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 mov     bx,500h
                 mov     dl,1
@@ -2461,11 +2461,11 @@ sub_23          proc    near
                 push    bp
                 mov     bp,VLMID_IPXNCP
                 push    bp
-                mov     bp,1
+                mov     bp,VLMID_EXE
                 push    bp
                 mov     bp,4
                 push    bp
-                call    dword ptr cs:data_45
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 assume  ds:seg_b
                 and     byte ptr data_179,0FDh
@@ -2537,11 +2537,11 @@ loc_203::
                 push    bp
                 mov     bp,VLMID_IPXNCP
                 push    bp
-                mov     bp,1
+                mov     bp,VLMID_EXE
                 push    bp
                 mov     bp,4
                 push    bp
-                call    dword ptr cs:data_45
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 mov     dx,ax
                 sub     bx,bx
@@ -2562,11 +2562,11 @@ loc_205::
                 push    bp
                 mov     bp,VLMID_IPXNCP
                 push    bp
-                mov     bp,1
+                mov     bp,VLMID_EXE
                 push    bp
                 mov     bp,4
                 push    bp
-                call    dword ptr cs:data_45
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 mov     bx,1
                 retn
@@ -2574,7 +2574,7 @@ sub_24          endp
 
                 db      11 dup (0)
 data_44         dw      seg_b
-data_45         dw      0, 0
+vlm_call_ptr    dw      0, 0
 data_47         dw      0, 0
 data_49         db      0FFh
                 db      0
@@ -2706,7 +2706,7 @@ sub_27          proc    near
                 push    ax
                 mov     ax,10h
                 push    ax
-                call    dword ptr cs:data_108
+                call    dword ptr cs:vlm_call_ptr2
                 retn
 sub_27          endp
 
@@ -3128,7 +3128,7 @@ sub_29          endp
 data_104        dw      0, 0
 data_106        dd      00000h
 data_107        dw      0, 0
-data_108        dw      0, 0
+vlm_call_ptr2        dw      0, 0
 data_110        dw      0, 0
 data_111        dw      0
 data_112        db      0
@@ -3367,15 +3367,15 @@ loc_242::
                 mov     ax,es
                 mov     cx,seg seg_a
                 mov     es,cx
-                mov     word ptr es:data_45,bx
-                mov     word ptr es:data_45+2,ax
+                mov     word ptr es:vlm_call_ptr,bx
+                mov     word ptr es:vlm_call_ptr+2,ax
                 mov     data_201,bx
                 mov     data_202,ax
                 push    es
                 mov     cx,seg seg_b
                 mov     es,cx
-                mov     word ptr es:data_108,bx
-                mov     word ptr es:data_108+2,ax
+                mov     word ptr es:vlm_call_ptr2,bx
+                mov     word ptr es:vlm_call_ptr2+2,ax
                 mov     ax,7A20h
                 mov     bx,5
                 int     2Fh                     ; ??INT Non-standard interrupt

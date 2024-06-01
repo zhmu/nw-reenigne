@@ -1,47 +1,28 @@
-callf           macro   loc
-                ; push    cs
-                call    loc
-endm
-
-;------------------------------------------------------------  seg_a   ----
+include common.inc
 
 seg_a           segment byte public
                 assume cs:seg_a  , ds:seg_a
 
-data_1          dw      0
-                dw      seg_c
-                db      0D8h, 00h
-                dw      seg_a
-                db      0F1h, 00h
-                dw      seg_a
-                db       2Ah, 01h
-                dw      seg_a                   ; data_4 is halfway in here??
-                db       4Bh, 01h
-                dw      seg_a
-                db      0D9h, 03h
-                dw      seg_a
-                db      0FDh, 03h
-                dw      seg_a
-                db      0D3h, 0Ah
-                dw      seg_a                   ; data_5 is halfway in here??
-                db      5, 5
-                dw      seg_a
-                db      0D3h, 0Ah
-                dw      seg_a
-                db      0D3h, 0Ah
-                dw      seg_a
-                db      0D3h, 0Ah
-                dw      seg_a
-                db      0D3h, 0Ah
-                dw      seg_a
-                db      0D3h, 0Ah
-                dw      seg_a
-                db      0D3h, 0Ah
-                dw      seg_a
-                db      0CEh, 07h
-                dw      seg_a
-                db       00h, 00h, 00h, 00h, 4Eh, 56h
-                db       6Ch, 6Dh, 31h, 00h
+data_1          dw      0, seg_c
+                dw      offset loc_00d8, seg_a
+                dw      offset loc_00f1, seg_a
+                dw      offset loc_012a, seg_a
+                dw      offset loc_014b, seg_a
+                dw      offset sub_11, seg_a
+                dw      offset sub_12, seg_a
+                dw      offset loc_0ad3, seg_a
+                dw      offset loc_0505, seg_a
+                dw      offset loc_0ad3, seg_a
+                dw      offset loc_0ad3, seg_a
+                dw      offset loc_0ad3, seg_a
+                dw      offset loc_0ad3, seg_a
+                dw      offset loc_0ad3, seg_a
+                dw      offset loc_0ad3, seg_a
+                dw      offset loc_07ce, seg_a
+                dw      0, 0
+                db      "NVlm"
+                dw      VLMID_BIND
+
 
 ;ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 ;                              SUBROUTINE
@@ -49,13 +30,13 @@ data_1          dw      0
 
 sub_1           proc    near
                 push    bp
-                mov     bp,31h
+                mov     bp,VLMID_BIND
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,0Ah
                 push    bp
-                call    dword ptr cs:data_35
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
 sub_1           endp
@@ -67,13 +48,13 @@ sub_1           endp
 
 sub_2           proc    near
                 push    bp
-                mov     bp,31h
+                mov     bp,VLMID_BIND
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,7
                 push    bp
-                call    dword ptr cs:data_35
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
 sub_2           endp
@@ -85,13 +66,13 @@ sub_2           endp
 
 sub_3           proc    near
                 push    bp
-                mov     bp,31h
+                mov     bp,VLMID_BIND
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,8
                 push    bp
-                call    dword ptr cs:data_35
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
 sub_3           endp
@@ -103,13 +84,13 @@ sub_3           endp
 
 sub_4           proc    near
                 push    bp
-                mov     bp,31h
+                mov     bp,VLMID_BIND
                 push    bp
-                mov     bp,20h
+                mov     bp,VLMID_TRANS
                 push    bp
                 mov     bp,6
                 push    bp
-                call    dword ptr cs:data_35
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
 sub_4           endp
@@ -121,13 +102,13 @@ sub_4           endp
 
 sub_5           proc    near
                 push    bp
-                mov     bp,31h
+                mov     bp,VLMID_BIND
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,0Eh
                 push    bp
-                call    dword ptr cs:data_35
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
 sub_5           endp
@@ -139,13 +120,13 @@ sub_5           endp
 
 sub_6           proc    near
                 push    bp
-                mov     bp,31h
+                mov     bp,VLMID_BIND
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,6
                 push    bp
-                call    dword ptr cs:data_35
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
 sub_6           endp
@@ -157,19 +138,20 @@ sub_6           endp
 
 sub_7           proc    near
                 push    bp
-                mov     bp,31h
+                mov     bp,VLMID_BIND
                 push    bp
-                mov     bp,30h
+                mov     bp,VLMID_NWP
                 push    bp
                 mov     bp,10h
                 push    bp
-                call    dword ptr cs:data_35
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
 sub_7           endp
 
                 db      0E8h, 00h
-data_6          db      83h                     ; Data table (indexed access)
+loc_00d8:
+                db      83h                     ; Data table (indexed access)
                 db      0FBh, 01h, 72h, 04h,0B8h, 11h
                 db       88h,0CBh,0D1h,0E3h, 2Eh,0FFh
                 db      0A7h,0D6h, 00h
@@ -181,7 +163,7 @@ loc_1::
                 mov     cx,15h
                 xor     ax,ax
                 retf
-                                                ;* No entry point to code
+loc_00f1:
                 xor     ax,ax
                 or      cx,cx
                 jnz     loc_ret_4
@@ -212,6 +194,8 @@ loc_3::
 
 loc_ret_4::
                 retf
+
+loc_012a:
                 db       51h, 56h, 57h, 1Eh
 data_7          db      0B8h
                 dw      seg_a
@@ -232,7 +216,8 @@ loc_5::
                 pop     cx
                 xor     ax,ax
                 retf
-                                                ;* No entry point to code
+
+loc_014b:
                 push    bp
                 mov     bp,sp
                 sub     sp,4
@@ -265,13 +250,13 @@ loc_8::
                 mov     bx,1
                 push    cx
                 push    bp
-                mov     bp,31h
+                mov     bp,VLMID_BIND
                 push    bp
-                mov     bp,43h
+                mov     bp,VLMID_GENERAL
                 push    bp
                 mov     bp,6
                 push    bp
-                call    dword ptr cs:data_35
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 pop     ax
                 jnz     loc_10
@@ -325,13 +310,13 @@ loc_12::
 loc_13::
                 mov     word ptr [bp-4],0
                 push    bp
-                mov     bp,31h
+                mov     bp,VLMID_BIND
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,4
                 push    bp
-                call    dword ptr cs:data_35
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 jnz     loc_14
                 mov     [bp-2],cx
@@ -343,13 +328,13 @@ loc_13::
                 call    sub_3
                 pop     dx
                 push    bp
-                mov     bp,31h
+                mov     bp,VLMID_BIND
                 push    bp
-                mov     bp,20h
+                mov     bp,VLMID_TRANS
                 push    bp
                 mov     bp,4
                 push    bp
-                call    dword ptr cs:data_35
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 jz      loc_16
                 or      al,al
@@ -492,13 +477,13 @@ sub_10          proc    far
 loc_22::
                 jcxz    loc_23
                 push    bp
-                mov     bp,31h
+                mov     bp,VLMID_BIND
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,5
                 push    bp
-                call    dword ptr cs:data_35
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 jz      loc_24
                 jmp     loc_25
@@ -620,13 +605,13 @@ sub_12          proc    far
                 push    ds
                 push    es
                 push    bp
-                mov     bp,31h
+                mov     bp,VLMID_BIND
                 push    bp
-                mov     bp,20h
+                mov     bp,VLMID_TRANS
                 push    bp
                 mov     bp,5
                 push    bp
-                call    dword ptr cs:data_35
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 jnz     loc_29
                 mov     bh,10h
@@ -690,34 +675,34 @@ loc_30::
                 mov     si,50h
                 mov     byte ptr [si+30h],0
                 push    bp
-                mov     bp,31h
+                mov     bp,VLMID_BIND
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,0Bh
                 push    bp
-                call    dword ptr cs:data_35
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 jnz     loc_29
                 push    bp
-                mov     bp,31h
+                mov     bp,VLMID_BIND
                 push    bp
-                mov     bp,30h
+                mov     bp,VLMID_NWP
                 push    bp
                 mov     bp,7
                 push    bp
-                call    dword ptr cs:data_35
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 jnz     loc_31
                 mov     bx,2
                 push    bp
-                mov     bp,31h
+                mov     bp,VLMID_BIND
+                push    bp
+                mov     bp,VLMID_EXE
                 push    bp
                 mov     bp,1
                 push    bp
-                mov     bp,1
-                push    bp
-                call    dword ptr cs:data_35
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 jmp     loc_29
 loc_31::
@@ -742,6 +727,7 @@ sub_13          endp
 data_26         dw      8 dup (0)
 data_27         db      0
                 db      7 dup (0)
+loc_0505:
                 db       55h, 8Bh,0ECh
                 db      'PQRSTUVW'
                 db       1Eh, 06h, 2Eh,0F6h, 06h,0E8h
@@ -1054,6 +1040,8 @@ data_28         dw      offset loc_49           ; Data table (indexed access)
 data_29         dw      offset loc_50
 data_30         dw      offset loc_55
 data_31         dw      offset loc_22
+
+loc_07ce:
                 db       83h,0FBh, 04h, 72h, 04h,0B8h
                 db       11h, 88h,0CBh, 55h, 8Bh,0ECh
                 db      'PQRSTUVW'
@@ -1148,13 +1136,13 @@ loc_57::
                 jmp     loc_47
 loc_58::
                 push    bp
-                mov     bp,31h
+                mov     bp,VLMID_BIND
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,4
                 push    bp
-                call    dword ptr cs:data_35
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 jnz     loc_57
                 mov     dx,31h
@@ -1162,13 +1150,13 @@ loc_58::
                 call    sub_3
                 mov     dl,4
                 push    bp
-                mov     bp,31h
+                mov     bp,VLMID_BIND
                 push    bp
-                mov     bp,30h
+                mov     bp,VLMID_NWP
                 push    bp
                 mov     bp,4
                 push    bp
-                call    dword ptr cs:data_35
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 jz      loc_59
                 or      al,al
@@ -1508,12 +1496,13 @@ loc_86::
                 retn
 sub_21          endp
 
+loc_0ad3:
                 db      0B8h, 11h, 88h,0CBh
                 db      9 dup (0)
 data_33         db      2
                 db      0
 data_34         dw      seg_b
-data_35         dw      0, 0
+vlm_call_ptr    dw      0, 0
                 db      0
 data_37         db      7                       ; Data table (indexed access)
                 db       08h, 00h, 08h, 06h, 04h, 0Eh
@@ -1705,10 +1694,10 @@ loc_88::
                 mov     cx,es
                 mov     ax,seg_a
                 mov     es,ax
-                mov     word ptr es:data_35,bx
-                mov     word ptr es:data_35+2,cx
-                mov     data_70,bx
-                mov     data_71,cx
+                mov     word ptr es:vlm_call_ptr,bx
+                mov     word ptr es:vlm_call_ptr+2,cx
+                mov     word ptr vlm_call_ptr2,bx
+                mov     word ptr vlm_call_ptr2+2,cx
                 pop     bx
                 mov     data_72,bx
                 or      bx,bx
@@ -1848,8 +1837,7 @@ copyright       db      'CoPyRiGhT=(C) Copyright 1993 - 1'
                 db      '  All Rights Reserved.'
                 db      14 dup (0)
 data_68         dw      0, 0
-data_70         dw      0
-data_71         dw      0
+vlm_call_ptr2   dw      0, 0
 data_72         dw      0
 data_73         dw      0, 0
                 db      'PREFERRED SERVER'

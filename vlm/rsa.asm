@@ -1,6 +1,5 @@
 ; The following equates show data references outside the range of the program.
 
-data_1e         equ     0Ch
 data_2e         equ     210h
 data_3e         equ     214h
 data_4e         equ     216h
@@ -110,11 +109,11 @@ loc_005d:
                 push    bp
                 mov     bp,VLMID_RSA
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,5
                 push    bp
-                call    dword ptr cs:data_48
+                call    dword ptr cs:vlm_call_ptr2
                 pop     bp
                 jz      loc_3
                 jmp     loc_6
@@ -123,11 +122,11 @@ loc_3::
                 push    bp
                 mov     bp,VLMID_RSA
                 push    bp
-                mov     bp,1
+                mov     bp,VLMID_EXE
                 push    bp
                 mov     bp,4
                 push    bp
-                call    dword ptr cs:data_48
+                call    dword ptr cs:vlm_call_ptr2
                 pop     bp
                 mov     ax,seg_a
                 mov     ds,ax
@@ -141,11 +140,11 @@ loc_3::
                 push    bp
                 mov     bp,VLMID_RSA
                 push    bp
-                mov     bp,30h
+                mov     bp,VLMID_NWP
                 push    bp
                 mov     bp,0Ch
                 push    bp
-                call    dword ptr cs:data_48
+                call    dword ptr cs:vlm_call_ptr2
                 pop     bp
                 pop     si
                 jnz     loc_5
@@ -193,11 +192,11 @@ loc_3::
                 push    bp
                 mov     bp,VLMID_RSA
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,8
                 push    bp
-                call    dword ptr cs:data_48
+                call    dword ptr cs:vlm_call_ptr2
                 pop     bp
                 jmp     short loc_5
 loc_4::
@@ -207,11 +206,11 @@ loc_5::
                 push    bp
                 mov     bp,VLMID_RSA
                 push    bp
-                mov     bp,1
+                mov     bp,VLMID_EXE
                 push    bp
                 mov     bp,4
                 push    bp
-                call    dword ptr cs:data_48
+                call    dword ptr cs:vlm_call_ptr2
                 pop     bp
 loc_6::
                 mov     [bp-2],ax
@@ -4990,11 +4989,11 @@ LOCAL_1         =       -2                      ; bp+0FFFEh
                 push    bp
                 mov     bp,VLMID_RSA
                 push    bp
-                mov     bp,32h
+                mov     bp,VLMID_NDS
                 push    bp
-                mov     bp,offset data_79
+                mov     bp,0ch
                 push    bp
-                call    dword ptr cs:data_48
+                call    dword ptr cs:vlm_call_ptr2
                 pop     bp
                 pop     ds
                 or      ax,ax
@@ -5110,11 +5109,11 @@ loc_207::
                 push    bp
                 mov     bp,VLMID_RSA
                 push    bp
-                mov     bp,32h
+                mov     bp,VLMID_NDS
                 push    bp
-                mov     bp,data_1e
+                mov     bp,0ch
                 push    bp
-                call    dword ptr cs:data_48
+                call    dword ptr cs:vlm_call_ptr2
                 pop     bp
                 pop     ds
 loc_208::
@@ -6004,7 +6003,7 @@ sub_60          endp
 data_46         db      2
                 db      0
 data_47         dw      seg_b
-data_48         dw      0, 0
+vlm_call_ptr2   dw      0, 0
 data_50         dw      8, seg_b
 data_51         dw      0                       ; segment storage
 data_52         dw      0
@@ -6095,10 +6094,9 @@ seg_b           segment byte public
                 assume cs:seg_b  , ds:seg_b
 
                 db      0, 0, 0, 0
-data_77         dw      0
-data_78         dw      0
+vlm_call_ptr    dw      0, 0
                 db      0, 0, 0, 0
-data_79         db      0
+                db      0
                 db      2051 dup (0)
                 db      'JWJWJWJWJWJWJWJWJWJWJWJWJWJWJWJW'
                 db      'JWJWJWJWJWJWJWJWJWJWJWJWJWJWJWJW'
@@ -6280,11 +6278,11 @@ loc_265::
                 mov     ax,es
                 mov     cx,seg seg_b
                 mov     es,cx
-                mov     es:data_77,bx
-                mov     es:data_78,ax
+                mov     word ptr es:vlm_call_ptr,bx
+                mov     word ptr es:vlm_call_ptr+2,ax
                 pop     es
-                mov     word ptr es:data_48,bx
-                mov     word ptr es:data_48+2,ax
+                mov     word ptr es:vlm_call_ptr2,bx
+                mov     word ptr es:vlm_call_ptr2+2,ax
                 mov     ds:data_3e,bx
                 mov     ds:data_4e,ax
                 pop     bx

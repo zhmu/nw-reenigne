@@ -74,11 +74,11 @@ loc_6::
                 push    bp
                 mov     bp,VLMID_SECURITY
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,0Fh
                 push    bp
-                call    dword ptr cs:data_22
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 mov     data_26,cx
                 mov     data_25,dx
@@ -162,22 +162,22 @@ loc_8::
                 push    bp
                 mov     bp,VLMID_SECURITY
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,7
                 push    bp
-                call    dword ptr cs:data_22
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 mov     bh,14h
                 or      dl,20h                  ; ' '
                 push    bp
                 mov     bp,VLMID_SECURITY
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,8
                 push    bp
-                call    dword ptr cs:data_22
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 call    sub_3
                 lea     si,[bx+10h]
@@ -319,11 +319,11 @@ loc_21::
                 push    bp
                 mov     bp,VLMID_SECURITY
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,5
                 push    bp
-                call    dword ptr cs:data_22
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 jnz     loc_20
                 call    sub_3
@@ -1719,7 +1719,7 @@ loc_25::
 sub_2           endp
 
                 db      10 dup (0)
-data_22         dw      0, 0
+vlm_call_ptr    dw      0, 0
 data_24         db      1
                 db       23h, 45h, 67h, 89h,0ABh,0CDh
                 db      0EFh,0FEh,0DCh,0BAh, 98h, 76h
@@ -1897,18 +1897,18 @@ loc_30::
                 int     2Fh                     ; ??INT Non-standard interrupt
                 mov     ax,es
                 pop     es
-                mov     word ptr es:data_22,bx
-                mov     word ptr es:data_22+2,ax
-                mov     data_42,bx
-                mov     word ptr data_42+2,ax
+                mov     word ptr es:vlm_call_ptr,bx
+                mov     word ptr es:vlm_call_ptr+2,ax
+                mov     vlm_call_ptr2,bx
+                mov     word ptr vlm_call_ptr2+2,ax
                 push    bp
                 mov     bp,VLMID_SECURITY
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,0Fh
                 push    bp
-                call    dword ptr cs:data_42
+                call    dword ptr cs:vlm_call_ptr2
                 pop     bp
                 mov     es:data_26,cx
                 mov     es:data_25,dx
@@ -2252,7 +2252,7 @@ start::
                 db      'erved.'
                 db      10 dup (0)
 data_40         dw      0, 0
-data_42         dw      0, 0
+vlm_call_ptr2   dw      0, 0
 data_44         dw      0
                 db      'NETWARE DOS REQUESTER', 0
                 db      'DOSRQSTR.MSG', 0

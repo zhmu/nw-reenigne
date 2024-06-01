@@ -50,11 +50,11 @@ seg_a           segment byte public
                 push    bp
                 mov     bp,VLMID_FIO
                 push    bp
-                mov     bp,20h
+                mov     bp,VLMID_TRANS
                 push    bp
                 mov     bp,6
                 push    bp
-                call    dword ptr cs:data_152
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
 
@@ -66,11 +66,11 @@ sub_3           proc    near
                 push    bp
                 mov     bp,VLMID_FIO
                 push    bp
-                mov     bp,20h
+                mov     bp,VLMID_TRANS
                 push    bp
                 mov     bp,9
                 push    bp
-                call    dword ptr cs:data_152
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
 sub_3           endp
@@ -1643,7 +1643,7 @@ data_148        dw      5
 data_149        dw      200h
 data_150        dw      3
 data_151        dw      seg_b
-data_152        dw      0, 0
+vlm_call_ptr    dw      0, 0
 data_154        dw      0, 0
 data_156        db      0
 data_157        db      0
@@ -1672,11 +1672,11 @@ sub_21          proc    near
                 push    bp
                 mov     bp,VLMID_FIO
                 push    bp
-                mov     bp,61h
+                mov     bp,VLMID_SECURITY
                 push    bp
                 mov     bp,4
                 push    bp
-                call    dword ptr cs:data_152
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
 sub_21          endp
@@ -1690,11 +1690,11 @@ sub_22          proc    near
                 push    bp
                 mov     bp,VLMID_FIO
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,9
                 push    bp
-                call    dword ptr cs:data_152
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 or      ax,ax
                 retn
@@ -1756,11 +1756,11 @@ loc_123::
                 push    bp
                 mov     bp,VLMID_FIO
                 push    bp
-                mov     bp,21h
+                mov     bp,VLMID_IPXNCP
                 push    bp
                 mov     bp,6
                 push    bp
-                call    dword ptr cs:data_152
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 pop     di
                 jz      loc_124
@@ -1928,11 +1928,11 @@ loc_135::
                 push    bp
                 mov     bp,VLMID_FIO
                 push    bp
-                mov     bp,21h
+                mov     bp,VLMID_IPXNCP
                 push    bp
                 mov     bp,9
                 push    bp
-                call    dword ptr cs:data_152
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 or      ax,ax
                 jnz     loc_135
@@ -2081,12 +2081,12 @@ loc_144::
                 mov     bx,1
                 mov     bp,VLMID_FIO
                 push    bp
-                mov     bp,1
+                mov     bp,VLMID_EXE
                 push    bp
                 mov     bp,4
                 push    bp
                 assume  ds:seg_a
-                call    dword ptr cs:data_152
+                call    dword ptr cs:vlm_call_ptr
                 mov     di,offset data_234
                 push    ds
                 push    cx
@@ -2156,12 +2156,12 @@ loc_146::
                 mov     bx,2
                 mov     bp,VLMID_FIO
                 push    bp
-                mov     bp,1
+                mov     bp,VLMID_EXE
                 push    bp
                 mov     bp,4
                 push    bp
                 assume  ds:seg_a
-                call    dword ptr cs:data_152
+                call    dword ptr cs:vlm_call_ptr
                 mov     cx,ds
                 mov     es,cx
                 mov     cx,cs
@@ -2172,11 +2172,11 @@ loc_147::
                 mov     cx,ds:[20h]
                 mov     bp,VLMID_FIO
                 push    bp
-                mov     bp,30h
+                mov     bp,VLMID_NWP
                 push    bp
                 mov     bp,7
                 push    bp
-                call    dword ptr cs:data_152
+                call    dword ptr cs:vlm_call_ptr
                 call    sub_27
                 call    sub_23
                 pop     ax
@@ -3165,11 +3165,11 @@ loc_243::
                 push    bp
                 mov     bp,VLMID_FIO
                 push    bp
-                mov     bp,61h
+                mov     bp,VLMID_SECURITY
                 push    bp
                 mov     bp,4
                 push    bp
-                call    dword ptr cs:data_152
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 lea     si,[si-2Eh]
                 jnz     loc_245
@@ -3207,7 +3207,7 @@ seg_a           ends
 seg_b           segment byte public
                 assume cs:seg_b  , ds:seg_b
 
-data_171        db      0
+vlm_call_ptr2   db      0
 data_172        db      0
 data_173        dw      0
 data_174        db      0
@@ -3999,11 +3999,11 @@ loc_313::
                 mov     ax,es
                 mov     cx,seg seg_b
                 mov     es,cx
-                mov     word ptr es:data_171,bx
-                mov     es:data_173,ax
+                mov     word ptr es:vlm_call_ptr2,bx
+                mov     word ptr es:vlm_call_ptr2+2,ax
                 pop     es
-                mov     word ptr es:data_152,bx
-                mov     word ptr es:data_152+2,ax
+                mov     word ptr es:vlm_call_ptr,bx
+                mov     word ptr es:vlm_call_ptr+2,ax
                 mov     data_303,bx
                 mov     word ptr data_303+2,ax
                 push    es

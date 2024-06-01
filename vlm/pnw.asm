@@ -4,12 +4,12 @@ prn_timeout_3_  equ     47Ah
 data_1e         equ     84Ah                    ;*
 data_41e        equ     13C0h                   ;*
 data_42e        equ     13C2h                   ;*
-data_43e        equ     13C4h                   ;*
+vlm_call_ptr    equ     13C4h                   ;*
 data_45e        equ     1406h                   ;*
 data_46e        equ     1516h                   ;*
 data_47e        equ     1518h                   ;*
 data_48e        equ     1618h                   ;*
-data_187e       equ     3D4h                    ;*
+vlm_call_ptr2   equ     3D4h                    ;*
 data_189e       equ     3D8h                    ;*
 data_191e       equ     3DCh                    ;*
 data_192e       equ     3DEh                    ;*
@@ -58,11 +58,11 @@ sub_1           proc    near
                 push    bp
                 mov     bp,VLMID_PNW
                 push    bp
-                mov     bp,43h
+                mov     bp,VLMID_GENERAL
                 push    bp
                 mov     bp,9
                 push    bp
-                call    dword ptr cs:data_43e
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
 sub_1           endp
@@ -76,11 +76,11 @@ sub_2           proc    near
                 push    bp
                 mov     bp,VLMID_PNW
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,0Ah
                 push    bp
-                call    dword ptr cs:data_43e
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
 sub_2           endp
@@ -94,11 +94,11 @@ sub_3           proc    near
                 push    bp
                 mov     bp,VLMID_PNW
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,7
                 push    bp
-                call    dword ptr cs:data_43e
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
 sub_3           endp
@@ -112,11 +112,11 @@ sub_4           proc    near
                 push    bp
                 mov     bp,VLMID_PNW
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,8
                 push    bp
-                call    dword ptr cs:data_43e
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
 sub_4           endp
@@ -130,11 +130,11 @@ sub_5           proc    near
                 push    bp
                 mov     bp,VLMID_PNW
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,6
                 push    bp
-                call    dword ptr cs:data_43e
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
 sub_5           endp
@@ -148,11 +148,11 @@ sub_6           proc    near
                 push    bp
                 mov     bp,VLMID_PNW
                 push    bp
-                mov     bp,20h
+                mov     bp,VLMID_TRANS
                 push    bp
                 mov     bp,6
                 push    bp
-                call    dword ptr cs:data_43e
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
 sub_6           endp
@@ -1029,11 +1029,11 @@ loc_48::
                 push    bp
                 mov     bp,VLMID_PNW
                 push    bp
-                mov     bp,30h
+                mov     bp,VLMID_NWP
                 push    bp
                 mov     bp,4
                 push    bp
-                call    dword ptr cs:data_43e
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 pop     ds
                 pop     cx
@@ -1137,11 +1137,11 @@ sub_14          proc    far
                 push    bp
                 mov     bp,VLMID_PNW
                 push    bp
-                mov     bp,20h
+                mov     bp,VLMID_TRANS
                 push    bp
                 mov     bp,5
                 push    bp
-                call    dword ptr cs:data_43e
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 jnz     loc_56
                 mov     bh,0Ah
@@ -1224,31 +1224,31 @@ loc_57::
                 push    bp
                 mov     bp,VLMID_PNW
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,0Bh
                 push    bp
-                call    dword ptr cs:data_43e
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 push    bp
                 mov     bp,VLMID_PNW
                 push    bp
-                mov     bp,30h
+                mov     bp,VLMID_NWP
                 push    bp
                 mov     bp,7
                 push    bp
-                call    dword ptr cs:data_43e
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 jnz     loc_58
                 mov     bx,2
                 push    bp
                 mov     bp,VLMID_PNW
                 push    bp
-                mov     bp,1
+                mov     bp,VLMID_EXE
                 push    bp
                 mov     bp,1
                 push    bp
-                call    dword ptr cs:data_43e
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 jmp     loc_56
 loc_58::
@@ -1344,11 +1344,11 @@ sub_16          proc    near
                 push    bp
                 mov     bp,VLMID_PNW
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,0Eh
                 push    bp
-                call    dword ptr cs:data_43e
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 jz      loc_65
                 mov     cx,dx
@@ -1618,11 +1618,11 @@ loc_80::
                 push    bp
                 mov     bp,VLMID_PNW
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,0Dh
                 push    bp
-                call    dword ptr cs:data_43e
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 add     di,1Ch
                 mov     si,offset data_70
@@ -2053,11 +2053,11 @@ loc_116::
                 push    bp
                 mov     bp,VLMID_PNW
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,4
                 push    bp
-                call    dword ptr cs:data_43e
+                call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 jnz     loc_117
                 push    cx
@@ -3686,10 +3686,10 @@ loc_00d8:
                 mov     cx,es
                 mov     ax,seg_a
                 mov     es,ax
-                mov     es:data_43e,bx
-                mov     word ptr es:data_43e+2,cx
-                mov     ds:data_187e,bx
-                mov     word ptr ds:data_187e+2,cx
+                mov     es:vlm_call_ptr,bx
+                mov     word ptr es:vlm_call_ptr+2,cx
+                mov     ds:vlm_call_ptr2,bx
+                mov     word ptr ds:vlm_call_ptr2+2,cx
                 pop     bx
                 mov     ds:data_191e,bx
                 or      bx,bx
@@ -4005,11 +4005,11 @@ sub_43          proc    near
                 push    bp
                 mov     bp,VLMID_PNW
                 push    bp
-                mov     bp,20h
+                mov     bp,VLMID_TRANS
                 push    bp
                 mov     bp,9
                 push    bp
-                call    dword ptr cs:data_187e
+                call    dword ptr cs:vlm_call_ptr2
                 pop     bp
                 mov     ds:data_1e,si
                 mov     ds:prn_timeout_3_,si
