@@ -1,52 +1,15 @@
 ; The following equates show data references outside the range of the program.
 
 data_1e         equ     0Eh
-data_2e         equ     24h
-data_3e         equ     26h
+irq1_vector     equ     24h                     ; 0:24h = int9 = irq1
 data_4e         equ     40h
 data_5e         equ     42h
-data_6e         equ     58h
-data_7e         equ     5Ah
-data_8e         equ     3BCh
-data_9e         equ     3BEh
+int16_vector    equ     58h
 keybd_q_head_   equ     41Ah
 keybd_q_tail_   equ     41Ch
-data_10e        equ     0B00h                   ;*
 prn_scrn_stat   equ     0
 data_11e        equ     0BCh                    ;*
 data_12e        equ     0BEh                    ;*
-data_33e        equ     0AE0h                   ;*
-data_34e        equ     0AE2h                   ;*
-data_35e        equ     0AE3h                   ;*
-data_36e        equ     0AE4h                   ;*
-data_37e        equ     0AE5h                   ;*
-data_38e        equ     0AE6h                   ;*
-data_39e        equ     0AF6h                   ;*
-vlm_call_ptr2        equ     0AF8h                   ;*
-data_42e        equ     0AFCh                   ;*
-data_43e        equ     0AFEh                   ;*
-data_44e        equ     0B00h                   ;*
-data_45e        equ     0B08h                   ;*
-data_46e        equ     0B0Eh                   ;*
-data_47e        equ     0B10h                   ;*
-data_48e        equ     0B12h                   ;*
-data_49e        equ     0B14h                   ;*
-data_50e        equ     0B20h                   ;*
-data_51e        equ     0B21h                   ;*
-data_52e        equ     0B22h                   ;*
-data_53e        equ     0B23h                   ;*
-data_54e        equ     0B24h                   ;*
-data_55e        equ     0B25h                   ;*
-data_56e        equ     0B26h                   ;*
-data_57e        equ     0B28h                   ;*
-data_58e        equ     0B2Ah                   ;*
-data_59e        equ     0B2Ch                   ;*
-data_60e        equ     0B2Eh                   ;*
-data_61e        equ     0B30h                   ;*
-data_62e        equ     0B32h                   ;*
-data_63e        equ     0B34h                   ;*
-data_64e        equ     0B36h                   ;*
-data_65e        equ     0B3Bh                   ;*
 data_66e        equ     55CBh                   ;*
 
 include  common.inc
@@ -56,8 +19,7 @@ include  common.inc
 seg_a           segment byte public
                 assume cs:seg_a  , ds:seg_a
 
-                                                ;* No entry point to code
-                dw      0, seg_d
+                dw      offset init, seg_d
                 dw      offset loc_00dc, seg_a
                 dw      offset loc_08b1, seg_a
                 dw      offset loc_00f5, seg_a
@@ -86,7 +48,7 @@ sub_1           proc    near
                 push    bp
                 mov     bp,VLMID_NWP
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,7
                 push    bp
@@ -104,7 +66,7 @@ sub_2           proc    near
                 push    bp
                 mov     bp,VLMID_NWP
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,0Ah
                 push    bp
@@ -122,7 +84,7 @@ sub_3           proc    near
                 push    bp
                 mov     bp,VLMID_NWP
                 push    bp
-                mov     bp,20h
+                mov     bp,VLMID_TRANS
                 push    bp
                 mov     bp,6
                 push    bp
@@ -140,7 +102,7 @@ sub_4           proc    near
                 push    bp
                 mov     bp,VLMID_NWP
                 push    bp
-                mov     bp,20h
+                mov     bp,VLMID_TRANS
                 push    bp
                 mov     bp,9
                 push    bp
@@ -158,7 +120,7 @@ sub_5           proc    near
                 push    bp
                 mov     bp,VLMID_NWP
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,8
                 push    bp
@@ -176,7 +138,7 @@ sub_6           proc    near
                 push    bp
                 mov     bp,VLMID_NWP
                 push    bp
-                mov     bp,1
+                mov     bp,VLMID_EXE
                 push    bp
                 mov     bp,1
                 push    bp
@@ -194,7 +156,7 @@ sub_7           proc    near
                 push    bp
                 mov     bp,VLMID_NWP
                 push    bp
-                mov     bp,61h
+                mov     bp,VLMID_SECURITY
                 push    bp
                 mov     bp,4
                 push    bp
@@ -225,7 +187,7 @@ loc_00f5:
                 push    ds
                 mov     ax,seg_a
                 mov     ds,ax
-                mov     si,data_33e
+                mov     si,offset data_0ae0
                 cmp     cx,[si]
                 jbe     loc_6
                 mov     cx,[si]
@@ -243,22 +205,21 @@ loc_6::
 loc_7::
                 push    ax
                 push    ds
-                mov     ax,seg_b
+                mov     ax,seg_a+0AEh
                 mov     ds,ax
-                assume  ds:seg_b
-                mov     byte ptr data_70,1
+                mov     byte ptr ds:[34h],1     ; data_0b14
                 push    bx
                 push    di
                 push    es
                 mov     ax,seg_a
                 mov     ds,ax
-                mov     es,ds:data_39e
+                mov     es,ds:data_0af6
                 xor     bx,bx
                 mov     di,3CEh
                 push    bp
                 mov     bp,VLMID_NWP
                 push    bp
-                mov     bp,20h
+                mov     bp,VLMID_TRANS
                 push    bp
                 mov     bp,0Ah
                 push    bp
@@ -271,7 +232,7 @@ loc_7::
                 pop     ax
 
 loc_014c:
-                cmp     byte ptr cs:data_49e,0
+                cmp     byte ptr cs:data_0b14,0
                 je      loc_7
                 push    bp
                 mov     bp,sp
@@ -345,7 +306,7 @@ loc_15::
                 mov     ds,[bp-0Ch]
                 jmp     short loc_11
 loc_16::
-                mov     bx,data_44e
+                mov     bx,offset data_0b00
                 mov     dx,[bx]
 loc_17::
                 cmp     word ptr [bp-2],0Fh
@@ -403,7 +364,7 @@ loc_24::
                 push    bp
                 mov     bp,VLMID_NWP
                 push    bp
-                mov     bp,31h
+                mov     bp,VLMID_BIND
                 push    bp
                 mov     bp,1
                 push    bp
@@ -414,7 +375,7 @@ loc_24::
                 push    bp
                 mov     bp,VLMID_NWP
                 push    bp
-                mov     bp,32h
+                mov     bp,VLMID_NDS
                 push    bp
                 mov     bp,1
                 push    bp
@@ -428,7 +389,7 @@ loc_25::
                 push    bp
                 mov     bp,VLMID_NWP
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,4
                 push    bp
@@ -437,7 +398,7 @@ loc_25::
                 jz      loc_26
                 jmp     loc_15
 loc_26::
-                mov     bx,data_10e
+                mov     bx,offset data_0b00
                 mov     dx,[bx]
 loc_27::
                 cmp     dx,33h
@@ -450,7 +411,7 @@ loc_27::
                 push    bp
                 mov     bp,VLMID_NWP
                 push    bp
-                mov     bp,20h
+                mov     bp,VLMID_TRANS
                 push    bp
                 mov     bp,4
                 push    bp
@@ -466,7 +427,7 @@ loc_28::
                 push    bp
                 mov     bp,VLMID_NWP
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,6
                 push    bp
@@ -479,7 +440,7 @@ data_15         dw      offset loc_30
 data_16         dw      offset loc_33
 data_17         dw      offset loc_44
 data_18         dw      offset loc_46
-data_19         dw      offset loc_49
+data_19         dw      offset loc_49           ;; I wonder if this is used to display messages?
 data_20         dw      203h
 data_21         dw      offset loc_29
 loc_02fe:
@@ -537,7 +498,7 @@ loc_34::
                 je      loc_36
                 mov     ax,seg_a
                 mov     ds,ax
-                mov     es,ds:data_39e
+                mov     es,ds:data_0af6
                 mov     es:data_92,dl
                 mov     al,dl
                 mov     bx,offset data_20
@@ -560,23 +521,23 @@ loc_35::
                 jz      loc_36
                 jmp     short loc_31
 loc_36::
-                mov     es,cs:data_39e
+                mov     es,cs:data_0af6
                 mov     dl,es:data_92
                 mov     [bp-6],dl
                 jmp     short loc_40
 loc_37::
-                mov     ds,cs:data_39e
+                mov     ds,cs:data_0af6
                 mov     ax,cx
                 or      ax,si
                 jz      loc_38
-                mov     ax,data_85
-                or      ax,word ptr data_85+2
+                mov     ax,int2f_prev
+                or      ax,word ptr int2f_prev+2
                 jnz     loc_39
                 mov     ax,352Fh
                 int     21h                     ; DOS Services  ah=function 35h
                                                 ;  get intrpt vector al in es:bx
-                mov     data_85,bx
-                mov     word ptr data_85+2,es
+                mov     int2f_prev,bx
+                mov     word ptr int2f_prev+2,es
                 mov     dx,offset int_2Fh_entry
                 mov     ax,252Fh
                 int     21h                     ; DOS Services  ah=function 25h
@@ -590,17 +551,17 @@ loc_38::
                 cmp     es:data_12e,bx
                 jne     loc_39
                 push    ds
-                lds     dx,dword ptr data_85
+                lds     dx,dword ptr int2f_prev
                 mov     ax,252Fh
                 int     21h                     ; DOS Services  ah=function 25h
                                                 ;  set intrpt vector al to ds:dx
                 pop     ds
                 xor     ax,ax
-                mov     data_85,ax
-                mov     word ptr data_85+2,ax
+                mov     int2f_prev,ax
+                mov     word ptr int2f_prev+2,ax
 loc_39::
-                mov     data_87,si
-                mov     word ptr data_87+2,cx
+                mov     broadcast_callback_ptr,si
+                mov     word ptr broadcast_callback_ptr+2,cx
 loc_40::
                 xor     ax,ax
                 jmp     loc_31
@@ -608,13 +569,13 @@ loc_41::
                 cmp     dl,7
                 ja      loc_36
                 jz      loc_42
-                mov     cx,cs:data_47e
+                mov     cx,cs:data_0b10
                 jmp     short loc_43
 loc_42::
                 push    ds
                 mov     ax,seg_a
                 mov     ds,ax
-                xchg    ds:data_47e,cx
+                xchg    ds:data_0b10,cx
                 pop     ds
 loc_43::
                 mov     [bp-4],cx
@@ -623,7 +584,7 @@ loc_43::
 ;ƒƒƒƒƒ Indexed Entry Point ƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒ
 
 loc_44::
-                mov     ds,cs:data_39e
+                mov     ds,cs:data_0af6
                 push    dx
                 mov     bh,1
                 call    sub_1
@@ -637,7 +598,7 @@ loc_44::
                 add     dx,4
                 xchg    dl,dh
                 mov     data_114,dx
-                mov     si,4DCh
+                mov     si,offset data_04dc
                 mov     di,4E8h
                 push    ds
                 pop     es
@@ -647,7 +608,7 @@ loc_44::
                 call    sub_3
                 jnz     loc_45
                 mov     dx,data_111
-                mov     bx,data_112
+                mov     bx,word ptr [data_112]
                 mov     [bp-8],bx
                 mov     [bp-6],dx
 loc_45::
@@ -656,7 +617,7 @@ loc_45::
 ;ƒƒƒƒƒ Indexed Entry Point ƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒ
 
 loc_46::
-                mov     ds,cs:data_39e
+                mov     ds,cs:data_0af6
                 mov     data_121,dx
                 mov     data_122,si
                 mov     si,4F5h
@@ -689,19 +650,19 @@ loc_48::
 loc_49::
                 mov     ax,seg_a
                 mov     ds,ax
-                call    sub_11
+                call    in_text_mode
                 jz      loc_50
                 jmp     loc_54
 loc_50::
                 cmp     cx,0FFFFh
                 jne     loc_51
-                mov     es,ds:data_39e
-                mov     di,450h
+                mov     es,ds:data_0af6
+                mov     di,offset data_109
                 mov     bx,1
                 push    bp
                 mov     bp,VLMID_NWP
                 push    bp
-                mov     bp,21h
+                mov     bp,VLMID_IPXNCP
                 push    bp
                 mov     bp,0Ah
                 push    bp
@@ -710,7 +671,7 @@ loc_50::
                 jmp     short loc_52
 loc_51::
                 push    ds
-                mov     es,ds:data_39e
+                mov     es,ds:data_0af6
                 mov     byte ptr es:data_108,1
                 push    es
                 pop     ds
@@ -727,35 +688,38 @@ loc_52::
                 jz      loc_53
                 cmp     byte ptr es:data_92,2
                 je      loc_53
-                mov     byte ptr ds:data_51e,70h        ; 'p'
-                call    sub_14
+                mov     byte ptr ds:display_attr,70h        ; 'p'
+                call    set_cursor_pos
                 push    dx
-                call    sub_12
+                call    save_first_line
                 xor     dx,dx
-                call    sub_14
-                mov     si,data_64e
-                call    sub_15
+                call    set_cursor_pos
+                mov     si,offset msg_prefix
+                call    write_chars
                 push    ds
-                mov     ds,ds:data_39e
-                mov     si,451h
+                mov     ds,ds:data_0af6
+                mov     si,offset data_110
                 mov     bl,data_109
                 xor     bh,bh
                 mov     byte ptr [bx+si],0
-                call    sub_15
+                call    write_chars
                 pop     ds
-                mov     si,data_65e
-                mov     byte ptr ds:data_54e,0
-                call    sub_15
-                mov     byte ptr ds:data_54e,0FFh
-                call    sub_17
-                mov     cx,0FFFFh
-                mov     dx,1C0Ah
-                call    sub_20
-                call    sub_13
-                mov     byte ptr ds:data_54e,0FFh
+                mov     si,offset msg_ctrl_enter
+                mov     byte ptr ds:write_newline,0
+                call    write_chars
+                mov     byte ptr ds:write_newline,0FFh
+                call    beep
+
+                ; wait until enter or timeout
+                mov     cx,0FFFFh                   ; mask for ah/al (int16 fn 0)
+                mov     dx,1C0Ah                    ; dl = enter
+                call    wait_until_key_or_timeout
+
+                call    restore_first_line
+                mov     byte ptr ds:write_newline,0FFh
                 pop     dx
-                call    sub_14
-                call    sub_21
+                call    set_cursor_pos
+                call    hook_keyboard_ints
 loc_53::
                 mov     word ptr [bp-4],0
 loc_54::
@@ -801,7 +765,7 @@ loc_56::
                 push    bp
                 mov     bp,VLMID_NWP
                 push    bp
-                mov     bp,20h
+                mov     bp,VLMID_TRANS
                 push    bp
                 mov     bp,6
                 push    bp
@@ -851,7 +815,7 @@ loc_05e9:
                 push    bp
                 mov     bp,VLMID_NWP
                 push    bp
-                mov     bp,42h
+                mov     bp,VLMID_PRINT
                 push    bp
                 mov     bp,1
                 push    bp
@@ -863,7 +827,7 @@ loc_05e9:
                 push    bp
                 mov     bp,VLMID_NWP
                 push    bp
-                mov     bp,20h
+                mov     bp,VLMID_TRANS
                 push    bp
                 mov     bp,6
                 push    bp
@@ -874,7 +838,7 @@ loc_05e9:
                 push    bp
                 mov     bp,VLMID_NWP
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,9
                 push    bp
@@ -902,7 +866,7 @@ loc_62::
 loc_63::
                 xor     bx,bx
                 call    sub_4
-                mov     ds,cs:data_39e
+                mov     ds,cs:data_0af6
                 push    ds
                 pop     es
                 push    dx
@@ -912,7 +876,7 @@ loc_63::
                 mov     bh,14h
                 call    sub_1
                 and     dl,0Fh
-                or      dl,cs:data_36e
+                or      dl,cs:data_0ae4
                 mov     bp,2
 loc_64::
                 mov     bx,3
@@ -921,7 +885,7 @@ loc_64::
                 jnz     loc_65
                 and     dl,0FEh
 loc_65::
-                cmp     byte ptr cs:data_34e,0
+                cmp     byte ptr cs:data_0ae2,0
                 jne     loc_66
                 or      dl,80h
 loc_66::
@@ -959,7 +923,7 @@ loc_68::
                 not     dl
                 and     dl,data_105
                 jz      loc_70
-                and     dl,cs:data_35e
+                and     dl,cs:data_0ae3
                 jz      loc_70
                 test    byte ptr data_102,1
                 jz      loc_69
@@ -982,7 +946,7 @@ loc_70::
                 and     dh,0F0h
                 mov     bh,14h
                 mov     dl,data_105
-                and     dl,cs:data_35e
+                and     dl,cs:data_0ae3
                 or      dl,dh
                 call    sub_5
                 mov     dx,data_104
@@ -990,7 +954,7 @@ loc_70::
                 call    sub_5
                 or      dx,dx
                 jz      loc_74
-                cmp     byte ptr cs:data_34e,0
+                cmp     byte ptr cs:data_0ae2,0
                 je      loc_74
                 test    byte ptr data_105,80h
                 jnz     loc_74
@@ -1104,10 +1068,10 @@ loc_07ea:
 
 loc_78::
                 pop     bx
-                mov     bl,cs:data_36e
-                mov     bh,cs:data_35e
-                mov     ch,cs:data_38e
-                mov     cl,cs:data_37e
+                mov     bl,cs:data_0ae4
+                mov     bh,cs:data_0ae3
+                mov     ch,cs:data_0ae6
+                mov     cl,cs:data_0ae5
 loc_79::
                 xor     ax,ax
                 retf
@@ -1150,13 +1114,13 @@ loc_85::
                 push    ds
                 mov     bx,seg seg_a
                 mov     ds,bx
-                or      cl,ds:data_38e
-                mov     ds:data_37e,cl
+                or      cl,ds:data_0ae6
+                mov     ds:data_0ae5,cl
                 pop     ax
                 pop     bx
                 or      bl,cl
-                and     bl,ds:data_35e
-                mov     ds:data_36e,bl
+                and     bl,ds:data_0ae3
+                mov     ds:data_0ae4,bl
                 mov     ds,ax
                 jmp     short loc_79
 
@@ -1187,7 +1151,7 @@ loc_086b:
                 push    bp
                 mov     bp,VLMID_NWP
                 push    bp
-                mov     bp,31h
+                mov     bp,VLMID_BIND
                 push    bp
                 mov     bp,0Bh
                 push    bp
@@ -1199,7 +1163,7 @@ loc_086b:
                 push    bp
                 mov     bp,VLMID_NWP
                 push    bp
-                mov     bp,32h
+                mov     bp,VLMID_NDS
                 push    bp
                 mov     bp,0Ch
                 push    bp
@@ -1211,7 +1175,7 @@ loc_086b:
                 push    bp
                 mov     bp,VLMID_NWP
                 push    bp
-                mov     bp,33h
+                mov     bp,VLMID_PNW
                 push    bp
                 mov     bp,0Dh
                 push    bp
@@ -1233,14 +1197,14 @@ sub_10          endp
 loc_08b1:
                 mov     ax,seg_a
                 mov     ds,ax
-                mov     ds,ds:data_39e
+                mov     ds,ds:data_0af6
                 jcxz    loc_90
                 mov     al,28h                  ; '('
                 mov     bx,0
                 push    bp
                 mov     bp,VLMID_NWP
                 push    bp
-                mov     bp,1
+                mov     bp,VLMID_EXE
                 push    bp
                 mov     bp,4
                 push    bp
@@ -1252,7 +1216,7 @@ loc_08b1:
                 push    bp
                 mov     bp,VLMID_NWP
                 push    bp
-                mov     bp,1
+                mov     bp,VLMID_EXE
                 push    bp
                 mov     bp,4
                 push    bp
@@ -1265,7 +1229,7 @@ loc_89::
 loc_90::
                 call    sub_10
                 push    ds
-                lds     dx,dword ptr ds:[3BCh]
+                lds     dx,dword ptr ds:[int28_prev]
                 mov     ax,2528h
                 int     21h                     ; DOS Services  ah=function 25h
                                                 ;  set intrpt vector al to ds:dx
@@ -1280,28 +1244,36 @@ loc_91::
                 mov     ax,0
                 retf
                 db      90h
-data_31         db      0
-                db       01h, 02h, 03h, 07h, 0Ah, 0Bh
-                db       19h
-                db      '#$'
-                db      '234DEMNOVWZ'
+display_mode_list:
+                db      0                       ; 40x25
+                db      01h                     ; 40x25
+                db      02h                     ; 80x25
+                db      03h                     ; 80x25
+                db      07h                     ; 80x25
+                db      0Ah                     ; 80x25
+                db      0Bh                     ; 80x25
+                db       19h                    ; 80x50, 132x28, 132x44
+                db      23h                     ; 132x25, 132x60, 128x48
+                db      24h                     ; 80x30, 132x50, 132x28
+                db      32h                     ; 80x34
+                db      '34DEMNOVWZ'
                 db       82h, 83h
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_11          proc    near
-                call    sub_18
+in_text_mode    proc    near
+                call    get_video_info
                 push    es
                 push    di
                 push    cx
                 mov     ax,seg_a
                 mov     es,ax
-                mov     di,offset data_31
+                mov     di,offset display_mode_list
                 mov     cx,0Bh
                 xor     ah,ah
-                mov     al,cs:data_52e
+                mov     al,cs:display_mode
                 repne   scasb
                 pop     cx
                 pop     di
@@ -1311,111 +1283,106 @@ sub_11          proc    near
 loc_92::
                 or      ah,ah
                 retn
-sub_11          endp
+in_text_mode    endp
 
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_12          proc    near
+save_first_line proc    near
                 cld
                 push    ds
                 pop     es
-                mov     di,0B4Fh
-                mov     cx,50h
-                mov     bh,cs:data_50e
+                mov     di,offset saved_line_buf
+                mov     cx,80
+
+                mov     bh,cs:display_page
                 xor     dx,dx
-                mov     ah,2
-                int     10h                     ; Video display   ah=functn 02h
-                                                ;  set cursor location in dx
+                mov     ah,2                    ; video: set cursor to 0,0
+                int     10h
 
 locloop_93::
-                mov     ah,8
-                int     10h                     ; Video display   ah=functn 08h
-                                                ;  get char al & attrib ah @curs
+                mov     ah,8                    ; video: get char/attr
+                int     10h
                 stosw
                 inc     dl
-                cmp     byte ptr cs:data_52e,1
+                cmp     byte ptr cs:display_mode,1
                 ja      loc_94
-                cmp     dl,28h                  ; '('
+                cmp     dl,40
                 jb      loc_94
+
+                ; mode 0/1, go to next line
                 xor     dl,dl
                 inc     dh
 loc_94::
-                mov     ah,2
-                int     10h                     ; Video display   ah=functn 02h
-                                                ;  set cursor location in dx
+                mov     ah,2                    ; video: set cursor location to dx
+                int     10h
                 loop    locloop_93
 
                 retn
-sub_12          endp
+save_first_line endp
 
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_13          proc    near
+restore_first_line  proc    near
                 cld
-                mov     si,0B4Fh
-                mov     cx,50h
+                mov     si,offset saved_line_buf
+                mov     cx,80
                 xor     dx,dx
-                call    sub_14
-                mov     byte ptr cs:data_54e,0
+                call    set_cursor_pos
+                mov     byte ptr cs:write_newline,0
 
 locloop_95::
                 lodsw
-                mov     cs:data_51e,ah
-                call    sub_16
+                mov     cs:display_attr,ah
+                call    put_char
                 loop    locloop_95
 
                 retn
-sub_13          endp
+restore_first_line  endp
 
 
-;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
-;                              SUBROUTINE
-;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
-
-sub_14          proc    near
+; set cursor location to ax
+set_cursor_pos  proc    near
                 push    ax
                 push    bx
                 push    cx
                 push    dx
-                mov     ah,3
-                mov     bh,cs:data_50e
-                int     10h                     ; Video display   ah=functn 03h
-                                                ;  get cursor loc in dx, mode cx
+                mov     ah,3                    ; video: get cursor position in dx
+                mov     bh,cs:display_page
+                int     10h
                 pop     ax
                 push    dx
                 mov     dx,ax
-                mov     ah,2
-                int     10h                     ; Video display   ah=functn 02h
-                                                ;  set cursor location in dx
+                mov     ah,2                    ; video: set cursor position
+                int     10h
                 pop     dx
                 pop     cx
                 pop     bx
                 pop     ax
                 retn
-sub_14          endp
+set_cursor_pos  endp
 
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_15          proc    near
+write_chars     proc    near
                 cld
                 push    ax
                 push    bx
                 push    cx
                 push    dx
-                mov     bh,cs:data_50e
-                mov     bl,cs:data_51e
+                mov     bh,cs:display_page
+                mov     bl,cs:display_attr
 loc_96::
                 lodsb
-                cmp     al,cs:data_55e
+                cmp     al,cs:terminator_char
                 je      loc_98
                 cmp     al,7
                 je      loc_97
@@ -1423,12 +1390,12 @@ loc_96::
                 je      loc_97
                 cmp     al,0Dh
                 je      loc_97
-                call    sub_19
+                call    write_char_attr
                 jmp     short loc_96
-loc_97::
-                mov     ah,0Eh
-                int     10h                     ; Video display   ah=functn 0Eh
-                                                ;  write char al, teletype mode
+
+loc_97::        ; use tty output for BEL, CR, LF
+                mov     ah,0Eh                  ; video: tty output
+                int     10h
                 jmp     short loc_96
 loc_98::
                 pop     dx
@@ -1436,112 +1403,104 @@ loc_98::
                 pop     bx
                 pop     ax
                 retn
-sub_15          endp
+write_chars     endp
 
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_16          proc    near
+put_char        proc    near
                 push    ax
                 push    bx
                 push    cx
                 push    dx
-                mov     bh,cs:data_50e
-                mov     bl,cs:data_51e
-                call    sub_19
+                mov     bh,cs:display_page
+                mov     bl,cs:display_attr
+                call    write_char_attr
                 pop     dx
                 pop     cx
                 pop     bx
                 pop     ax
                 retn
-sub_16          endp
+put_char        endp
 
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_17          proc    near
+beep            proc    near
                 push    ax
-                mov     ah,0Eh
+                mov     ah,0Eh                  ; video: write bel char
                 mov     al,7
-                int     10h                     ; Video display   ah=functn 0Eh
-                                                ;  write char al, teletype mode
+                int     10h
                 pop     ax
                 retn
-sub_17          endp
+beep            endp
 
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_18          proc    near
+get_video_info  proc    near
                 push    ax
                 push    bx
-                mov     ah,0Fh
-                int     10h                     ; Video display   ah=functn 0Fh
-                                                ;  get state, al=mode, bh=page
-                                                ;   ah=columns on screen
-                mov     cs:data_53e,ah
-                mov     cs:data_52e,al
-                mov     cs:data_50e,bh
+                mov     ah,0Fh                  ; video: get current video mode
+                int     10h
+                mov     cs:display_ncols,ah
+                mov     cs:display_mode,al
+                mov     cs:display_page,bh
                 pop     bx
                 pop     ax
                 retn
-sub_18          endp
+get_video_info  endp
 
-
-;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
-;                              SUBROUTINE
-;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
-
-sub_19          proc    near
+; input: bl = attribute, al = char
+write_char_attr proc    near
                 mov     ah,9
-                mov     cx,1
-                int     10h                     ; Video display   ah=functn 09h
-                                                ;  set char al & attrib bl @curs
-                                                ;   cx=# of chars to replicate
-                mov     ah,3
-                int     10h                     ; Video display   ah=functn 03h
-                                                ;  get cursor loc in dx, mode cx
+                mov     cx,1                    ; 1 char
+                int     10h                     ; video: write char al/attr bl at cursor
+
+                mov     ah,3                    ; video: get cursur position in dx
+                int     10h
                 inc     dl
-                cmp     dl,cs:data_53e
+                cmp     dl,cs:display_ncols
                 jb      loc_99
-                cmp     byte ptr cs:data_54e,0
+
+                ; need to write a newline, maybe
+                cmp     byte ptr cs:write_newline,0
                 je      loc_ret_100
-                mov     ax,0E0Ah
-                int     10h                     ; Video display   ah=functn 0Eh
-                                                ;  write char al, teletype mode
-                mov     ax,0E0Dh
-                int     10h                     ; Video display   ah=functn 0Eh
-                                                ;  write char al, teletype mode
+                mov     ax,0E0Ah                ; video: write '\n'
+                int     10h
+                mov     ax,0E0Dh                ; video: write '\r'
+                int     10h
                 jmp     short loc_ret_100
 loc_99::
-                mov     ah,2
-                int     10h                     ; Video display   ah=functn 02h
-                                                ;  set cursor location in dx
+                mov     ah,2                    ; video: set cursor location in dx
+                int     10h
 
 loc_ret_100::
                 retn
-sub_19          endp
+write_char_attr endp
 
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_20          proc    near
-                call    sub_22
+wait_until_key_or_timeout          proc    near
+                call    swap_keyboard_ints
                 mov     ax,word ptr es:[46Ch]
-                add     ax,ds:data_47e
-                mov     ds:data_48e,ax
+                add     ax,ds:data_0b10
+                mov     ds:data_0b12,ax
+
+                ; loop until timeout or keyboard char
 loc_101::
-                cmp     word ptr ds:data_47e,0
+                cmp     word ptr ds:data_0b10,0
                 je      loc_102
-                mov     ax,ds:data_48e
+                mov     ax,ds:data_0b12
                 sub     ax,word ptr es:[46Ch]
                 js      loc_ret_104
 loc_102::
@@ -1549,105 +1508,115 @@ loc_102::
                 int     16h                     ; Keyboard i/o  ah=function 01h
                                                 ;  get status, if zf=0  al=char
                 jnz     loc_103
-                mov     ah,84h
-                int     2Ah                     ; ??INT Non-standard interrupt
+                mov     ah,84h                  ; network: keyboard busy loop
+                int     2Ah
                 jmp     short loc_101
 loc_103::
-                mov     ah,0
-                int     16h                     ; Keyboard i/o  ah=function 00h
-                                                ;  get keybd char in al, ah=scan
+                mov     ah,0                    ; keyboard: get keystroke
+                int     16h
                 and     ax,cx
                 cmp     ax,dx
                 jne     loc_101
 
 loc_ret_104::
                 retn
-sub_20          endp
+wait_until_key_or_timeout          endp
 
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_21          proc    near
+hook_keyboard_ints          proc    near
                 xor     cx,cx
                 mov     es,cx
                 mov     al,5
 
+                ; delays 65536*5 iterations
 locloop_105::
                 loop    locloop_105
-
                 dec     al
                 jnz     locloop_105
+
                 cli
-                mov     si,data_56e
-                mov     di,data_2e
+                mov     si,offset data_0b26
+                mov     di,irq1_vector
                 movsw
                 movsw
-                mov     si,data_60e
-                mov     di,data_6e
+                mov     si,offset data_0b2e
+                mov     di,int16_vector
                 movsw
                 movsw
                 sti
                 retn
-sub_21          endp
+hook_keyboard_ints          endp
 
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_22          proc    near
+swap_keyboard_ints proc    near
                 xor     ax,ax
                 mov     es,ax
                 cli
                 mov     ax,es:keybd_q_tail_
                 mov     es:keybd_q_head_,ax
-                mov     ax,ds:data_58e
-                xchg    es:data_2e,ax
-                mov     ds:data_56e,ax
-                mov     ax,ds:data_59e
-                xchg    es:data_3e,ax
-                mov     ds:data_57e,ax
-                mov     ax,ds:data_62e
-                xchg    es:data_6e,ax
-                mov     ds:data_60e,ax
-                mov     ax,ds:data_63e
-                xchg    es:data_7e,ax
-                mov     ds:data_61e,ax
+                mov     ax,ds:data_0b2a
+                xchg    es:irq1_vector,ax
+                mov     ds:data_0b26,ax
+                mov     ax,ds:data_0b2c
+                xchg    es:irq1_vector+2,ax
+                mov     ds:data_0b28,ax
+                mov     ax,ds:data_0b32
+                xchg    es:int16_vector,ax
+                mov     ds:data_0b2e,ax
+                mov     ax,ds:data_0b34
+                xchg    es:int16_vector+2,ax
+                mov     ds:data_0b30,ax
                 sti
                 retn
-sub_22          endp
+swap_keyboard_ints endp
 
                 db      0, 0, 0
 
-seg_a           ends
-
-
-
-;------------------------------------------------------------  seg_b   ----
-
-seg_b           segment byte public
-                assume cs:seg_b  , ds:seg_b
-
-                db      7, 0, 1, 3, 0
-                db      17 dup (0)
-                dw      seg_c
-                db      8 dup (0)
-                db       31h, 00h, 32h, 00h, 33h
-                db      9 dup (0)
-                db      3, 0
-                db      0, 0, 0, 0
-data_70         db      0
-                db      12 dup (0)
-                db       07h, 07h, 50h,0FFh, 00h
-                db      16 dup (0)
-                db       3Eh, 3Eh, 20h, 00h, 00h
-                db      ' (Press CTRL-ENTER)'
+; AE0h
+data_0ae0       db      7, 0
+data_0ae2       db      1
+data_0ae3       db      3
+data_0ae4       db      0
+data_0ae5       db      0
+data_0ae6       db      16 dup (0)
+data_0af6       dw      seg_c
+vlm_call_ptr2   dw      0, 0
+data_0afc       dw      0
+data_0afe       dw      0
+data_0b00       dw      31h, 32h, 33h, 0
+data_0b08       db      6 dup (0)
+data_0b0e       dw      3
+data_0b10       dw      0
+data_0b12       dw      0
+data_0b14       db      12 dup (0)
+display_page    db      0                           ; 0B21
+display_attr    db      07h
+display_mode    db      07h
+display_ncols   db      80
+write_newline   db      0FFh
+terminator_char db      00h                   ; 0B25
+data_0b26       dw      0
+data_0b28       dw      0
+data_0b2a       dw      0
+data_0b2c       dw      0
+data_0b2e       dw      0
+data_0b30       dw      0
+data_0b32       dw      0
+data_0b34       dw      0
+msg_prefix      db      ">> ", 0, 0
+msg_ctrl_enter  db      ' (Press CTRL-ENTER)', 0
+saved_line_buf  dw      80 dup (0)
                 db      0
-                db      161 dup (0)
 
-seg_b           ends
+seg_a           ends
 
 
 
@@ -1756,7 +1725,7 @@ loc_111::
                 retn
 sub_23          endp
 
-                                                ;* No entry point to code
+loc_00bc:
                 mov     es:data_98,12h
                 mov     es:data_99,0
                 test    es:data_90,0FFFFh
@@ -1766,12 +1735,12 @@ sub_23          endp
                 retf
 loc_112::
                 mov     es:data_98,9
-                lds     bx,es:data_94
-                cmp     word ptr [bx],0
+                lds     bx,es:dos_sda_ptr
+                cmp     word ptr [bx],0         ; checks critical error/indos flags
                 jne     loc_113
                 test    byte ptr cs:data_100,0FFh
                 jnz     loc_113
-                call    sub_24
+                call    is_busy
                 jz      loc_113
                 mov     al,1
                 xchg    es:data_84,al
@@ -1784,21 +1753,23 @@ loc_113::
                 mov     di,offset data_96
                 mov     [di+30h],ds
                 mov     word ptr [di+26h],3D4h
-                jmp     dword ptr data_76
+                jmp     dword ptr vlm_calla_ptr
+
+int28_entry:
                                                 ;* No entry point to code
                 test    cs:data_90,0FFFFh
                 jnz     loc_115
                 test    cs:data_91,0FFFFh
                 jnz     loc_115
 loc_114::
-                jmp     dword ptr cs:data_81
+                jmp     dword ptr cs:int28_prev
 loc_115::
                 push    es
                 push    bx
                 push    cs
                 pop     es
-                les     bx,es:data_94
-                test    byte ptr es:[bx],0FFh
+                les     bx,es:dos_sda_ptr
+                test    byte ptr es:[bx],0FFh           ; check critical error flag
                 pop     bx
                 pop     es
                 jnz     loc_114
@@ -1811,21 +1782,17 @@ loc_115::
                 call    sub_23
                 jmp     short loc_114
 
-;€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€
-;
-;                       External Entry Point
-;
-;€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€
-
+; int 2f will invoke broadcast_callback_ptr for AX=7A21h it that ptr is non-zero
 int_2Fh_entry   proc    far
                 cmp     ax,7A21h
                 je      loc_117
 loc_116::
-                jmp     dword ptr cs:data_85
-loc_117::
-                cmp     word ptr cs:data_87+2,0
+                jmp     dword ptr cs:int2f_prev
+
+loc_117::       ; ax=7a21h -> broadcast callback
+                cmp     word ptr cs:broadcast_callback_ptr+2,0
                 je      loc_116
-                call    dword ptr cs:data_87
+                call    dword ptr cs:broadcast_callback_ptr
                 iret
 int_2Fh_entry   endp
 
@@ -1834,11 +1801,8 @@ int_2Fh_entry   endp
                 db       1Eh,0C0h, 03h, 2Eh,0FEh, 0Eh
                 db       38h, 04h,0CFh
 
-;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
-;                              SUBROUTINE
-;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
-
-sub_24          proc    near
+; checks whether an irq is pending (?) or print-screen is active
+is_busy         proc    near
                 mov     al,0Bh
                 out     20h,al                  ; port 20h, 8259-1 int command
                                                 ;  al = 0Bh, read InServiceReg
@@ -1862,11 +1826,11 @@ sub_24          proc    near
 loc_118::
                 xor     ax,ax
                 retn
-sub_24          endp
+is_busy         endp
 
                 db      0, 0, 0, 0, 0
 vlm_call_ptr    dw      0, 0
-data_76         dw      0, 0
+vlm_calla_ptr   dw      0, 0
                 db      'S2S2S2S2S2S2S2S2S2S2S2S2S2S2S2S2'
                 db      'S2S2S2S2S2S2S2S2S2S2S2S2S2S2S2S2'
                 db      'S2S2S2S2S2S2S2S2S2S2S2S2S2S2S2S2'
@@ -1885,20 +1849,20 @@ data_76         dw      0, 0
                 db      'S2S2S2S2S2S2S2S2S2S2S2S2S2S2S2S2'
 data_79         dw      0
 data_80         dw      0                       ; segment storage
-data_81         dw      0, 0
+int28_prev      dw      0, 0                    ; 3BCh
 data_82         dw      0, 0
 data_84         db      0
-data_85         dw      0, 0
-data_87         dw      0, 0
+int2f_prev      dw      0, 0
+broadcast_callback_ptr         dw      0, 0
                 db      0
 data_90         dw      0
 data_91         dw      0
 data_92         db      0
-                db       00h, 00h, 00h, 00h, 00h,0BCh
-                db       00h
-                dw      seg_c
+                db       00h, 00h, 00h, 00h, 00h
+
+                dw      loc_00bc, seg_c
                 db      34 dup (0)
-data_94         dd      00000h
+dos_sda_ptr     dd      00000h
 data_96         db      0
                 db      9 dup (0)
                 db       20h, 00h, 08h, 00h
@@ -1913,58 +1877,52 @@ data_102        db      0
 data_103        dw      0
 data_104        dw      0
 data_105        db      0
-data_106        db      39h
-                db      4
-                dw      seg_c
-                db      0, 0
-data_107        db      3Ch
-                db      4
-                dw      seg_c
-                db      0, 0, 0, 1
+data_106        dw      offset data_101, seg_c
+                dw      0
+data_107        dw      offset data_103, seg_c
+                dw      0
+data_044d       db      0, 1
 data_108        db      1
 data_109        db      0
-                db      59 dup (0)
-                db       4Dh, 04h
-                dw      seg_c
-                db       03h, 00h, 50h, 04h
-                dw      seg_c
-                db       3Ch, 00h
+data_110        db      59 dup (0)
+                dw      offset data_044d, seg_c
+                dw       03h
+                dw      offset data_109, seg_c
+                dw       3Ch
 data_111        dw      0
-data_112        dw      0
-                db      58 dup (0)
+data_112        dw      30 dup (0)
 data_114        dw      0
                 db      35h
 data_115        dw      0
 data_116        db      0
-                db      0D6h, 04h
-                dw      seg_c
-                db      6
-                db      0
+data_04dc       dw      offset data_114, seg_c   ; 4d6
+                dw       6
 data_118        dw      0
 data_119        dw      0                       ; segment storage
 data_120        dw      0
-                db       98h, 04h
-                dw      seg_c
-                db       3Eh, 00h, 05h, 00h, 36h
+                dw      offset data_111, seg_c
+                dw       3Eh
+data_04ee       db      05h, 00h, 36h
 data_121        dw      0
 data_122        dw      0
-                db      0EEh, 04h
-                dw      seg_c
-                db       07h, 00h, 98h, 04h
-                dw      seg_c
-                db      36h
-                db      11 dup (0)
+                dw      offset data_04ee, seg_c
+                dw       07h
+                dw      offset data_111, seg_c
+                dw       36h
+data_0501       db      10 dup (0)
                 db      2, 0, 1, 0, 0, 0
                 db      0, 2, 0, 0
                 db      62h
-                db      519 dup (0)
-                db      1, 5
-                dw      seg_c
-                db       1Ch, 00h, 1Dh, 05h
-                dw      seg_c
-                db       00h, 00h, 98h, 04h
-                dw      seg_c
-                db       14h, 00h, 00h
+                db      7 dup (0)
+data_051d       db      512 dup (0)
+                dw      offset data_0501, seg_c
+                dw       1Ch
+                dw      offset data_051d, seg_c
+                dw       00h
+                dw      offset data_111, seg_c
+                dw       14h
+
+                db      0h
 
 seg_c           ends
 
@@ -1975,21 +1933,21 @@ seg_c           ends
 seg_d           segment byte public
                 assume cs:seg_d  , ds:seg_d
 
-                                                ;* No entry point to code
+init:
                 push    ax
                 push    bx
                 mov     ax,seg_d
                 mov     ds,ax
-                mov     ax,7A20h
+                mov     ax,7A20h                ; vlm: get multiplex address
                 mov     bx,2
-                int     2Fh                     ; ??INT Non-standard interrupt
-                mov     data_127,bx
+                int     2Fh
+                mov     vlm_multiplex_ptr,bx
                 mov     dx,es
-                mov     word ptr data_127+2,dx
+                mov     word ptr vlm_multiplex_ptr+2,dx
                 mov     ax,seg_a
                 mov     es,ax
-                mov     es:data_43e,dx
-                mov     es:data_42e,bx
+                mov     es:data_0afe,dx
+                mov     es:data_0afc,bx
                 pop     bx
                 pop     ax
                 or      ax,ax
@@ -1998,9 +1956,9 @@ seg_d           segment byte public
 loc_119::
                 mov     byte ptr data_132,0
                 push    bx
-                mov     ax,7A20h
+                mov     ax,7A20h                ; vlm: get call address
                 mov     bx,0
-                int     2Fh                     ; ??INT Non-standard interrupt
+                int     2Fh
                 mov     cx,es
                 mov     ax,seg_c
                 mov     es,ax
@@ -2010,23 +1968,23 @@ loc_119::
                 mov     es,ax
                 mov     word ptr es:vlm_call_ptr2,bx
                 mov     word ptr es:vlm_call_ptr2+2,cx
-                mov     data_129,bx
-                mov     word ptr data_129+2,cx
+                mov     vlm_call_ptr3,bx
+                mov     word ptr vlm_call_ptr3+2,cx
                 push    es
-                mov     ax,7A20h
+                mov     ax,7A20h                ; vlm: get calla address
                 mov     bx,1
-                int     2Fh                     ; ??INT Non-standard interrupt
+                int     2Fh
                 mov     cx,es
                 mov     ax,seg_c
                 mov     es,ax
-                mov     word ptr es:data_76,bx
-                mov     word ptr es:data_76+2,cx
+                mov     word ptr es:vlm_calla_ptr,bx
+                mov     word ptr es:vlm_calla_ptr+2,cx
                 pop     es
                 pop     bx
                 mov     data_131,bx
                 or      bx,bx
                 jz      loc_120
-                mov     es:data_39e,bx
+                mov     es:data_0af6,bx
 loc_120::
                 push    bx
                 push    ds
@@ -2035,17 +1993,18 @@ loc_120::
                 mov     bx,6
                 mov     ah,1
                 mov     al,2
-                call    dword ptr data_127
+                call    dword ptr vlm_multiplex_ptr
                 add     sp,4
                 pop     bx
                 call    sub_28
-                test    byte ptr es:data_35e,2
+                test    byte ptr es:data_0ae3,2
                 jz      loc_121
                 mov     bx,0
                 mov     dx,61h
-                call    dword ptr data_127
+                call    dword ptr vlm_multiplex_ptr
                 or      ax,ax
                 jz      loc_121
+
                 push    ax
                 push    bx
                 push    cx
@@ -2058,22 +2017,23 @@ loc_120::
                 mov     si,3C1h
                 push    cs
                 pop     ds
-                call    dword ptr cs:data_127
+                call    dword ptr cs:vlm_multiplex_ptr
                 pop     ds
                 pop     si
                 pop     cx
                 pop     bx
                 pop     ax
                 push    bx
+
                 mov     ax,3Bh
                 push    ax
                 mov     bx,6
                 mov     ah,0
                 mov     al,1
-                call    dword ptr data_127
+                call    dword ptr vlm_multiplex_ptr
                 add     sp,2
                 pop     bx
-                and     byte ptr es:data_35e,0FDh
+                and     byte ptr es:data_0ae3,0FDh
 loc_121::
                 mov     ax,seg_c
                 mov     es,ax
@@ -2108,16 +2068,16 @@ loc_123::
                 rep     movsb
 loc_124::
                 push    es
-                mov     ah,35h                  ; '5'
-                mov     al,28h                  ; '('
-                int     21h                     ; DOS Services  ah=function 35h
-                                                ;  get intrpt vector al in es:bx
+                mov     ah,35h                  ; dos: get int 28h
+                mov     al,28h
+                int     21h
                 pop     ds
-                mov     ds:data_8e,bx
-                mov     ds:data_9e,es
+                mov     word ptr ds:int28_prev,bx
+                mov     word ptr ds:int28_prev+2,es
+
                 mov     ax,2528h
-;*              mov     dx,offset loc_2         ;*
-                db      0BAh, 1Ah, 01h
+                mov     dx,offset int28_entry
+;               db      0BAh, 1Ah, 01h
                 int     21h                     ; DOS Services  ah=function 25h
                                                 ;  set intrpt vector al to ds:dx
                 mov     ax,seg_d
@@ -2125,14 +2085,14 @@ loc_124::
                 call    sub_31
                 mov     ax,seg_a
                 mov     es,ax
-                mov     es,es:data_39e
+                mov     es,es:data_0af6
                 mov     ax,5D06h
                 int     21h                     ; DOS Services  ah=function 5Dh
                                                 ;  get DOS swap area ptr ds:si
                                                 ;   swap sizes in cx and dx
                                                 ;*  undocumented function
-                mov     word ptr es:data_94,si
-                mov     word ptr es:data_94+2,ds
+                mov     word ptr es:dos_sda_ptr,si
+                mov     word ptr es:dos_sda_ptr+2,ds
                 mov     ax,21Ch
                 mov     si,3D4h
                 xor     bx,bx
@@ -2143,7 +2103,7 @@ loc_124::
                 push    bp
                 mov     bp,8
                 push    bp
-                call    dword ptr cs:data_129
+                call    dword ptr cs:vlm_call_ptr3
                 pop     bp
                 mov     ax,seg_d
                 mov     ds,ax
@@ -2154,7 +2114,7 @@ loc_125::
                 mov     es,ax
                 call    sub_26
                 mov     ax,0FFFFh
-                cmp     word ptr es:data_46e,1
+                cmp     word ptr es:data_0b0e,1
                 jae     loc_126
                 push    ax
                 push    bx
@@ -2168,7 +2128,7 @@ loc_125::
                 mov     si,3C1h
                 push    cs
                 pop     ds
-                call    dword ptr cs:data_127
+                call    dword ptr cs:vlm_multiplex_ptr
                 pop     ds
                 pop     si
                 pop     cx
@@ -2186,7 +2146,7 @@ loc_125::
                 mov     bx,6
                 mov     ah,0
                 mov     al,0
-                call    dword ptr data_127
+                call    dword ptr vlm_multiplex_ptr
                 add     sp,0Ah
                 pop     bx
                 mov     ax,0FFFFh
@@ -2219,29 +2179,29 @@ sub_25          endp
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
 sub_26          proc    near
-                push    word ptr es:data_46e
-                mov     word ptr es:data_46e,0
+                push    word ptr es:data_0b0e
+                mov     word ptr es:data_0b0e,0
                 mov     di,0B00h
                 xor     bp,bp
 loc_127::
                 mov     bx,0
-                mov     dx,es:data_44e[bp]
-                call    dword ptr data_127
+                mov     dx,es:data_0b00[bp]
+                call    dword ptr vlm_multiplex_ptr
 ;*              cmp     ax,0
                 db       3Dh, 00h, 00h
                 jnz     loc_128
                 inc     di
                 inc     di
-                inc     word ptr es:data_46e
+                inc     word ptr es:data_0b0e
                 call    sub_27
 loc_128::
                 inc     bp
                 inc     bp
-                cmp     word ptr es:data_44e[bp],0
+                cmp     word ptr es:data_0b00[bp],0
                 jne     loc_127
                 pop     ax
                 mov     word ptr es:[di],0
-                cmp     ax,es:data_46e
+                cmp     ax,es:data_0b0e
                 mov     ax,0
                 jc      loc_ret_129
                 retn
@@ -2257,12 +2217,12 @@ sub_26          endp
 
 sub_27          proc    near
                 push    di
-                mov     bx,data_45e
-                mov     di,data_44e
+                mov     bx,offset data_0b08
+                mov     di,offset data_0b00
                 mov     ax,es:[bp+di]
-                cmp     word ptr es:data_46e,1
+                cmp     word ptr es:data_0b0e,1
                 je      loc_133
-                mov     cx,es:data_46e
+                mov     cx,es:data_0b0e
                 dec     cx
 
 locloop_130::
@@ -2304,17 +2264,17 @@ sub_28          proc    near
                 push    es
                 mov     ax,seg_d
                 mov     ds,ax
-                mov     ax,7A20h
+                mov     ax,7A20h                ; vlm: get parse api address
                 mov     bx,3
                 int     2Fh                     ; ??INT Non-standard interrupt
-                mov     data_136,bx
-                mov     word ptr data_136+2,es
+                mov     vlm_parse_ptr,bx
+                mov     word ptr vlm_parse_ptr+2,es
                 mov     cx,4
                 mov     si,453h
                 mov     di,3ABh
                 push    ds
                 pop     es
-                call    dword ptr data_136
+                call    dword ptr vlm_parse_ptr
                 mov     bx,data_138
                 mov     ax,seg_a
                 mov     ds,ax
@@ -2323,8 +2283,8 @@ sub_28          proc    near
                 mov     bl,bh
                 mov     al,2
                 call    sub_29
-                mov     al,ds:data_37e
-                mov     ds:data_38e,al
+                mov     al,ds:data_0ae5
+                mov     ds:data_0ae6,al
                 pop     es
                 pop     ds
                 pop     di
@@ -2347,7 +2307,7 @@ sub_29          proc    near
                 mov     ah,al
                 not     ah
                 mov     cl,0
-                mov     di,data_35e
+                mov     di,offset data_0ae3
                 call    sub_30
                 inc     di
                 call    sub_30
@@ -2407,15 +2367,15 @@ sub_31          proc    near
                 mov     ax,seg_a
                 mov     ds,ax
                 cli
-                mov     ax,es:data_2e
-                mov     ds:data_58e,ax
-                mov     ax,es:data_3e
-                mov     ds:data_59e,ax
-                mov     ax,es:data_6e
-                mov     ds:data_62e,ax
-                mov     ax,es:data_7e
-                mov     ds:data_63e,ax
-                mov     ds,ds:data_39e
+                mov     ax,es:irq1_vector
+                mov     ds:data_0b2a,ax
+                mov     ax,es:irq1_vector+2
+                mov     ds:data_0b2c,ax
+                mov     ax,es:int16_vector
+                mov     ds:data_0b32,ax
+                mov     ax,es:int16_vector+2
+                mov     ds:data_0b34,ax
+                mov     ds,ds:data_0af6
                 mov     ax,170h
                 xchg    es:data_4e,ax
                 assume  ds:seg_c
@@ -2430,8 +2390,8 @@ sub_31          proc    near
 sub_31          endp
 
                 db      11 dup (0)
-data_127        dw      0, 0
-data_129        dw      0, 0
+vlm_multiplex_ptr        dw      0, 0
+vlm_call_ptr3   dw      0, 0
 data_131        dw      0
 data_132        db      0FFh
                 db      'NETWA'
@@ -2441,7 +2401,7 @@ data_132        db      0FFh
                 db      'DOSRQSTR.MSG', 0
                 db      'NDS.VLM, BIND.VLM, PNW.VLM'
                 db      0
-data_136        dw      0, 0
+vlm_parse_ptr   dw      0, 0
 data_138        dw      101h
                 db      'CHECKSUM'
                 db       00h,0F1h, 03h
