@@ -24,11 +24,8 @@ data_1          dw      0, seg_c
                 dw      VLMID_BIND
 
 
-;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
-;                              SUBROUTINE
-;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
-
-sub_1           proc    near
+; vcall_[target]_[nr] issue a VLM call from us (bind) to [target], command [nr]
+vcall_conn_0ah  proc    near
                 push    bp
                 mov     bp,VLMID_BIND
                 push    bp
@@ -39,14 +36,9 @@ sub_1           proc    near
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
-sub_1           endp
+vcall_conn_0ah  endp
 
-
-;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
-;                              SUBROUTINE
-;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
-
-sub_2           proc    near
+vcall_conn_7h   proc    near
                 push    bp
                 mov     bp,VLMID_BIND
                 push    bp
@@ -57,14 +49,9 @@ sub_2           proc    near
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
-sub_2           endp
+vcall_conn_7h   endp
 
-
-;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
-;                              SUBROUTINE
-;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
-
-sub_3           proc    near
+vcall_conn_8h   proc    near
                 push    bp
                 mov     bp,VLMID_BIND
                 push    bp
@@ -75,14 +62,9 @@ sub_3           proc    near
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
-sub_3           endp
+vcall_conn_8h   endp
 
-
-;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
-;                              SUBROUTINE
-;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
-
-sub_4           proc    near
+vcall_trans_6h  proc    near
                 push    bp
                 mov     bp,VLMID_BIND
                 push    bp
@@ -93,14 +75,9 @@ sub_4           proc    near
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
-sub_4           endp
+vcall_trans_6h  endp
 
-
-;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
-;                              SUBROUTINE
-;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
-
-sub_5           proc    near
+vcall_conn_0eh  proc    near
                 push    bp
                 mov     bp,VLMID_BIND
                 push    bp
@@ -111,14 +88,14 @@ sub_5           proc    near
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
-sub_5           endp
+vcall_conn_0eh  endp
 
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_6           proc    near
+vcall_conn_06h  proc    near
                 push    bp
                 mov     bp,VLMID_BIND
                 push    bp
@@ -129,14 +106,14 @@ sub_6           proc    near
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
-sub_6           endp
+vcall_conn_06h  endp
 
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_7           proc    near
+vcall_nwp_10h   proc    near
                 push    bp
                 mov     bp,VLMID_BIND
                 push    bp
@@ -147,7 +124,7 @@ sub_7           proc    near
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
-sub_7           endp
+vcall_nwp_10h   endp
 
                 db      0E8h, 00h
 loc_00d8:
@@ -182,7 +159,7 @@ loc_2::
                 xor     cx,cx
                 mov     dx,31h
                 mov     bx,100h
-                call    sub_1
+                call    vcall_conn_0ah
                 mov     ax,0
                 jnz     loc_3
                 callf   sub_11
@@ -234,7 +211,7 @@ loc_014b:
                 mov     [bp-2],cx
                 mov     word ptr [bp-4],0
                 mov     bh,0Dh
-                call    sub_2
+                call    vcall_conn_7h
                 jz      loc_7
                 jmp     loc_14
 loc_6::
@@ -263,7 +240,7 @@ loc_8::
                 cmp     cx,ax
                 je      loc_10
                 mov     bh,1
-                call    sub_2
+                call    vcall_conn_7h
                 cmp     dx,31h
                 je      loc_9
                 cmp     dx,32h
@@ -273,35 +250,35 @@ loc_9::
                 jmp     loc_16
 loc_10::
                 mov     bh,0Fh
-                call    sub_2
+                call    vcall_conn_7h
                 xor     cx,cx
                 or      dx,dx
                 jnz     loc_12
 loc_11::
                 mov     bx,100h
                 mov     dx,31h
-                call    sub_1
+                call    vcall_conn_0ah
                 mov     dx,0
                 jnz     loc_13
                 mov     bh,0Dh
-                call    sub_2
+                call    vcall_conn_7h
                 or      dx,dx
                 jz      loc_11
                 mov     word ptr [bp-4],0FFFFh
                 jmp     loc_16
 loc_12::
                 mov     bx,0F00h
-                call    sub_1
+                call    vcall_conn_0ah
                 jnz     loc_13
                 push    dx
                 mov     bh,1
-                call    sub_2
+                call    vcall_conn_7h
                 cmp     dx,31h
                 pop     dx
                 jnz     loc_12
                 push    dx
                 mov     bh,0Dh
-                call    sub_2
+                call    vcall_conn_7h
                 or      dx,dx
                 pop     dx
                 jz      loc_12
@@ -321,11 +298,11 @@ loc_13::
                 jnz     loc_14
                 mov     [bp-2],cx
                 mov     bh,0Fh
-                call    sub_3
+                call    vcall_conn_8h
                 push    dx
                 mov     bh,1
                 mov     dx,31h
-                call    sub_3
+                call    vcall_conn_8h
                 pop     dx
                 push    bp
                 mov     bp,VLMID_BIND
@@ -396,7 +373,7 @@ loc_17::
                 pop     cx
                 jnz     loc_18
                 mov     cx,[bp-8]
-                call    sub_6
+                call    vcall_conn_06h
                 mov     cx,[bp-2]
                 mov     [bp-8],cx
                 xor     ax,ax
@@ -435,7 +412,7 @@ sub_9           proc    near
                 push    dx
                 mov     dx,cx
                 xor     cx,cx
-                call    sub_5
+                call    vcall_conn_0eh
                 jz      loc_20
                 mov     cx,dx
                 jmp     short loc_21
@@ -491,11 +468,11 @@ loc_23::
                 push    dx
                 mov     dx,31h
                 mov     bx,100h
-                call    sub_1
+                call    vcall_conn_0ah
                 pop     dx
                 jnz     loc_25
                 mov     bh,0Dh
-                call    sub_2
+                call    vcall_conn_7h
                 or      dx,dx
                 jz      loc_23
 loc_24::
@@ -541,7 +518,7 @@ loc_24::
                 mov     dx,2
                 mov     al,17h
                 mov     cx,[bp-4]
-                call    sub_4
+                call    vcall_trans_6h
 loc_25::
                 mov     [bp-2],ax
                 pop     es
@@ -567,19 +544,19 @@ sub_11          proc    far
                 push    bx
                 push    dx
                 mov     bh,0Dh
-                call    sub_2
+                call    vcall_conn_7h
                 jnz     loc_27
                 or      dx,dx
                 jz      loc_26
                 mov     bh,10h
                 mov     dx,5555h
-                call    sub_3
+                call    vcall_conn_8h
                 xor     ax,ax
                 mov     bx,ax
                 mov     dx,ax
-                call    sub_4
+                call    vcall_trans_6h
 loc_26::
-                call    sub_6
+                call    vcall_conn_06h
 loc_27::
                 pop     dx
                 pop     bx
@@ -625,12 +602,12 @@ sub_12          proc    far
                 call    sub_13
                 mov     bx,100h
                 xor     dx,dx
-                call    sub_4
+                call    vcall_trans_6h
                 jz      loc_30
                 cmp     al,0FFh
                 je      loc_28
                 push    ax
-                call    sub_6
+                call    vcall_conn_06h
                 pop     ax
                 jmp     short loc_29
 loc_28::
@@ -666,7 +643,7 @@ loc_30::
                 mov     bx,1
                 mov     dx,bx
                 mov     al,17h
-                call    sub_4
+                call    vcall_trans_6h
                 jnz     loc_29
                 assume  ds:seg_b
                 mov     dx,data_47
@@ -706,7 +683,7 @@ loc_30::
                 pop     bp
                 jmp     loc_29
 loc_31::
-                call    sub_6
+                call    vcall_conn_06h
                 jmp     loc_29
 sub_12          endp
 
@@ -716,7 +693,7 @@ sub_12          endp
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
 sub_13          proc    near
-                call    sub_3
+                call    vcall_conn_8h
                 jnz     loc_32
                 retn
 loc_32::
@@ -818,7 +795,7 @@ loc_35::
                 jz      loc_38
                 push    ax
                 mov     al,1
-                call    sub_7
+                call    vcall_nwp_10h
                 test    bh,dl
                 pop     ax
                 jz      loc_38
@@ -827,14 +804,14 @@ loc_35::
                 or      bl,dl
                 or      cl,dl
                 mov     al,4
-                call    sub_7
+                call    vcall_nwp_10h
                 mov     cx,[bp-4]
                 mov     al,6
-                call    sub_7
+                call    vcall_nwp_10h
                 pop     cx
                 pop     bx
                 mov     al,4
-                call    sub_7
+                call    vcall_nwp_10h
                 call    sub_16
                 jnz     loc_38
                 call    sub_17
@@ -843,7 +820,7 @@ loc_35::
 loc_36::
                 push    ax
                 mov     bh,14h
-                call    sub_2
+                call    vcall_conn_7h
                 pop     ax
                 test    dl,0Ah
                 jz      loc_37
@@ -860,7 +837,7 @@ loc_36::
                 push    es
                 pop     ds
                 mov     al,2
-                call    sub_7
+                call    vcall_nwp_10h
                 or      ax,ax
                 jnz     loc_38
 loc_37::
@@ -888,7 +865,7 @@ loc_39::
 sub_14          proc    near
                 mov     al,17h
                 mov     cx,[bp-4]
-                call    sub_4
+                call    vcall_trans_6h
                 mov     [bp-2],ax
                 cmp     al,0DFh
                 je      loc_40
@@ -935,14 +912,14 @@ loc_42::
                 call    sub_14
 loc_43::
                 mov     bh,3
-                call    sub_3
+                call    vcall_conn_8h
                 jnz     loc_44
                 mov     bh,2
-                call    sub_3
+                call    vcall_conn_8h
                 jnz     loc_44
                 mov     bh,1
                 mov     dx,31h
-                call    sub_3
+                call    vcall_conn_8h
                 jnz     loc_44
                 jmp     loc_39
 loc_44::
@@ -974,7 +951,7 @@ sub_16          proc    near
                 mov     bl,1
                 mov     bh,1
                 mov     dx,1
-                call    sub_4
+                call    vcall_trans_6h
                 jnz     loc_ret_45
                 mov     di,seg seg_a
                 mov     es,di
@@ -1025,7 +1002,7 @@ sub_18          proc    near
                 xor     dx,dx
                 mov     al,17h
                 mov     cx,[bp-4]
-                call    sub_4
+                call    vcall_trans_6h
                 cmp     al,0DFh
                 je      loc_46
                 or      ax,ax
@@ -1125,7 +1102,7 @@ loc_55::
                 je      loc_56
                 mov     cx,data_63
                 mov     si,18Eh
-                call    sub_5
+                call    vcall_conn_0eh
                 jnz     loc_58
                 jz      loc_59
                 mov     ax,8855h
@@ -1147,7 +1124,7 @@ loc_58::
                 jnz     loc_57
                 mov     dx,31h
                 mov     bh,1
-                call    sub_3
+                call    vcall_conn_8h
                 mov     dl,4
                 push    bp
                 mov     bp,VLMID_BIND
@@ -1165,7 +1142,7 @@ loc_59::
                 mov     [bp-4],cx
                 jmp     loc_48
 loc_60::
-                call    sub_6
+                call    vcall_conn_06h
                 mov     word ptr [bp-2],8855h
                 jmp     loc_48
 

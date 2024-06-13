@@ -569,13 +569,13 @@ loc_41::
                 cmp     dl,7
                 ja      loc_36
                 jz      loc_42
-                mov     cx,cs:data_0b10
+                mov     cx,cs:v_msg_timeout
                 jmp     short loc_43
 loc_42::
                 push    ds
                 mov     ax,seg_a
                 mov     ds,ax
-                xchg    ds:data_0b10,cx
+                xchg    ds:v_msg_timeout,cx
                 pop     ds
 loc_43::
                 mov     [bp-4],cx
@@ -656,6 +656,7 @@ loc_49::
 loc_50::
                 cmp     cx,0FFFFh
                 jne     loc_51
+
                 mov     es,ds:data_0af6
                 mov     di,offset data_109
                 mov     bx,1
@@ -669,7 +670,8 @@ loc_50::
                 call    dword ptr cs:vlm_call_ptr2
                 pop     bp
                 jmp     short loc_52
-loc_51::
+
+loc_51::        ; cx != 0FFFFh
                 push    ds
                 mov     es,ds:data_0af6
                 mov     byte ptr es:data_108,1
@@ -683,6 +685,7 @@ loc_51::
                 call    sub_3
                 pop     ds
                 jnz     loc_53
+
 loc_52::
                 test    byte ptr es:data_109,0FFh
                 jz      loc_53
@@ -885,7 +888,7 @@ loc_64::
                 jnz     loc_65
                 and     dl,0FEh
 loc_65::
-                cmp     byte ptr cs:data_0ae2,0
+                cmp     byte ptr cs:v_lip,0
                 jne     loc_66
                 or      dl,80h
 loc_66::
@@ -954,7 +957,7 @@ loc_70::
                 call    sub_5
                 or      dx,dx
                 jz      loc_74
-                cmp     byte ptr cs:data_0ae2,0
+                cmp     byte ptr cs:v_lip,0
                 je      loc_74
                 test    byte ptr data_105,80h
                 jnz     loc_74
@@ -1493,12 +1496,12 @@ write_char_attr endp
 wait_until_key_or_timeout          proc    near
                 call    swap_keyboard_ints
                 mov     ax,word ptr es:[46Ch]
-                add     ax,ds:data_0b10
+                add     ax,ds:v_msg_timeout
                 mov     ds:data_0b12,ax
 
                 ; loop until timeout or keyboard char
 loc_101::
-                cmp     word ptr ds:data_0b10,0
+                cmp     word ptr ds:v_msg_timeout,0
                 je      loc_102
                 mov     ax,ds:data_0b12
                 sub     ax,word ptr es:[46Ch]
@@ -1582,7 +1585,7 @@ swap_keyboard_ints endp
 
 ; AE0h
 data_0ae0       db      7, 0
-data_0ae2       db      1
+v_lip           db      1
 data_0ae3       db      3
 data_0ae4       db      0
 data_0ae5       db      0
@@ -1594,7 +1597,7 @@ data_0afe       dw      0
 data_0b00       dw      31h, 32h, 33h, 0
 data_0b08       db      6 dup (0)
 data_0b0e       dw      3
-data_0b10       dw      0
+v_msg_timeout   dw      0
 data_0b12       dw      0
 data_0b14       db      12 dup (0)
 display_page    db      0                           ; 0B21
@@ -1883,7 +1886,7 @@ data_107        dw      offset data_103, seg_c
                 dw      0
 data_044d       db      0, 1
 data_108        db      1
-data_109        db      0
+data_109        db      0                               ; this may be the text string to show
 data_110        db      59 dup (0)
                 dw      offset data_044d, seg_c
                 dw       03h
@@ -1988,7 +1991,7 @@ loc_119::
 loc_120::
                 push    bx
                 push    ds
-                mov     ax,49Dh
+                mov     ax,offset data_049d
                 push    ax
                 mov     bx,6
                 mov     ah,1
@@ -2266,16 +2269,16 @@ sub_28          proc    near
                 mov     ds,ax
                 mov     ax,7A20h                ; vlm: get parse api address
                 mov     bx,3
-                int     2Fh                     ; ??INT Non-standard interrupt
+                int     2Fh
                 mov     vlm_parse_ptr,bx
                 mov     word ptr vlm_parse_ptr+2,es
                 mov     cx,4
-                mov     si,453h
-                mov     di,3ABh
+                mov     si,offset config_settings
+                mov     di,offset s_nw_dos_req
                 push    ds
                 pop     es
                 call    dword ptr vlm_parse_ptr
-                mov     bx,data_138
+                mov     bx,word ptr [v_checksum]         ; signature level / checksum
                 mov     ax,seg_a
                 mov     ds,ax
                 mov     al,1
@@ -2316,11 +2319,12 @@ sub_29          proc    near
                 retn
 sub_29          endp
 
-
-;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
-;                              SUBROUTINE
-;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
-
+;
+; ++cl
+; if (bl < cl)
+;       [di] &= ah
+; else
+;       [di] |= al
 sub_30          proc    near
                 inc     cl
 ;*              cmp     bl,cl
@@ -2394,44 +2398,45 @@ vlm_multiplex_ptr        dw      0, 0
 vlm_call_ptr3   dw      0, 0
 data_131        dw      0
 data_132        db      0FFh
-                db      'NETWA'
-                db      'RE DOS REQ'
-                db      'UESTER', 0
+s_nw_dos_req    db      'NETWARE DOS REQUESTER', 0
                 db      'NWP', 0
                 db      'DOSRQSTR.MSG', 0
                 db      'NDS.VLM, BIND.VLM, PNW.VLM'
                 db      0
 vlm_parse_ptr   dw      0, 0
-data_138        dw      101h
-                db      'CHECKSUM'
-                db       00h,0F1h, 03h
-                dw      seg_d
+v_checksum      db      1
+v_sig_level     db      1
+s_checksum      db      'CHECKSUM', 0
+data_03fc       dw      offset v_checksum, seg_d
                 db      0, 0, 3, 0
-                db      'LARGE INTERNET PACKETS'
-                db       00h,0E2h, 0Ah
-                dw      seg_a
+s_lip           db      'LARGE INTERNET PACKETS', 0
+data_041b       dw      offset v_lip, seg_a
                 db       00h, 00h,0FFh,0FFh
-                db      'SIGNATURE LEVEL'
-                db       00h,0F2h, 03h
-                dw      seg_d
+s_siglevel      db      'SIGNATURE LEVEL', 0
+data_0433       dw      offset v_sig_level, seg_d
                 db      0, 0, 3, 0
-                db      'MESSAGE TIMEOUT'
-                db       00h, 10h, 0Bh
-                dw      seg_a
-                db       00h, 00h, 10h, 27h,0F3h, 03h
-                db       09h, 01h, 00h, 00h,0FCh, 03h
-                db       04h, 04h, 17h, 00h, 04h, 00h
-                db       1Bh, 04h, 23h, 04h, 10h, 01h
-                db       00h, 00h, 33h, 04h, 3Bh, 04h
-                db       10h, 01h, 02h, 00h, 4Bh, 04h
-data_139        db      8Eh
-                db       04h, 94h, 04h,0DEh, 04h,0EAh
-                db       04h,0F7h, 04h,0FDh, 04h, 43h
-                db       04h, 49h, 04h,0DAh, 03h
-data_140        dw      9
+s_msgtimeout    db      'MESSAGE TIMEOUT', 0
+data_044b       dw      offset v_msg_timeout, seg_a
+                db       00h, 00h, 10h, 27h
+
+config_settings dw      offset s_checksum,   109h, 0h, offset data_03fc
+                dw      offset s_lip,         17h, 4h, offset data_041b
+                dw      offset s_siglevel,   110h, 0h, offset data_0433
+                dw      offset s_msgtimeout, 110h, 2h, offset data_044b
+
+data_139        dw      48Eh
+                dw      494h
+                dw      4DEh
+                dw      4EAh
+                dw      4F7h
+                dw      4FDh
+                dw      443h
+                dw      449h
+                dw      3DAh
+data_140        dw      9                       ; number of entries above
                 db      9 dup (0)
                 db      'VeRsIoN=1.21', 0
-                db      'NWP.VLM    - NetWare DOS Request'
+data_049d       db      'NWP.VLM    - NetWare DOS Request'
                 db      'or NetWare protocol module  v1.2'
                 db      '1 (960514)', 0Dh, 0Ah
                 db      0

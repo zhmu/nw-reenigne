@@ -1,8 +1,6 @@
 ; The following equates show data references outside the range of the program.
 
-data_1e         equ     3
 data_2e         equ     3Fh
-data_3e         equ     0BAh
 data_4e         equ     694h                    ;*
 data_5e         equ     696h                    ;*
 data_6e         equ     6AAh                    ;*
@@ -11,15 +9,13 @@ data_8e         equ     3                       ;*
 data_9e         equ     2Ch                     ;*
 data_10e        equ     100h                    ;*
 data_11e        equ     1                       ;*
-data_140e       equ     0
 data_141e       equ     1
-data_142e       equ     3
-data_143e       equ     10h
-data_144e       equ     26h
-data_145e       equ     3Ch
 data_146e       equ     3
 
 include common.inc
+include dos.inc
+
+CDS_DATA_NW     equ     4E57h   ; NW
 
 ;------------------------------------------------------------  seg_a   ----
 
@@ -156,7 +152,7 @@ loc_7::
                 pop     bp
                 jnz     loc_9
 loc_8::
-                mov     es,data_56
+                mov     es,seg_b_value
                 mov     data_62,cx
                 push    bp
                 call    sub_1
@@ -212,11 +208,11 @@ sub_1           proc    near
                 cmp     al,0FFh
                 xchg    al,bl
                 jnz     loc_20
-                les     si,data_49
-                mov     al,es:[si+16h]
+                les     si,dos_sda_ptr
+                mov     al,es:[si+SDA_CURDRIVE]
                 cbw
                 push    ax
-                call    sub_2
+                call    get_drive_cds
                 xor     bx,bx
                 pop     bp
                 test    word ptr es:[si+43h],4000h
@@ -234,9 +230,9 @@ loc_16::
 ;ÄÄÄÄÄ Indexed Entry Point ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 
 loc_17::
-                les     di,data_51
-                mov     bx,data_63
-                mov     cl,data_74
+                les     di,dos_cds_ptr
+                mov     bx,cds_entry_len
+                mov     cl,lastdrive
 loc_18::
                 test    word ptr es:[di+43h],0F000h
                 jz      loc_19
@@ -245,7 +241,7 @@ loc_18::
                 jnz     loc_18
                 jmp     loc_26
 loc_19::
-                mov     al,data_74
+                mov     al,lastdrive
                 sub     al,cl
                 add     al,41h                  ; 'A'
                 mov     data_76,al
@@ -257,12 +253,12 @@ loc_20::
 loc_21::
                 cmp     byte ptr data_79,0
                 je      loc_23
-                les     si,data_49
+                les     si,dos_sda_ptr
                 mov     al,data_75
                 or      al,al
                 jz      loc_23
                 sub     al,41h                  ; 'A'
-                mov     es:[si+16h],al
+                mov     es:[si+SDA_CURDRIVE],al
 
 ;ÄÄÄÄÄ Indexed Entry Point ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 
@@ -278,13 +274,13 @@ loc_23::
                 cmp     al,data_75
                 jae     loc_24
                 mov     al,data_75
-                les     si,data_49
+                les     si,dos_sda_ptr
                 push    ax
                 sub     al,41h                  ; 'A'
-                mov     es:[si+16h],al
+                mov     es:[si+SDA_CURDRIVE],al
                 pop     ax
 loc_24::
-                mov     ds,data_56
+                mov     ds,seg_b_value
                 mov     cx,cs:data_62
                 mov     si,316h
                 assume  ds:seg_b
@@ -304,19 +300,22 @@ loc_24::
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 jnz     loc_26
+
                 push    cx
                 lea     di,[bx+di]
                 mov     si,offset data_102      ; ('\SYS\LOGIN')
                 mov     cx,0Ch
                 rep     movsb
-                mov     si,316h
-                mov     di,319h
-                mov     cx,4E57h
-                mov     bx,4
-                mov     ax,5F03h
+
+                ; redirects a network device
+                mov     si,316h                 ; local device name
+                mov     di,319h                 ; network name
+                mov     cx,CDS_DATA_NW          ; user data: netware
+                mov     bx,4                    ; disk drive
+                mov     ax,5F03h                ; dos: redirect device
                 push    ax
-                mov     ax,111Eh
-                int     2Fh                     ; ??INT Non-standard interrupt
+                mov     ax,111Eh                ; dos: do redirection
+                int     2Fh
                 pop     cx
                 pop     cx
                 jc      loc_26
@@ -330,18 +329,15 @@ loc_26::
 sub_1           endp
 
 
-;ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
-;                              SUBROUTINE
-;ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
-
-sub_2           proc    near
+; given drive [ax], returns es:si = pointer to CDS entry
+get_drive_cds   proc    near
                 assume  ds:seg_a
-                les     si,data_51
-                mov     bx,data_63
+                les     si,dos_cds_ptr
+                mov     bx,cds_entry_len
                 mul     bl
                 add     si,ax
                 retn
-sub_2           endp
+get_drive_cds   endp
 
 loc_0253:
                 push    bx
@@ -371,7 +367,7 @@ loc_0253:
 loc_27::
                 or      cx,cx
                 jnz     loc_28
-                lds     dx,cs:data_54
+                lds     dx,cs:int21_prev_ptr2
                 mov     ax,2521h
                 int     21h                     ; DOS Services  ah=function 25h
                                                 ;  set intrpt vector al to ds:dx
@@ -479,7 +475,7 @@ sub_4           proc    far
                 push    es
                 mov     ax,seg_a
                 mov     ds,ax
-                mov     ax,data_56
+                mov     ax,seg_b_value
                 mov     bx,word ptr data_45+2
                 cmp     ax,bx
                 jne     loc_34
@@ -503,7 +499,7 @@ loc_35::
                 jmp     short loc_40
 loc_36::
                 mov     cx,8
-                mov     si,offset data_70       ; ('COMSPEC=')
+                mov     si,offset s_env_comspec       ; ('COMSPEC=')
                 repe    cmpsb
                 jz      loc_37
                 mov     cx,100h
@@ -553,14 +549,14 @@ loc_39::
                 inc     si
                 rep     movsb
                 pop     ds
-                mov     si,offset data_70       ; ('COMSPEC=')
+                mov     si,offset s_env_comspec       ; ('COMSPEC=')
                 mov     cx,8
                 rep     movsb
                 xor     ch,ch
                 mov     cl,data_69
                 push    ds
                 push    cx
-                mov     ds,data_56
+                mov     ds,seg_b_value
                 mov     si,offset data_124
                 push    si
                 mov     cx,bp
@@ -627,12 +623,15 @@ loc_42::
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 jz      loc_44
-                les     si,data_49
-                mov     al,es:[si+16h]
-                call    sub_2
-                cmp     word ptr es:[si+4Dh],4E57h
+
+                les     si,dos_sda_ptr
+                mov     al,es:[si+SDA_CURDRIVE]
+                call    get_drive_cds
+                cmp     word ptr es:[si+CDS_USERDATA],CDS_DATA_NW
                 jne     loc_43
-                mov     cx,es:[si+4Bh]
+
+                ; NW drive
+                mov     cx,es:[si+CDS_4B]
                 xor     ax,ax
                 jmp     short loc_44
 loc_43::
@@ -699,14 +698,14 @@ loc_49::
 
 loc_50::
                 mov     si,3B0h
-                mov     es,data_56
+                mov     es,seg_b_value
                 jmp     short loc_52
 
 ;ÄÄÄÄÄ Indexed Entry Point ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 
 loc_51::
                 mov     si,3A9h
-                mov     es,data_56
+                mov     es,seg_b_value
 loc_52::
                 xor     ax,ax
 loc_53::
@@ -724,7 +723,7 @@ loc_55::
                 pop     ds
                 mov     di,offset data_118
                 push    es
-                mov     es,cs:data_56
+                mov     es,cs:seg_b_value
                 mov     cx,4
                 push    si
                 rep     movsb
@@ -742,7 +741,7 @@ loc_56::
 
 loc_57::
                 mov     si,3B5h
-                mov     es,cs:data_56
+                mov     es,cs:seg_b_value
                 jmp     short loc_52
 
 ;ÄÄÄÄÄ Indexed Entry Point ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
@@ -753,7 +752,7 @@ loc_59::
                 push    es
                 pop     ds
                 push    es
-                mov     es,cs:data_56
+                mov     es,cs:seg_b_value
                 mov     cx,6
                 push    si
                 rep     movsb
@@ -779,7 +778,7 @@ loc_60::
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 mov     si,8851h
-                mov     es,cs:data_56
+                mov     es,cs:seg_b_value
                 mov     cx,20h
                 mov     di,offset data_122
                 cmp     dh,0
@@ -857,7 +856,7 @@ loc_66::
 loc_67::
                 mov     data_62,cx
                 push    bp
-                mov     es,data_56
+                mov     es,seg_b_value
                 call    sub_1
                 pop     bp
                 mov     cx,cs:data_62
@@ -884,7 +883,7 @@ sub_5           proc    near
                 xor     di,di
                 xor     ax,ax
 loc_69::
-                mov     si,offset data_71
+                mov     si,offset s_env_path
                 mov     cx,5
                 repe    cmpsb
                 jz      loc_ret_71
@@ -991,13 +990,13 @@ loc_064a:
                 jz      loc_80
                 dec     bx
                 jnz     loc_83
-                mov     es,data_56
+                mov     es,seg_b_value
                 mov     si,3A8h
                 jmp     short loc_82
 loc_80::
-                les     si,data_51
-                mov     cx,data_63
-                mov     ch,data_74
+                les     si,dos_cds_ptr
+                mov     cx,cds_entry_len
+                mov     ch,lastdrive
                 jmp     short loc_82
 loc_81::
                 mov     ax,seg_a
@@ -1015,32 +1014,30 @@ loc_83::
 
 vlm_call_ptr    dw      0, 0
 data_45         dw      408h, seg_b
-data_47         db      0, 0
-data_48         dw      0                       ; segment storage
-data_49         dd      00000h
-data_51         dd      00000h
+dos_lol_ptr     dw      0, 0
+dos_sda_ptr     dd      00000h
+dos_cds_ptr     dd      00000h
 data_53         db      6
                 db      0
-data_54         dd      00000h
-data_56         dw      seg_b
+int21_prev_ptr2 dd      00000h
+seg_b_value     dw      seg_b
 data_57         dw      0
 data_58         db       00h, 00h               ; segment storage
 data_59         dw      0
 data_60         dw      0
 data_61         dw      0
 data_62         dw      0
-data_63         dw      0
+cds_entry_len   dw      0
 data_64         dw      0
 data_65         dw      0
 data_66         dw      0
 data_67         dw      3
 data_68         dw      1
 data_69         db      0
-data_70         db      'COMSPEC='
-data_71         db      50h
-                db       41h, 54h, 48h, 3Dh
-data_72         dw      0
-data_74         db      0
+s_env_comspec   db      'COMSPEC='
+s_env_path      db      'PATH='
+dos_version     dw      0
+lastdrive       db      0
 data_75         db      0
                 db      0
 data_76         db      0
@@ -1148,7 +1145,7 @@ sub_10          proc    near
                 pop     bx
                 pop     ax
                 pushf
-                call    dword ptr cs:data_95
+                call    dword ptr cs:int21_prev_ptr
                 pushf
                 push    ax
                 push    bx
@@ -1167,9 +1164,9 @@ sub_10          endp
 
 ;ÄÄÄÄÄ Indexed Entry Point ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 
-loc_84::
+handle_fcb::
                 xchg    bx,dx
-                cmp     byte ptr [bx],0FFh
+                cmp     byte ptr [bx+FCB_DRIVENUM],0FFh
                 je      loc_89
 loc_85::
                 xchg    bx,dx
@@ -1177,19 +1174,20 @@ loc_85::
 
 ;ÄÄÄÄÄ Indexed Entry Point ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 
-loc_86::
+gset_file_attr: ; set attrs?
                 cmp     al,1
-                jne     loc_90
+                jne     loc_90          ; no
 
 ;ÄÄÄÄÄ Indexed Entry Point ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 
-loc_87::
-                test    cl,80h
+handle_cx_attr::
+                test    cl,ATTR_SHAREABLE
                 jz      loc_90
                 pop     di
                 popf
+
                 push    cx
-                and     cl,7Fh
+                and     cl,7Fh ; not ATTR_SHAREABLE
                 call    sub_10
                 pop     cx
 loc_88::
@@ -1231,7 +1229,7 @@ int_21h_entry   proc    far
                 push    cx
                 push    es
                 mov     al,ah
-                mov     di,offset data_80
+                mov     di,offset int21_hook_fns
                 mov     cx,9
                 push    cs
                 pop     es
@@ -1242,15 +1240,15 @@ int_21h_entry   proc    far
                 jnz     loc_90
                 sub     di,2D2h
                 add     di,di
-                jmp     word ptr cs:data_81[di] ;*9 entries
+                jmp     word ptr cs:int21_func_ptrs[di] ;*9 entries
 loc_90::
                 pop     di
                 popf
-                jmp     dword ptr cs:data_95
+                jmp     dword ptr cs:int21_prev_ptr
 
 ;ÄÄÄÄÄ Indexed Entry Point ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 
-loc_91::
+handle_ffirst::
                 cmp     byte ptr cs:data_123,0
                 jne     loc_90
                 cmp     byte ptr cs:data_117,0
@@ -1271,21 +1269,21 @@ loc_91::
                 mov     di,offset data_101
                 mov     si,di
                 stosb
-                mov     ax,2A3Ah
+                mov     ax,2A3Ah        ; "*:"
                 stosw
-                mov     ax,2A2Eh
+                mov     ax,2A2Eh        ; "*."
                 stosw
                 xor     al,al
                 stosb
                 push    si
-                lds     si,cs:data_93
-                les     di,dword ptr [si+0Ch]
+                lds     si,cs:dos_sda_ptr2
+                les     di,dword ptr [si+SDA_DTA_PTR]
                 pop     si
                 push    cs
                 pop     ds
-                mov     ax,2904h
+                mov     ax,2904h        ; dos: parse filename into fcb
                 pushf
-                call    dword ptr cs:data_95
+                call    dword ptr cs:int21_prev_ptr
                 cmp     al,0FFh
                 pop     es
                 pop     ds
@@ -1309,7 +1307,7 @@ loc_91::
 
 ;ÄÄÄÄÄ Indexed Entry Point ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 
-loc_92::
+handle_parse_fname_fcb::
                 cmp     byte ptr cs:data_123,0
                 jne     loc_90
                 cmp     byte ptr cs:data_117,0
@@ -1317,7 +1315,7 @@ loc_92::
                 pop     di
                 popf
                 pushf
-                call    dword ptr cs:data_95
+                call    dword ptr cs:int21_prev_ptr
                 pushf
                 cmp     al,0FFh
                 je      loc_93
@@ -1356,22 +1354,22 @@ loc_95::
 
 ;ÄÄÄÄÄ Indexed Entry Point ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 
-loc_96::
+handle_tmpfile::
                 xchg    bx,dx
                 cmp     byte ptr [bx],0
                 jne     loc_97
                 push    ax
-                mov     ax,5C2Eh
+                mov     ax,5C2Eh                ; "\\."
                 mov     [bx],ax
                 mov     byte ptr [bx+2],0
                 pop     ax
 loc_97::
                 xchg    bx,dx
-                jmp     loc_87
+                jmp     handle_cx_attr
 
 ;ÄÄÄÄÄ Indexed Entry Point ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 
-loc_98::
+gset_disk_serial::
                 push    ax
                 push    bx
                 push    cx
@@ -1385,12 +1383,12 @@ loc_98::
                 cbw
                 jmp     short loc_100
 loc_99::
-                les     si,cs:data_93
-                mov     al,es:[si+16h]
+                les     si,cs:dos_sda_ptr2
+                mov     al,es:[si+SDA_CURDRIVE]
                 cbw
 loc_100::
-                call    sub_12
-                cmp     word ptr es:[si+4Dh],4E57h
+                call    get_drive_cds2
+                cmp     word ptr es:[si+CDS_USERDATA],CDS_DATA_NW
                 je      loc_101
                 pop     es
                 pop     si
@@ -1417,8 +1415,8 @@ loc_102::
                 mov     ax,5
                 retf    2
 loc_103::
-                mov     cx,es:[si+4Bh]
-                mov     dl,es:[si+4Ah]
+                mov     cx,es:[si+CDS_4B]
+                mov     dl,es:[si+CDS_4A]
                 push    cs
                 pop     ds
                 mov     data_116,cx
@@ -1534,39 +1532,46 @@ locloop_106::
                 retn
 sub_11          endp
 
-data_80         db      43h
-                db       3Ch, 5Bh, 0Fh, 16h
-                db       5Ah, 29h, 4Eh, 69h
-data_81         dw      offset loc_86           ; Data table (indexed access)
-data_82         dw      offset loc_87
-data_83         dw      offset loc_87
-data_84         dw      offset loc_84
-data_85         dw      offset loc_84
-data_86         dw      offset loc_96
-data_87         dw      offset loc_92
-data_88         dw      offset loc_91
-data_89         dw      offset loc_98
+int21_hook_fns  db      43h                     ; get/set file attributes
+                db      3Ch                     ; create/truncate file
+                db      5Bh                     ; create new file
+                db      0Fh                     ; open file using fcb
+                db      16h                     ; create/truncatr using fcb
+                db      5Ah                     ; create temporary file
+                db      29h                     ; parse filename into fcb
+                db      4Eh                     ; find first
+                db      69h                     ; get/set disk serial
+
+int21_func_ptrs dw      offset gset_file_attr
+                dw      offset handle_cx_attr
+                dw      offset handle_cx_attr
+                dw      offset handle_fcb
+                dw      offset handle_fcb
+                dw      offset handle_tmpfile
+                dw      offset handle_parse_fname_fcb
+                dw      offset handle_ffirst
+                dw      offset gset_disk_serial
 
 ;ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 ;                              SUBROUTINE
 ;ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
 
-sub_12          proc    near
+get_drive_cds2  proc    near
                 push    bx
-                les     si,cs:data_97
-                mov     bx,cs:data_99
+                les     si,cs:dos_cds_ptr2
+                mov     bx,cs:cds_entry_len2
                 mul     bl
                 add     si,ax
                 pop     bx
                 retn
-sub_12          endp
+get_drive_cds2  endp
 
                 db      7 dup (0)
 vlm_call_ptr2   dw      0, 0
-data_93         dd      00000h
-data_95         dw      0, 0
-data_97         dd      00000h
-data_99         dw      0
+dos_sda_ptr2    dd      00000h
+int21_prev_ptr  dw      0, 0
+dos_cds_ptr2    dd      00000h
+cds_entry_len2  dw      0
 data_100        db      30h
                 db       3Ah, 00h
 data_101        dw      30 dup (0)
@@ -1620,11 +1625,11 @@ seg_c           segment byte public
                 mov     ax,7A20h
                 mov     bx,2
                 int     2Fh                     ; ??INT Non-standard interrupt
-                mov     data_127,bx
-                mov     word ptr data_127+2,es
+                mov     vlm_multiplex_ptr,bx
+                mov     word ptr vlm_multiplex_ptr+2,es
                 mov     bx,0
                 mov     dx,30h
-                call    dword ptr data_127
+                call    dword ptr vlm_multiplex_ptr
                 or      ax,ax
                 jz      loc_107
                 push    ax
@@ -1639,7 +1644,7 @@ seg_c           segment byte public
                 mov     si,offset data_133      ; ('GENERAL')
                 push    cs
                 pop     ds
-                call    dword ptr cs:data_127
+                call    dword ptr cs:vlm_multiplex_ptr
                 pop     ds
                 pop     si
                 pop     cx
@@ -1660,7 +1665,7 @@ seg_c           segment byte public
                 mov     bx,6
                 mov     ah,0
                 mov     al,0
-                call    dword ptr data_127
+                call    dword ptr vlm_multiplex_ptr
                 add     sp,0Eh
                 pop     bx
                 push    bx
@@ -1675,7 +1680,7 @@ seg_c           segment byte public
                 mov     bx,6
                 mov     ah,0
                 mov     al,0
-                call    dword ptr data_127
+                call    dword ptr vlm_multiplex_ptr
                 add     sp,0Ah
                 pop     bx
                 pop     ax
@@ -1690,9 +1695,9 @@ loc_108::
                 mov     ax,seg_a
                 mov     es,ax
                 push    es
-                mov     ax,7A20h
+                mov     ax,7A20h                ; vlm: get call pointer
                 mov     bx,0
-                int     2Fh                     ; ??INT Non-standard interrupt
+                int     2Fh
                 mov     ax,es
                 mov     cx,seg seg_b
                 mov     es,cx
@@ -1701,8 +1706,8 @@ loc_108::
                 pop     es
                 mov     word ptr es:vlm_call_ptr,bx
                 mov     word ptr es:vlm_call_ptr+2,ax
-                mov     data_129,bx
-                mov     data_130,ax
+                mov     word ptr vlm_call_ptr3,bx
+                mov     word ptr vlm_call_ptr3+2,ax
                 push    bx
                 push    ds
                 mov     ax,4C6h
@@ -1710,12 +1715,12 @@ loc_108::
                 mov     bx,6
                 mov     ah,1
                 mov     al,2
-                call    dword ptr data_127
+                call    dword ptr vlm_multiplex_ptr
                 add     sp,4
                 pop     bx
-                call    sub_13
+                call    parse_config
                 mov     dx,data_131
-                mov     es:data_56,dx
+                mov     es:seg_b_value,dx
                 mov     ax,seg_b
                 mov     es,ax
                 mov     si,offset data_135
@@ -1743,54 +1748,56 @@ loc_110::
                 rep     movsw
                 adc     cx,cx
                 rep     movsb
-                mov     ax,5D06h
-                int     21h                     ; DOS Services  ah=function 5Dh
-                                                ;  get DOS swap area ptr ds:si
-                                                ;   swap sizes in cx and dx
-                                                ;*  undocumented function
+
+                mov     ax,5D06h                ; dos: get sda pointer
+                int     21h
                 mov     bx,ds
                 mov     ax,seg_a
                 mov     ds,ax
                 assume  ds:seg_a
-                mov     word ptr data_49,si
-                mov     word ptr data_49+2,bx
-                mov     es,data_56
+                mov     word ptr dos_sda_ptr,si
+                mov     word ptr dos_sda_ptr+2,bx
+                mov     es,seg_b_value
                 mov     word ptr data_45+2,es
-                mov     word ptr es:data_93,si
-                mov     word ptr es:data_93+2,bx
-                mov     ah,52h
-                int     21h                     ; DOS Services  ah=function 52h
-                                                ;  get DOS data table ptr es:bx
-                                                ;*  undocumented function
-                mov     word ptr data_47,bx
-                mov     data_48,es
-                mov     dl,es:[bx+21h]
-                mov     data_74,dl
-                les     di,dword ptr es:[bx+16h]
-                mov     word ptr data_51,di
-                mov     word ptr data_51+2,es
+                mov     word ptr es:dos_sda_ptr2,si
+                mov     word ptr es:dos_sda_ptr2+2,bx
+                mov     ah,52h                  ; dos: get list of lists
+                int     21h
+                mov     word ptr dos_lol_ptr,bx
+                mov     word ptr dos_lol_ptr+2,es
+
+                mov     dl,es:[bx+LOL_LASTDRIVE]
+                mov     lastdrive,dl
+
+                les     di,dword ptr es:[bx+LOL_CDS_PTR]
+                mov     word ptr dos_cds_ptr,di
+                mov     word ptr dos_cds_ptr+2,es
+
                 push    ds
-                mov     ds,data_56
+                mov     ds,seg_b_value
                 assume  ds:seg_b
-                mov     word ptr data_97,di
-                mov     word ptr data_97+2,es
+                mov     word ptr dos_cds_ptr2,di
+                mov     word ptr dos_cds_ptr2+2,es
                 pop     ds
+
+                ; determine the CDS entry length by searching for B:
                 mov     si,di
-                mov     al,42h                  ; 'B'
+                mov     al,'B'
                 mov     cx,200h
 loc_111::
                 repne   scasb
                 jnz     loc_112
-                cmp     byte ptr es:[di],3Ah    ; ':'
+                cmp     byte ptr es:[di],':'
                 jne     loc_111
                 neg     cx
                 add     cx,1FFh
                 assume  ds:seg_a
-                mov     data_63,cx
+                mov     cds_entry_len,cx
+
                 push    ds
-                mov     ds,data_56
+                mov     ds,seg_b_value
                 assume  ds:seg_b
-                mov     data_99,cx
+                mov     cds_entry_len2,cx
                 pop     ds
 loc_112::
                 mov     ah,30h
@@ -1799,28 +1806,30 @@ loc_112::
                 mov     bx,ax
                 xchg    bl,bh
                 assume  ds:seg_a
-                mov     data_72,bx
+                mov     dos_version,bx
                 call    sub_15
                 call    sub_14
-                mov     ax,3521h
-                int     21h                     ; DOS Services  ah=function 35h
-                                                ;  get intrpt vector al in es:bx
+
+                mov     ax,3521h                ; dos: get interrupt vector
+                int     21h
                 mov     dx,es
                 mov     ax,seg_a
                 mov     es,ax
-                mov     word ptr es:data_54,bx
-                mov     word ptr es:data_54+2,dx
-                mov     ds,es:data_56
+                mov     word ptr es:int21_prev_ptr2,bx
+                mov     word ptr es:int21_prev_ptr2+2,dx
+                mov     ds,es:seg_b_value
                 assume  ds:seg_b
-                mov     word ptr data_95,bx
-                mov     word ptr data_95+2,dx
+                mov     word ptr int21_prev_ptr,bx
+                mov     word ptr int21_prev_ptr+2,dx
                 mov     dx,offset int_21h_entry
                 mov     ax,2521h
                 int     21h                     ; DOS Services  ah=function 25h
                                                 ;  set intrpt vector al to ds:dx
-                mov     ax,4452h
-                int     21h                     ; ??INT Non-standard interrupt
+                mov     ax,4452h                ; dr-dos: get version
+                int     21h
                 jc      loc_113
+
+                ; dr-dos!
                 push    ds
                 pop     es
                 mov     ax,5244h
@@ -1858,7 +1867,7 @@ loc_115::
 ;                              SUBROUTINE
 ;ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
 
-sub_13          proc    near
+parse_config    proc    near
                 push    ax
                 push    cx
                 push    dx
@@ -1871,18 +1880,18 @@ sub_13          proc    near
                 push    es
                 mov     ax,seg_c
                 mov     ds,ax
-                mov     ax,7A20h
+                mov     ax,7A20h                ; vlm: get parse api address
                 mov     bx,3
-                int     2Fh                     ; ??INT Non-standard interrupt
+                int     2Fh
                 assume  ds:seg_c
-                mov     data_137,bx
-                mov     word ptr data_137+2,es
+                mov     vlm_parse_ptr,bx
+                mov     word ptr vlm_parse_ptr+2,es
                 mov     cx,8
                 mov     si,5D5h
                 mov     di,48Ah                 ; ('NETWARE DOS REQUESTER')
                 push    ds
                 pop     es
-                call    dword ptr data_137
+                call    dword ptr vlm_parse_ptr
                 pop     es
                 pop     ds
                 pop     di
@@ -1894,7 +1903,7 @@ sub_13          proc    near
                 pop     cx
                 pop     ax
                 retn
-sub_13          endp
+parse_config    endp
 
 
 ;ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
@@ -1911,8 +1920,10 @@ sub_14          proc    near
                 mov     ds,ax
                 mov     ax,seg_a
                 mov     es,ax
-                cmp     byte ptr es:data_72+1,5
+                cmp     byte ptr es:dos_version+1,5
                 jae     loc_117
+
+                ; dos stuff for DOS <5
                 mov     es,word ptr es:data_58
                 mov     ax,es
                 dec     ax
@@ -1963,42 +1974,49 @@ sub_14          endp
 ;ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
 
 sub_15          proc    near
+                ; looks through the MCB list for
+                ; - first bytes of memory area: 20CD (INT 20)
+                ; - owner should be itself?
+                ; 
+
                 assume  ds:seg_a
-                les     bx,dword ptr data_47
+                les     bx,dword ptr dos_lol_ptr
                 dec     bx
                 dec     bx
-                mov     dx,es:[bx]
+                mov     dx,es:[bx]                      ; first MCB
                 mov     es,dx
                 jmp     short loc_119
-loc_118::
-                add     dx,es:data_1e
+mcb_next::
+                add     dx,es:MCB_SIZE
                 mov     es,dx
 loc_119::
                 inc     dx
-                cmp     byte ptr es:data_140e,4Dh       ; 'M'
+                cmp     byte ptr es:MCB_TYPE,4Dh       ; 'M'
                 je      loc_120
                 cmp     byte ptr cs:data_136,0FFh
                 je      loc_122
-                cmp     byte ptr es:data_140e,5Ah       ; 'Z'
+                cmp     byte ptr es:MCB_TYPE,5Ah       ; 'Z'
                 dec     cs:data_136
 loc_120::
-                cmp     word ptr es:data_143e,20CDh
-                jne     loc_118
-                cmp     dx,es:data_144e
-                jne     loc_118
-                cmp     dx,es:data_141e
-                jne     loc_118
+                cmp     word ptr es:10h+PSP_SIGNATURE,20CDh             ; first instruction, INT 20h
+                jne     mcb_next
+                cmp     dx,es:10h+PSP_PARENT
+                jne     mcb_next
+                cmp     dx,es:MCB_OWNER
+                jne     mcb_next
+
+                ; valid psp, owner ok
                 push    dx
                 push    es
-                mov     bx,es:data_142e
+                mov     bx,es:MCB_SIZE
                 mov     data_60,bx
-                mov     bx,es:data_145e
+                mov     bx,es:10h+PSP_ENV_SEG
                 test    bx,bx
                 jz      loc_121
-                cmp     data_72,31Eh
+                cmp     dos_version,31Eh
                 jae     loc_123
 loc_121::
-                add     dx,es:data_142e
+                add     dx,es:MCB_SIZE
                 inc     dx
                 mov     bx,es
                 inc     bx
@@ -2007,7 +2025,7 @@ loc_121::
 loc_122::
                 xor     ax,ax
                 mov     es,ax
-                mov     dx,es:data_3e
+                mov     dx,es:0BAh              ; int 2E offset
 loc_123::
                 mov     es,dx
                 mov     dx,es:data_9e
@@ -2020,18 +2038,20 @@ loc_124::
                 mov     word ptr data_58,es
                 pop     es
                 pop     dx
-                mov     ax,7A20h
+
+                mov     ax,7A20h                        ; vlm: get multiplex address
                 mov     bx,2
-                int     2Fh                     ; ??INT Non-standard interrupt
+                int     2Fh
                 push    ds
                 mov     ax,seg_c
                 mov     ds,ax
                 assume  ds:seg_c
-                mov     data_127,bx
-                mov     word ptr data_127+2,es
+                mov     vlm_multiplex_ptr,bx
+                mov     word ptr vlm_multiplex_ptr+2,es
                 pop     ds
+
                 mov     bx,4
-                call    dword ptr cs:data_127
+                call    dword ptr cs:vlm_multiplex_ptr
                 mov     es,ax
                 xor     di,di
                 xor     al,al
@@ -2041,7 +2061,7 @@ loc_125::
                 jmp     loc_ret_133
 loc_126::
                 mov     cx,8
-                mov     si,offset data_70       ; ('COMSPEC=')
+                mov     si,offset s_env_comspec       ; ('COMSPEC=')
                 repe    cmpsb
                 jz      loc_127
                 dec     di
@@ -2092,7 +2112,7 @@ loc_129::
                 pop     es
                 mov     es:data_78,1
                 mov     si,dx
-                mov     ax,es:data_56
+                mov     ax,es:seg_b_value
                 mov     es,ax
                 jmp     short loc_131
 loc_130::
@@ -2166,9 +2186,8 @@ start::
                 db      '996 Novell, Inc.  All Rights Res'
                 db      'erved.'
                 db      7 dup (0)
-data_127        dw      0, 0
-data_129        dw      0
-data_130        dw      0
+vlm_multiplex_ptr        dw      0, 0
+vlm_call_ptr3   dw      0, 0
 data_131        dw      0
                 db      'NETWARE DOS REQUESTER', 0
 data_133        db      'GENERAL', 0
@@ -2182,7 +2201,7 @@ data_133        db      'GENERAL', 0
                 db      0
 data_135        dw      0
 data_136        db      0
-data_137        dw      0, 0
+vlm_parse_ptr   dw      0, 0
                 db      'FIRST NETWORK DRIVE'
                 db       00h,0D5h, 06h
                 dw      seg_a

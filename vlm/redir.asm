@@ -12,20 +12,16 @@ data_9e         equ     650h                    ;*
 data_10e        equ     652h                    ;*
 data_11e        equ     654h                    ;*
 data_12e        equ     656h                    ;*
-data_13e        equ     658h                    ;*
+dos_lol_ptr     equ     658h                    ;*
 data_14e        equ     65Ah                    ;*
-data_15e        equ     65Ch                    ;*
-data_16e        equ     65Eh                    ;*
-data_17e        equ     660h                    ;*
-data_18e        equ     662h                    ;*
-data_19e        equ     664h                    ;*
+dos_sda_ptr     equ     664h                    ;*
 data_20e        equ     666h                    ;*
 data_21e        equ     674h                    ;*
 data_22e        equ     678h                    ;*
-data_23e        equ     67Ah                    ;*
+dos_sda_seg1    equ     67Ah                    ;*
 data_24e        equ     67Ch                    ;*
-data_25e        equ     67Eh                    ;*
-data_26e        equ     684h                    ;*
+dos_sda_seg2    equ     67Eh                    ;*
+cds_entry_len   equ     684h                    ;*
 data_27e        equ     686h                    ;*
 data_28e        equ     689h                    ;*
 data_29e        equ     690h                    ;*
@@ -69,7 +65,6 @@ data_67e        equ     34h                     ;*
 data_68e        equ     6F8h                    ;*
 data_69e        equ     0                       ;*
 data_70e        equ     65Ch                    ;*
-data_71e        equ     684h                    ;*
 data_72e        equ     795h                    ;*
 data_73e        equ     6F8h                    ;*
 data_275e       equ     97E8h                   ;*
@@ -79,6 +74,7 @@ data_299e       equ     16h
 data_300e       equ     3Fh
 
 include  common.inc
+include  dos.inc
 
 ;------------------------------------------------------------  seg_a   ----
 
@@ -314,10 +310,10 @@ loc_5::
                 sub     al,41h                  ; 'A'
                 assume  ds:seg_b
                 mul     byte ptr data_221
-                lds     bx,data_212
+                lds     bx,dos_cds_ptr
                 lds     bx,dword ptr [bx]
                 add     bx,ax
-                cmp     word ptr [bx+4Dh],4E57h
+                cmp     word ptr [bx+4Dh],4E57h         ; "NW"
                 jne     loc_9
                 mov     cx,di
                 call    sub_36
@@ -408,7 +404,7 @@ loc_13::
                 xor     ah,ah
                 assume  ds:seg_b
                 mul     byte ptr data_221
-                lds     bx,data_212
+                lds     bx,dos_cds_ptr
                 lds     bx,dword ptr [bx]
                 add     bx,ax
                 pop     ax
@@ -530,8 +526,8 @@ loc_30::
                 mov     bp,cx
                 xor     cx,cx
                 assume  ds:seg_b
-                mov     cl,data_252
-                les     bx,data_212
+                mov     cl,lastdrive
+                les     bx,dos_cds_ptr
                 les     bx,dword ptr es:[bx]
 loc_31::
                 cmp     word ptr es:[bx+4Dh],4E57h
@@ -605,8 +601,8 @@ loc_34::
                 je      loc_38
 loc_35::
                 xor     cx,cx
-                mov     cl,data_252
-                les     bx,data_212
+                mov     cl,lastdrive
+                les     bx,dos_cds_ptr
                 les     bx,dword ptr es:[bx]
                 mov     ax,data_221
 loc_36::
@@ -711,7 +707,7 @@ loc_41::
                 pop     ds
                 push    ds
                 mov     bx,data_221
-                lds     si,data_212
+                lds     si,dos_cds_ptr
                 lds     si,dword ptr [si]
                 add     si,ax
                 test    word ptr [si+43h],8000h
@@ -756,7 +752,7 @@ loc_45::
                 call    dword ptr data_210
                 push    ds
                 push    si
-                lds     si,data_212
+                lds     si,dos_cds_ptr
                 mov     ds,[si+2]
                 pop     si
                 mov     [si+43h],bx
@@ -844,7 +840,7 @@ sub_11          proc    near
                 add     di,bx
                 xor     cx,cx
                 mov     cl,es:[di]
-                les     di,data_213
+                les     di,dos_sft_ptr
 loc_50::
                 mov     ax,cx
                 sub     cx,es:[di+4]
@@ -894,7 +890,7 @@ loc_050d:
                 sub     al,41h                  ; 'A'
                 xor     ah,ah
                 mul     byte ptr data_221
-                lds     si,data_212
+                lds     si,dos_cds_ptr
                 lds     si,dword ptr [si]
                 add     si,ax
                 cmp     word ptr [si+4Dh],4E57h
@@ -989,7 +985,7 @@ sub_12          proc    near
                 mov     al,dh
                 sub     al,41h                  ; 'A'
                 mul     byte ptr data_221
-                les     bx,data_212
+                les     bx,dos_cds_ptr
                 les     bx,dword ptr es:[bx]
                 add     bx,ax
                 mov     al,dh
@@ -1049,7 +1045,7 @@ sub_13          proc    near
                 mov     al,dh
                 sub     al,41h                  ; 'A'
                 mul     byte ptr data_221
-                les     bx,data_212
+                les     bx,dos_cds_ptr
                 les     bx,dword ptr es:[bx]
                 add     bx,ax
                 call    sub_17
@@ -1105,8 +1101,8 @@ loc_65::
                 cmp     dl,1
                 je      loc_69
                 xor     cx,cx
-                mov     cl,data_252
-                les     bx,data_212
+                mov     cl,lastdrive
+                les     bx,dos_cds_ptr
                 les     bx,dword ptr es:[bx]
                 mov     ax,data_221
 loc_66::
@@ -1151,7 +1147,7 @@ loc_69::
                 mov     cl,ds:data_72e
                 les     bx,dword ptr ds:data_70e
                 les     bx,dword ptr es:[bx]
-                mov     ax,ds:data_71e
+                mov     ax,ds:cds_entry_len
 loc_70::
                 cmp     word ptr es:[bx+4Dh],4E57h
                 jne     loc_71
@@ -1412,7 +1408,7 @@ sub_14          proc    near
                 sub     al,41h                  ; 'A'
                 cmp     al,byte ptr ds:[795h]
                 jae     loc_92
-                mul     byte ptr ds:[684h]
+                mul     byte ptr ds:[cds_entry_len]
                 les     bx,dword ptr ds:[65Ch]
                 les     bx,dword ptr es:[bx]
                 add     bx,ax
@@ -1592,7 +1588,7 @@ loc_102::
                 jnz     loc_102
                 sub     di,60Dh
                 xchg    di,ax
-                mul     byte ptr ds:[684h]
+                mul     byte ptr ds:[cds_entry_len]
                 les     di,dword ptr ds:[6BEh]
                 lds     bx,dword ptr ds:[65Ch]
                 lds     bx,dword ptr [bx]
@@ -1742,7 +1738,7 @@ loc_112::
                 sub     al,41h                  ; 'A'
                 cmp     al,byte ptr ds:[795h]
                 jae     loc_113
-                mul     byte ptr ds:[684h]
+                mul     byte ptr ds:[cds_entry_len]
                 les     bx,dword ptr ds:[65Ch]
                 les     bx,dword ptr es:[bx]
                 add     bx,ax
@@ -1980,7 +1976,7 @@ sub_20          endp
                 mov     al,es:[di+4]
                 sub     al,41h                  ; 'A'
                 cbw
-                mul     byte ptr ds:[684h]
+                mul     byte ptr ds:[cds_entry_len]
                 push    di
                 push    ds
                 lds     si,dword ptr ds:[65Ch]
@@ -2032,7 +2028,7 @@ loc_128::
                 xchg    al,ah
                 xor     ah,ah
                 sub     al,41h                  ; 'A'
-                mul     byte ptr ds:[684h]
+                mul     byte ptr ds:[cds_entry_len]
                 lds     bx,dword ptr ds:[65Ch]
                 lds     bx,dword ptr [bx]
                 add     bx,ax
@@ -2199,7 +2195,7 @@ loc_137::
                 mov     di,word ptr ds:[678h]
                 mov     al,dh
                 sub     al,41h                  ; 'A'
-                mul     byte ptr ds:[684h]
+                mul     byte ptr ds:[cds_entry_len]
                 mov     bp,word ptr ds:[69Eh]
                 push    ds
                 lds     si,dword ptr ds:[65Ch]
@@ -2225,7 +2221,7 @@ loc_139::
                 les     di,dword ptr ds:[678h]
                 mov     al,es:[di+4]
                 sub     al,41h                  ; 'A'
-                mul     byte ptr ds:[684h]
+                mul     byte ptr ds:[cds_entry_len]
                 les     di,dword ptr ds:[65Ch]
                 les     di,dword ptr es:[di]
                 add     di,ax
@@ -2370,9 +2366,9 @@ loc_149::
                 mov     al,1
                 call    sub_21
                 push    ds
-                lds     si,dword ptr ds:[658h]
-                mov     ax,[si-0Ah]
-                mov     bp,[si-0Ch]
+                lds     si,dword ptr ds:[dos_lol_ptr]
+                mov     ax,[si+LOL_SHARING_RETRY_DELAY]
+                mov     bp,[si+LOL_SHARING_RETRY_COUNT]
                 pop     ds
                 xchg    ah,al
                 stosw
@@ -3382,9 +3378,9 @@ loc_210::
                 mov     [si+2],al
                 lea     ax,[di+5]
                 push    ds
-                lds     si,dword ptr ds:[658h]
-                mov     bp,[si-0Ch]
-                mov     cx,[si-0Ah]
+                lds     si,dword ptr ds:[dos_lol_ptr]
+                mov     bp,[si+LOL_SHARING_RETRY_COUNT]
+                mov     cx,[si+LOL_SHARING_RETRY_DELAY]
                 pop     ds
                 mov     word ptr ds:[6ECh],cx
                 mov     si,0A18h
@@ -3638,7 +3634,7 @@ loc_238::
                 mov     word ptr ds:[66Eh],es
                 and     al,0DFh
                 sub     al,41h                  ; 'A'
-                mul     byte ptr ds:[684h]
+                mul     byte ptr ds:[cds_entry_len]
                 les     di,dword ptr ds:[65Ch]
                 les     di,dword ptr es:[di]
                 add     di,ax
@@ -3709,9 +3705,9 @@ loc_243::
                 mov     es:[si+5],al
                 push    cx
                 push    ds
-                lds     si,dword ptr ds:[658h]
-                mov     bp,[si-0Ch]
-                mov     cx,[si-0Ah]
+                lds     si,dword ptr ds:[dos_lol_ptr]
+                mov     bp,[si+LOL_SHARING_RETRY_COUNT]
+                mov     cx,[si+LOL_SHARING_RETRY_DELAY]
                 pop     ds
                 mov     word ptr ds:[6ECh],cx
                 pop     cx
@@ -4818,7 +4814,7 @@ loc_337::
                 cmp     dx,0FCh
                 jne     loc_338
                 mov     al,byte ptr ds:[796h]
-                mul     byte ptr ds:[684h]
+                mul     byte ptr ds:[cds_entry_len]
                 les     di,dword ptr ds:[65Ch]
                 les     di,dword ptr es:[di]
                 add     di,ax
@@ -4874,8 +4870,8 @@ loc_342::
                 xor     ax,ax
                 retf
 loc_343::
-                les     bx,dword ptr ds:[658h]
-                add     bx,22h
+                les     bx,dword ptr ds:[dos_lol_ptr]
+                add     bx,LOL_FCB_PTR
 loc_344::
                 test    byte ptr es:[bx+5],80h
                 jz      loc_345
@@ -4924,7 +4920,7 @@ loc_349::
                 jmp     short loc_357
 loc_350::
                 mov     al,byte ptr ds:[796h]
-                mul     byte ptr ds:[684h]
+                mul     byte ptr ds:[cds_entry_len]
                 les     di,dword ptr ds:[65Ch]
                 les     di,dword ptr es:[di]
                 add     di,ax
@@ -4975,7 +4971,7 @@ loc_357::
                 cmp     ah,3Bh                  ; ';'
                 jne     loc_359
                 mov     al,byte ptr ds:[796h]
-                mul     byte ptr ds:[684h]
+                mul     byte ptr ds:[cds_entry_len]
                 les     di,dword ptr ds:[65Ch]
                 les     di,dword ptr es:[di]
                 add     di,ax
@@ -5073,7 +5069,7 @@ loc_367::
 loc_368::
                 mov     al,byte ptr ds:[796h]
                 mov     dl,al
-                mul     byte ptr ds:[684h]
+                mul     byte ptr ds:[cds_entry_len]
                 les     di,dword ptr ds:[65Ch]
                 les     di,dword ptr es:[di]
                 add     di,ax
@@ -6305,7 +6301,7 @@ loc_471::
                 sub     al,41h                  ; 'A'
                 cbw
                 mul     byte ptr data_221
-                les     bx,data_212
+                les     bx,dos_cds_ptr
                 les     bx,dword ptr es:[bx]
                 add     bx,ax
                 cmp     word ptr es:[bx+4Dh],4E57h
@@ -6596,8 +6592,8 @@ data_207        dd      00000h
 data_208        dd      00000h
 data_210        dw      0, 0
 data_211        dd      00000h
-data_212        dd      00000h
-data_213        dd      00000h
+dos_cds_ptr     dd      00000h
+dos_sft_ptr     dd      00000h
 data_214        dd      00000h
 vlm_call_ptr    dw      0, 0
                 db      8 dup (0)
@@ -6645,7 +6641,7 @@ data_248        db      0
 data_250        dw      0
 data_251        dw      0
                 db      23 dup (0)
-data_252        db      0
+lastdrive        db      0
                 db      0
 data_253        db      0
                 db      0
@@ -6933,11 +6929,11 @@ loc_499::
                 pop     es
                 mov     data_277,bx
                 mov     data_278,ax
-                mov     ax,3000h
-                int     21h                     ; DOS Services  ah=function 30h
-                                                ;  get DOS version number ax
+                mov     ax,3000h                ; dos: get version
+                int     21h
                 xchg    ah,al
-                mov     data_284,ax
+                mov     dos_version,ax
+
                 mov     bx,seg seg_b
                 mov     es,bx
                 mov     es:data_224,ax
@@ -6975,22 +6971,22 @@ loc_502::
                 je      loc_503
                 mov     byte ptr ds:data_55e,6
 loc_503::
-                mov     ah,52h
-                int     21h                     ; DOS Services  ah=function 52h
-                                                ;  get DOS data table ptr es:bx
-                                                ;*  undocumented function
-                mov     ds:data_13e,bx
-                mov     ds:data_14e,es
-                mov     ax,es:[bx+4]
-                mov     ds:data_17e,ax
-                mov     ax,es:[bx+6]
-                mov     ds:data_18e,ax
-                mov     al,es:[bx+21h]
-                mov     ds:data_54e,al
-                lea     di,[bx+16h]
-                mov     ds:data_15e,di
-                mov     ds:data_16e,es
-                les     di,dword ptr es:[bx+16h]
+                mov     ah,52h                  ; dos: get list of lists
+                int     21h
+                mov     ds:dos_lol_ptr,bx
+                mov     ds:dos_lol_ptr+2,es
+                mov     ax,es:[bx+LOL_SFT_PTR]
+                mov     word ptr ds:dos_sft_ptr,ax
+                mov     ax,es:[bx+LOL_SFT_PTR+2]
+                mov     word ptr ds:dos_sft_ptr+2,ax
+                mov     al,es:[bx+LOL_LASTDRIVE]
+                mov     ds:lastdrive,al
+                lea     di,[bx+LOL_CDS_PTR]
+                mov     word ptr ds:dos_cds_ptr,di
+                mov     word ptr ds:dos_cds_ptr+2,es
+
+                ; try to find CDS length
+                les     di,dword ptr es:[bx+LOL_CDS_PTR]
                 mov     si,di
                 add     di,2
                 mov     al,3Ah                  ; ':'
@@ -7004,19 +7000,17 @@ loc_505::
                 jne     loc_504
                 lea     cx,[di-2]
                 sub     cx,si
-                mov     ds:data_26e,cx
+                mov     ds:cds_entry_len,cx
+
                 push    ds
-                mov     ax,5D06h
-                int     21h                     ; DOS Services  ah=function 5Dh
-                                                ;  get DOS swap area ptr ds:si
-                                                ;   swap sizes in cx and dx
-                                                ;*  undocumented function
+                mov     ax,5D06h                ; dos: get sda
+                int     21h
                 mov     ax,ds
                 pop     ds
-                mov     ds:data_19e,si
-                mov     ds:data_20e,ax
-                mov     ds:data_23e,ax
-                mov     ds:data_25e,ax
+                mov     ds:dos_sda_ptr,si
+                mov     ds:dos_sda_ptr+2,ax
+                mov     ds:dos_sda_seg1,ax
+                mov     ds:dos_sda_seg2,ax
                 mov     ax,352Ah
                 int     21h                     ; DOS Services  ah=function 35h
                                                 ;  get intrpt vector al in es:bx
@@ -7051,8 +7045,8 @@ loc_505::
                 db      0BAh,0C4h, 00h
                 int     21h                     ; DOS Services  ah=function 25h
                                                 ;  set intrpt vector al to ds:dx
-                mov     ax,ds:data_19e
-                cmp     byte ptr cs:data_284+1,3
+                mov     ax,ds:dos_sda_ptr
+                cmp     byte ptr cs:dos_version+1,3
                 je      loc_506
                 mov     word ptr ds:data_32e,1Ah
                 mov     word ptr ds:data_22e,9Eh
@@ -7076,7 +7070,7 @@ loc_506::
                 mov     ax,ds:data_22e
                 mov     cl,4
                 shr     ax,cl
-                add     ax,ds:data_23e
+                add     ax,ds:dos_sda_seg1
                 mov     ds:data_38e,ax
                 mov     bx,0
                 push    bp
@@ -7271,7 +7265,7 @@ data_278        dw      0
 vlm_call_ptr3   dw      0, 0
 data_281        dw      0, 0
 data_283        dw      0
-data_284        dw      0
+dos_version     dw      0
 data_286        db      0
 data_287        dd      00000h
                 db      'NETWARE DOS REQUESTER', 0

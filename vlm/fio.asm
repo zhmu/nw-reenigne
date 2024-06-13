@@ -26,6 +26,11 @@ data_325e       equ     0Eh
 
 include common.inc
 
+LSL_GET_SUPPORT_ENTRY_PTRS      equ     2
+
+LSL_PSUP_CANCELAESEVENT         equ     4h
+LSL_PSUP_GET_TICK_MARKER        equ     1Ah
+
 ;------------------------------------------------------------  seg_a   ----
 
 seg_a           segment byte public
@@ -62,7 +67,7 @@ seg_a           segment byte public
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_3           proc    near
+vcall_trans_9h  proc    near
                 push    bp
                 mov     bp,VLMID_FIO
                 push    bp
@@ -73,7 +78,7 @@ sub_3           proc    near
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
-sub_3           endp
+vcall_trans_9h  endp
 
 data_45         dw      offset loc_2            ; Data table (indexed access)
 data_46         dw      offset loc_1
@@ -1440,7 +1445,7 @@ loc_101::
                 or      byte ptr ds:data_18e,8
                 pop     ds
                 mov     bx,1
-                call    sub_3
+                call    vcall_trans_9h
                 jnz     loc_104
                 jmp     short loc_103
 loc_102::
@@ -1599,7 +1604,7 @@ loc_116::
                 or      byte ptr ds:data_11e,8
                 pop     ds
                 mov     bx,1
-                call    sub_3
+                call    vcall_trans_9h
                 jnz     loc_119
                 jmp     short loc_118
 loc_117::
@@ -1724,8 +1729,8 @@ sub_23          proc    near
 loc_121::
                 jmp     loc_134
 loc_122::
-                mov     bx,1Ah
-                call    dword ptr data_211
+                mov     bx,LSL_PSUP_GET_TICK_MARKER
+                call    dword ptr lsl_psup_ptr
                 mov     di,offset data_237
                 mov     bx,ax
                 xor     bx,bp
@@ -3331,8 +3336,8 @@ loc_257::
 loc_258::
                 cmp     es:[bp+34h],ax
                 je      loc_249
-                mov     bx,1Ah
-                call    dword ptr data_211
+                mov     bx,LSL_PSUP_GET_TICK_MARKER
+                call    dword ptr lsl_psup_ptr
                 mov     dx,ax
                 sub     dx,data_248
                 mov     data_248,ax
@@ -3459,8 +3464,8 @@ loc_270::
                 jmp     short loc_269
 loc_271::
                 mov     bp,[si+8]
-                mov     bx,4
-                call    dword ptr data_211
+                mov     bx,LSL_PSUP_CANCELAESEVENT
+                call    dword ptr lsl_psup_ptr
                 mov     [si+8],bp
                 jnz     loc_272
                 inc     data_290
@@ -3813,7 +3818,7 @@ sub_41          endp
 
                 db      10 dup (0)
 data_209        dw      0, 0
-data_211        dw      0, 0
+lsl_psup_ptr    dw      0, 0                    ; protocol support entry, interrupt.m, #02993
 data_213        dw      0
 data_214        dw      0
 data_215        dw      0
@@ -3961,11 +3966,11 @@ seg_c           segment byte public
                 mov     ax,seg_c
                 mov     ds,ax
                 mov     data_305,bx
-                mov     ax,7A20h
+                mov     ax,7A20h                ; vlm: get multiplex pointer
                 mov     bx,2
-                int     2Fh                     ; ??INT Non-standard interrupt
-                mov     data_301,bx
-                mov     word ptr data_301+2,es
+                int     2Fh
+                mov     vlm_multiplex_ptr,bx
+                mov     word ptr vlm_multiplex_ptr+2,es
                 pop     ax
                 or      ax,ax
                 jz      loc_313
@@ -3993,9 +3998,9 @@ loc_313::
                 mov     ax,seg_a
                 mov     es,ax
                 push    es
-                mov     ax,7A20h
+                mov     ax,7A20h                ; vlm: get call pointer
                 mov     bx,0
-                int     2Fh                     ; ??INT Non-standard interrupt
+                int     2Fh
                 mov     ax,es
                 mov     cx,seg seg_b
                 mov     es,cx
@@ -4026,7 +4031,7 @@ loc_314::
                 mov     bx,6
                 mov     ah,1
                 mov     al,2
-                call    dword ptr data_301
+                call    dword ptr vlm_multiplex_ptr
                 add     sp,4
                 pop     bx
                 call    sub_43
@@ -4039,7 +4044,7 @@ loc_314::
                 mov     es,ax
                 mov     es:data_205,50h
 loc_315::
-                mov     ax,7A20h
+                mov     ax,7A20h                ; vlm: get multiplex pointer
                 mov     bx,2
                 push    es
                 int     2Fh                     ; ??INT Non-standard interrupt
@@ -4120,7 +4125,7 @@ loc_318::
 sub_42          proc    near
                 mov     bx,0
                 mov     dx,30h
-                call    dword ptr data_301
+                call    dword ptr vlm_multiplex_ptr
                 or      ax,ax
                 jnz     loc_319
                 retn
@@ -4137,7 +4142,7 @@ loc_319::
                 mov     si,5F4h
                 push    cs
                 pop     ds
-                call    dword ptr cs:data_301
+                call    dword ptr cs:vlm_multiplex_ptr
                 pop     ds
                 pop     si
                 pop     cx
@@ -4158,7 +4163,7 @@ loc_319::
                 mov     bx,6
                 mov     ah,0
                 mov     al,0
-                call    dword ptr data_301
+                call    dword ptr vlm_multiplex_ptr
                 add     sp,0Eh
                 pop     bx
                 push    bx
@@ -4173,7 +4178,7 @@ loc_319::
                 mov     bx,6
                 mov     ah,0
                 mov     al,0
-                call    dword ptr data_301
+                call    dword ptr vlm_multiplex_ptr
                 add     sp,0Ah
                 pop     bx
                 pop     ax
@@ -4190,17 +4195,17 @@ sub_43          proc    near
                 push    bx
                 mov     ax,seg_c
                 mov     ds,ax
-                mov     ax,7A20h
+                mov     ax,7A20h                ; vlm: get parse api address
                 mov     bx,3
-                int     2Fh                     ; ??INT Non-standard interrupt
-                mov     data_307,bx
-                mov     word ptr data_307+2,es
+                int     2Fh
+                mov     vlm_parse_ptr,bx
+                mov     word ptr vlm_parse_ptr+2,es
                 mov     cx,0Ah
                 mov     si,73Ch
                 mov     di,5DEh
                 push    ds
                 pop     es
-                call    dword ptr data_307
+                call    dword ptr vlm_parse_ptr
                 pop     bx
                 retn
 sub_43          endp
@@ -4280,7 +4285,7 @@ loc_324::
                 mov     bx,6
                 mov     ah,0
                 mov     al,1
-                call    dword ptr cs:data_301
+                call    dword ptr cs:vlm_multiplex_ptr
                 add     sp,4
                 pop     bx
 loc_325::
@@ -4305,7 +4310,7 @@ sub_45          proc    near
                 cmp     byte ptr data_309,0
                 je      loc_ret_326
                 mov     bx,5
-                call    dword ptr data_301
+                call    dword ptr vlm_multiplex_ptr
 
 loc_ret_326::
                 retn
@@ -4511,7 +4516,7 @@ loc_341::
                 push    cs
                 pop     ds
                 assume  ds:seg_c
-                call    dword ptr cs:data_301
+                call    dword ptr cs:vlm_multiplex_ptr
                 pop     ds
                 pop     si
                 pop     cx
@@ -4522,7 +4527,7 @@ loc_341::
                 mov     bx,6
                 mov     ah,0
                 mov     al,1
-                call    dword ptr cs:data_301
+                call    dword ptr cs:vlm_multiplex_ptr
                 add     sp,2
                 pop     bx
 loc_342::
@@ -4543,16 +4548,14 @@ loc_345::
 sub_46          endp
 
 
-;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
-;                              SUBROUTINE
-;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+; searches for lsl.com
 
 sub_47          proc    near
                 mov     ax,0C000h
 loc_346::
                 push    ds
                 push    ax
-                int     2Fh                     ; ??INT Non-standard interrupt
+                int     2Fh                     ; lsl: installation check
                 cmp     al,0FFh
                 pop     ax
                 pop     ds
@@ -4562,27 +4565,28 @@ loc_347::
                 jnz     loc_346
                 stc
                 retn
-loc_348::
+
+loc_348::       ; verify lsl.com signature
                 mov     di,si
-                mov     si,offset data_323      ; ('LINKSUP')
+                mov     si,offset s_linksup      ; ('LINKSUP')
                 mov     cx,4
                 cld
                 cli
                 repe    cmps word ptr cs:[si],word ptr es:[di]
                 sti
                 jnz     loc_347
-                mov     cs:data_319,bx
-                mov     word ptr cs:data_319+2,dx
+                mov     cs:linksup_ptr,bx
+                mov     word ptr cs:linksup_ptr+2,dx
                 push    cs
                 pop     es
-                mov     si,7AAh
-                mov     bx,2
-                call    dword ptr cs:data_319
+                mov     si,offset data_321
+                mov     bx,LSL_GET_SUPPORT_ENTRY_PTRS
+                call    dword ptr cs:linksup_ptr
                 mov     ax,cs:data_321
                 mov     cx,cs:data_322
                 assume  ds:seg_b
-                mov     word ptr data_211,ax
-                mov     word ptr data_211+2,cx
+                mov     word ptr lsl_psup_ptr,ax
+                mov     word ptr lsl_psup_ptr+2,cx
                 clc
                 retn
 sub_47          endp
@@ -4606,11 +4610,11 @@ sub_48          proc    near
                 call    dword ptr data_209
                 mov     cx,0FFFFh
                 mov     dx,cx
-                mov     bx,1Ah
-                call    dword ptr data_211
-                mov     si,ax
+                mov     bx,LSL_PSUP_GET_TICK_MARKER
+                call    dword ptr lsl_psup_ptr
+                mov     si,ax                           ; number of ticks since load
 loc_349::
-                call    dword ptr data_211
+                call    dword ptr lsl_psup_ptr
                 cmp     ax,si
                 je      loc_349
                 mov     cs:data_315,2
@@ -4653,7 +4657,7 @@ loc_352::
                 db      0, 0, 0, 0, 0, 0
 data_299        dw      0
 data_300        dw      0
-data_301        dw      0, 0
+vlm_multiplex_ptr        dw      0, 0
 data_303        dw      0, 0
 data_305        dw      0
                 db      'NETWARE DOS REQUESTER', 0
@@ -4664,7 +4668,7 @@ data_305        dw      0
                 db      't-output module  v1.21 (960514)', 0Dh
                 db      0Ah
                 db      0
-data_307        dw      0, 0
+vlm_parse_ptr   dw      0, 0
 data_309        db      0
 data_310        dw      0FFFFh
 data_311        dw      0, 0
@@ -4729,11 +4733,11 @@ data_316        dw      0, 0
                 dw      seg_c
                 db      0
                 db      0, 0, 0, 0, 0
-data_319        dw      0, 0
-data_321        dw      0
+linksup_ptr     dw      0, 0
+data_321        dw      0                               ; 7AAh
 data_322        dw      0
                 db      0, 0, 0, 0
-data_323        db      'LINKSUP$'
+s_linksup       db      'LINKSUP$'
 
 seg_c           ends
 

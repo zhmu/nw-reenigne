@@ -37,6 +37,26 @@ data_237e       equ     15h
 data_238e       equ     2Ch
 
 include common.inc
+include vlm.inc
+
+; interrup.q, INT 7A
+IPX_OPEN_SOCKET         equ     0
+IPX_CLOSE_SOCKET        equ     1
+IPX_GET_LOCAL_TARGET    equ     2
+IPX_SEND                equ     3
+IPX_LISTEN              equ     4
+IPX_SCHEDULE            equ     5
+IPX_CANCEL_EVENT        equ     6
+IPX_GET_INTERVAL_MARKER equ     8h
+IPX_RELINQUISH_CONTROL  equ     0Ah
+IPX_GET_PACKET_SIZE     equ     0Dh
+IPX_TERMINATE_SOCKETS   equ     0Eh
+IPX_GET_MAX_PACKET_SIZE equ     1Ah
+IPX_VERIFY_CHECKSUM     equ     22h
+
+TYPE_3333               equ     3333h
+TYPE_5555               equ     5555h
+TYPE_9999               equ     9999h
 
 ;------------------------------------------------------------  seg_a   ----
 
@@ -59,11 +79,8 @@ seg_a           segment byte public
                 db      "NVlm"
                 dw      VLMID_IPXNCP
 
-;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
-;                              SUBROUTINE
-;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
-
-sub_1           proc    near
+; vcall_[target]_[func]
+vcall_conn_0ah  proc    near
                 push    bp
                 mov     bp,VLMID_IPXNCP
                 push    bp
@@ -74,14 +91,9 @@ sub_1           proc    near
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
-sub_1           endp
+vcall_conn_0ah  endp
 
-
-;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
-;                              SUBROUTINE
-;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
-
-sub_2           proc    near
+vcall_conn_7h   proc    near
                 push    bp
                 mov     bp,VLMID_IPXNCP
                 push    bp
@@ -92,14 +104,9 @@ sub_2           proc    near
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
-sub_2           endp
+vcall_conn_7h   endp
 
-
-;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
-;                              SUBROUTINE
-;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
-
-sub_3           proc    near
+vcall_conn_8h   proc    near
                 push    bp
                 mov     bp,VLMID_IPXNCP
                 push    bp
@@ -110,14 +117,9 @@ sub_3           proc    near
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
-sub_3           endp
+vcall_conn_8h   endp
 
-
-;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
-;                              SUBROUTINE
-;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
-
-sub_4           proc    near
+vcall_conn_9h   proc    near
                 push    bp
                 mov     bp,VLMID_IPXNCP
                 push    bp
@@ -128,14 +130,9 @@ sub_4           proc    near
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
-sub_4           endp
+vcall_conn_9h   endp
 
-
-;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
-;                              SUBROUTINE
-;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
-
-sub_5           proc    near
+vcall_conn_6h   proc    near
                 push    bp
                 mov     bp,VLMID_IPXNCP
                 push    bp
@@ -146,14 +143,10 @@ sub_5           proc    near
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
-sub_5           endp
+vcall_conn_6h   endp
 
 
-;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
-;                              SUBROUTINE
-;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
-
-sub_6           proc    near
+vcall_exe_4h    proc    near
                 push    bp
                 mov     bp,VLMID_IPXNCP
                 push    bp
@@ -164,14 +157,10 @@ sub_6           proc    near
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
-sub_6           endp
+vcall_exe_4h    endp
 
 
-;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
-;                              SUBROUTINE
-;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
-
-sub_7           proc    near
+vcall_security_4h proc    near
                 push    bp
                 mov     bp,VLMID_IPXNCP
                 push    bp
@@ -182,14 +171,9 @@ sub_7           proc    near
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
-sub_7           endp
+vcall_security_4h endp
 
-
-;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
-;                              SUBROUTINE
-;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
-
-sub_8           proc    near
+vcall_nwp_10h   proc    near
                 push    bp
                 mov     bp,VLMID_IPXNCP
                 push    bp
@@ -200,7 +184,7 @@ sub_8           proc    near
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
-sub_8           endp
+vcall_nwp_10h   endp
 
 data_29         dw      offset loc_3            ; Data table (indexed access)
 data_30         dw      offset loc_4
@@ -241,8 +225,8 @@ loc_4::
                 je      loc_5
                 cli
                 call    far ptr sub_26
-                mov     bx,0Eh
-                call    dword ptr cs:data_47
+                mov     bx,IPX_TERMINATE_SOCKETS
+                call    dword ptr cs:ipx_call_ptr2
                 sti
 loc_5::
                 pop     es
@@ -263,7 +247,7 @@ loc_ret_6::
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_9           proc    near
+vcall2_exe_4h   proc    near
                 push    bp
                 mov     bp,VLMID_IPXNCP
                 push    bp
@@ -274,7 +258,7 @@ sub_9           proc    near
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
-sub_9           endp
+vcall2_exe_4h   endp
 
 
 loc_ret_7::
@@ -295,10 +279,10 @@ loc_013f:
                 mov     ds,ax
                 mov     al,2Fh                  ; '/'
                 mov     bx,0
-                call    sub_9
+                call    vcall2_exe_4h
                 mov     ax,0
                 jz      loc_8
-                mov     ax,884Eh
+                mov     ax,VLM_STATUS_UNABLE_TO_UNLOAD
 loc_8::
                 or      cx,cx
                 jz      loc_9
@@ -330,25 +314,25 @@ loc_11::
                 mov     ds,es:data_44
                 assume  ds:seg_b
                 mov     dx,data_134
-                mov     bx,1
-                call    sub_20
+                mov     bx,IPX_CLOSE_SOCKET
+                call    ipx_call
                 mov     dx,data_161
-                mov     bx,1
-                call    sub_20
+                mov     bx,IPX_CLOSE_SOCKET
+                call    ipx_call
                 mov     dx,data_170
-                mov     bx,1
-                call    sub_20
+                mov     bx,IPX_CLOSE_SOCKET
+                call    ipx_call
                 mov     dx,data_185
                 or      dx,dx
                 jz      loc_12
-                mov     bx,1
-                call    sub_20
+                mov     bx,IPX_CLOSE_SOCKET
+                call    ipx_call
 loc_12::
                 mov     dx,es:data_77
                 or      dx,dx
                 jz      loc_13
-                mov     bx,1
-                call    sub_20
+                mov     bx,IPX_CLOSE_SOCKET
+                call    ipx_call
                 mov     byte ptr cs:data_49,0
 loc_13::
                 xor     ax,ax
@@ -406,13 +390,13 @@ loc_0218:
                 mov     es,data_44
                 mov     word ptr [bp-6],4
                 mov     es:data_119,0
-                mov     bx,0
+                mov     bx,IPX_OPEN_SOCKET
                 mov     al,0FFh
                 mov     dx,0
-                call    sub_20
+                call    ipx_call
                 cmp     al,0
                 je      loc_16
-                mov     ax,8852h
+                mov     ax,VLM_STATUS_SOCKET_NOT_OPEN
                 jmp     loc_37
 loc_16::
                 mov     es:data_117,dx
@@ -429,11 +413,11 @@ loc_16::
                 stosw
                 mov     word ptr es:[di],5204h
                 mov     di,476h
-                mov     bx,2
-                call    sub_20
+                mov     bx,IPX_GET_LOCAL_TARGET
+                call    ipx_call
                 or      al,al
                 jz      loc_17
-                mov     ax,880Ah
+                mov     ax,VLM_STATUS_NO_ROUTE_TO_SERVER
                 jmp     loc_37
 loc_17::
                 add     cx,cx
@@ -442,7 +426,7 @@ loc_17::
                 mov     [bp-4],cx
                 mov     cx,[bp-0Ch]
                 mov     bh,1
-                call    sub_2
+                call    vcall_conn_7h
                 jz      loc_18
                 jmp     loc_37
 loc_18::
@@ -469,13 +453,13 @@ loc_19::
                 mov     cx,23h
                 xor     ax,ax
                 rep     stosw
-                mov     word ptr [bp-0Ah],8847h
+                mov     word ptr [bp-0Ah],VLM_STATUS_NO_RESPONDING_SERVERS
                 mov     si,4A6h
-                mov     bx,4
-                call    sub_20
+                mov     bx,IPX_LISTEN
+                call    ipx_call
                 or      al,al
                 jz      loc_20
-                mov     ax,8805h
+                mov     ax,VLM_STATUS_SEND_RECV_ERROR
                 jmp     loc_37
 loc_20::
                 mov     es:data_128,1
@@ -485,8 +469,8 @@ loc_20::
 loc_21::
                 push    di
                 push    es
-                mov     bx,0Ah
-                call    sub_20
+                mov     bx,IPX_RELINQUISH_CONTROL
+                call    ipx_call
                 pop     es
                 pop     di
                 cmp     word ptr es:[di+0Ah],0
@@ -504,7 +488,7 @@ loc_24::
                 xor     cx,cx
                 mov     bx,1100h
                 mov     dx,0Ch
-                call    sub_1
+                call    vcall_conn_0ah
                 jnz     loc_27
                 push    ds
                 mov     ds,cx
@@ -524,11 +508,11 @@ loc_24::
                 xor     ax,ax
 loc_25::
                 pop     ds
-                mov     word ptr [bp-0Ah],8800h
+                mov     word ptr [bp-0Ah],VLM_STATUS_8800
                 cmp     cx,[bp-0Ch]
                 je      loc_26
                 xchg    [bp-0Ch],cx
-                call    sub_5
+                call    vcall_conn_6h
 loc_26::
                 jmp     loc_38
 loc_27::
@@ -577,10 +561,10 @@ loc_30::
                 jae     loc_26
                 jmp     loc_21
 loc_31::
-                mov     bx,8
+                mov     bx,IPX_GET_INTERVAL_MARKER
                 push    di
                 push    es
-                call    sub_20
+                call    ipx_call
                 pop     es
                 pop     di
                 sub     ax,[bp-2]
@@ -613,10 +597,10 @@ loc_35::
                 call    sub_10
                 mov     [bp-2],ax
 loc_36::
-                mov     bx,0Ah
-                call    sub_20
-                mov     bx,8
-                call    sub_20
+                mov     bx,IPX_RELINQUISH_CONTROL
+                call    ipx_call
+                mov     bx,IPX_GET_INTERVAL_MARKER
+                call    ipx_call
                 sub     ax,[bp-2]
                 cmp     [bp-4],ax
                 ja      loc_36
@@ -630,8 +614,8 @@ loc_38::
                 mov     dx,es:data_119
                 or      dx,dx
                 jz      loc_39
-                mov     bx,1
-                call    sub_20
+                mov     bx,IPX_CLOSE_SOCKET
+                call    ipx_call
 loc_39::
                 pop     es
                 pop     ds
@@ -657,11 +641,11 @@ sub_10          proc    near
                 mov     si,offset data_116
                 test    byte ptr es:[si+8],0FFh
                 jnz     loc_41
-                mov     bx,3
-                call    sub_20
+                mov     bx,IPX_SEND
+                call    ipx_call
 loc_40::
-                mov     bx,0Ah
-                call    sub_20
+                mov     bx,IPX_RELINQUISH_CONTROL
+                call    ipx_call
                 test    byte ptr es:[si+8],0FFh
                 jnz     loc_40
                 cmp     byte ptr es:[si+9],0
@@ -669,11 +653,11 @@ loc_40::
                 pop     si
                 pop     bx
                 pop     ax
-                mov     ax,880Ah
+                mov     ax,VLM_STATUS_NO_ROUTE_TO_SERVER
                 jmp     short loc_37
 loc_41::
-                mov     bx,8
-                call    sub_20
+                mov     bx,IPX_GET_INTERVAL_MARKER
+                call    ipx_call
                 pop     si
                 pop     bx
                 retn
@@ -705,8 +689,8 @@ loc_04b6:
                 rep     movsw
                 lea     di,[bp-0Ch]
                 lea     si,[bp-18h]
-                mov     bx,2
-                call    sub_20
+                mov     bx,IPX_GET_LOCAL_TARGET
+                call    ipx_call
                 pop     dx
                 xchg    dx,cx
                 or      al,al
@@ -714,7 +698,7 @@ loc_04b6:
                 mov     ds,ax
                 jz      loc_42
                 inc     data_64
-                mov     ax,880Ah
+                mov     ax,VLM_STATUS_NO_ROUTE_TO_SERVER
                 jmp     short loc_45
 loc_42::
                 mov     ax,data_75
@@ -752,7 +736,7 @@ loc_43::
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
 sub_11          proc    near
-                call    sub_3
+                call    vcall_conn_8h
                 jnz     loc_44
                 retn
 loc_44::
@@ -807,7 +791,7 @@ loc_46::
                 mov     ax,seg_a
                 mov     ds,ax
                 mov     bx,1
-                call    sub_6
+                call    vcall_exe_4h
                 mov     al,1
                 xchg    data_90,al
                 or      al,al
@@ -818,9 +802,9 @@ loc_46::
                 adc     data_53,0
                 mov     es:data_148,al
                 mov     bh,0
-                call    sub_2
+                call    vcall_conn_7h
                 jnz     loc_49
-                mov     ax,8809h
+                mov     ax,VLM_STATUS_8809
                 or      dl,dl
                 jz      loc_47
                 jmp     loc_109
@@ -843,11 +827,11 @@ loc_48::
                 mov     cx,dx
                 cmp     dx,5
                 jbe     loc_51
-                mov     ax,8850h
+                mov     ax,VLM_STATUS_TOO_MANY_REPLY_FRAGS
 loc_49::
                 jmp     loc_106
 loc_50::
-                mov     word ptr [bp-0Eh],8846h
+                mov     word ptr [bp-0Eh],VLM_STATUS_ASYNC_WHILE_BUSY
                 jmp     loc_110
 loc_51::
                 mov     di,7E2h
@@ -880,7 +864,7 @@ loc_53::
                 mov     bl,[bp-14h]
                 xor     bh,bh
                 mov     cx,bx
-                mov     ax,880Ch
+                mov     ax,VLM_STATUS_TOO_MANY_REQ_FRAGS
                 cmp     bx,5
                 ja      loc_49
                 push    ds
@@ -927,7 +911,7 @@ loc_56::
                 lea     dx,[di-1Eh]
                 mov     cx,[bp-10h]
                 mov     al,2
-                call    sub_7
+                call    vcall_security_4h
                 pop     bx
                 jmp     short loc_62
 
@@ -1017,11 +1001,11 @@ loc_63::
                 pop     ds
                 test    es:data_142,0FFFFh
                 jnz     loc_66
-                mov     ax,8801h
+                mov     ax,VLM_STATUS_INVALID_CONN_HANDLE
 loc_64::
                 jmp     loc_106
 loc_65::
-                mov     ax,8852h
+                mov     ax,VLM_STATUS_SOCKET_NOT_OPEN
                 jmp     loc_106
 loc_66::
                 mov     es:data_131,cx
@@ -1044,8 +1028,8 @@ loc_67::
                 mov     es:data_146,bl
 loc_68::
                 mov     si,7B8h
-                mov     bx,4
-                call    sub_20
+                mov     bx,IPX_LISTEN
+                call    ipx_call
                 or      al,al
                 jnz     loc_65
                 mov     ax,data_88
@@ -1054,17 +1038,17 @@ loc_68::
 loc_69::
                 mov     si,73Dh
                 mov     bx,[bp+LOCAL_5]
-                call    sub_20
+                call    ipx_call
 loc_70::
-                mov     bx,0Ah
-                call    sub_20
+                mov     bx,IPX_RELINQUISH_CONTROL
+                call    ipx_call
                 test    byte ptr es:[si+8],0FFh
                 jnz     loc_70
                 cmp     byte ptr es:[si+9],0
                 je      loc_71
                 inc     data_57
                 call    sub_16
-                mov     ax,8806h
+                mov     ax,VLM_STATUS_UNKNOWN_NET_ERROR
                 jmp     loc_106
 loc_71::
                 mov     ax,es:data_130
@@ -1082,13 +1066,13 @@ loc_71::
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
 loc_72::
-                mov     bx,8
-                call    sub_20
+                mov     bx,IPX_GET_INTERVAL_MARKER
+                call    ipx_call
                 mov     [bp+LOCAL_1],ax
                 mov     si,7B8h
 loc_73::
-                mov     bx,0Ah
-                call    sub_20
+                mov     bx,IPX_RELINQUISH_CONTROL
+                call    ipx_call
                 mov     bx,word ptr es:data_175
                 or      bx,word ptr es:data_175+2
                 jz      loc_74
@@ -1104,8 +1088,8 @@ loc_73::
 loc_74::
                 test    byte ptr es:[si+8],0FFh
                 jz      loc_78
-                mov     bx,8
-                call    sub_20
+                mov     bx,IPX_GET_INTERVAL_MARKER
+                call    ipx_call
                 cmp     ax,[bp+LOCAL_1]
                 je      loc_73
                 inc     word ptr [bp+LOCAL_3]
@@ -1131,8 +1115,10 @@ loc_78::
                 jne     loc_76
 loc_79::
                 mov     si,offset data_156
-                cmp     word ptr es:[si],9999h
+                cmp     word ptr es:[si],TYPE_9999
                 jne     loc_81
+
+                ;
                 inc     data_62
                 mov     ax,data_88
                 mov     [bp+LOCAL_4],ax
@@ -1143,8 +1129,8 @@ loc_79::
                 mov     es:data_130,ax
 loc_80::
                 mov     si,7B8h
-                mov     bx,4
-                call    sub_20
+                mov     bx,IPX_LISTEN
+                call    ipx_call
                 jmp     loc_71
 loc_81::
                 cmp     word ptr [bp+LOCAL_5],20h
@@ -1159,8 +1145,8 @@ loc_83::
                 je      loc_84
                 push    si
                 mov     si,7B8h
-                mov     bx,22h
-                call    sub_20
+                mov     bx,IPX_VERIFY_CHECKSUM
+                call    ipx_call
                 or      ax,ax
                 pop     si
                 jnz     loc_82
@@ -1171,7 +1157,7 @@ loc_84::
                 inc     data_59
                 mov     cx,[bp-10h]
                 mov     bh,0
-                call    sub_3
+                call    vcall_conn_8h
                 mov     byte ptr data_90,0
                 push    bp
                 mov     bp,VLMID_IPXNCP
@@ -1197,12 +1183,12 @@ loc_87::
                 jne     loc_88
                 push    ax
                 mov     bh,0
-                call    sub_4
+                call    vcall_conn_9h
                 pop     ax
 loc_88::
-                cmp     ax,8846h
+                cmp     ax,VLM_STATUS_ASYNC_WHILE_BUSY
                 je      loc_89
-                mov     ax,8805h
+                mov     ax,VLM_STATUS_SEND_RECV_ERROR
 loc_89::
                 jmp     loc_106
 loc_90::
@@ -1212,16 +1198,16 @@ loc_91::
                 test    al,40h                  ; '@'
                 jz      loc_92
                 mov     bh,12h
-                call    sub_3
+                call    vcall_conn_8h
                 xor     ax,ax
                 call    dword ptr data_97
 loc_92::
-                cmp     word ptr es:[si],3333h
+                cmp     word ptr es:[si],TYPE_3333
                 jne     loc_85
                 mov     al,es:[si+2]
                 cmp     es:data_144,al
                 jne     loc_90
-                cmp     es:data_143,5555h
+                cmp     es:data_143,TYPE_5555
                 je      loc_94
                 jmp     loc_99
 loc_93::
@@ -1264,7 +1250,7 @@ loc_96::
                 mov     data_154,dx
                 lea     dx,[di-26h]
                 mov     si,7DCh
-                call    sub_7
+                call    vcall_security_4h
                 pop     ds
                 jz      loc_97
                 assume  ds:seg_a
@@ -1299,7 +1285,7 @@ loc_100::
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
-                call    sub_5
+                call    vcall_conn_6h
                 mov     es:data_131,0
                 jmp     short loc_104
 loc_101::
@@ -1323,7 +1309,7 @@ loc_102::
                 pop     ds
                 jnz     loc_103
                 mov     bh,0Ch
-                call    sub_3
+                call    vcall_conn_8h
 loc_103::
                 push    ds
                 push    es
@@ -1341,15 +1327,15 @@ loc_104::
                 xor     ax,ax
                 cmp     byte ptr es:data_150,0FDh
                 jne     loc_109
-                mov     ax,8833h
+                mov     ax,VLM_STATUS_INVALID_BUFFER_LEN
                 jmp     short loc_109
 loc_105::
                 mov     ah,89h
 loc_106::
                 call    sub_22
-                cmp     ax,8806h
+                cmp     ax,VLM_STATUS_UNKNOWN_NET_ERROR
                 je      loc_111
-                cmp     ax,8805h
+                cmp     ax,VLM_STATUS_SEND_RECV_ERROR
                 jne     loc_109
 loc_107::
                 mov     bh,[bp-13h]
@@ -1369,7 +1355,7 @@ loc_109::
                 mov     byte ptr data_90,0
 loc_110::
                 mov     bx,2
-                call    sub_6
+                call    vcall_exe_4h
                 pop     es
                 pop     ds
                 pop     di
@@ -1396,16 +1382,16 @@ loc_111::
                 mov     bh,[bp-13h]
                 cmp     bh,3
                 jne     loc_109
-                mov     ax,8816h
+                mov     ax,VLM_STATUS_8816
                 jmp     short loc_109
 loc_112::
-                mov     bx,2
+                mov     bx,IPX_GET_LOCAL_TARGET
                 mov     si,791h
                 mov     di,4EEh
-                call    sub_20
+                call    ipx_call
                 mov     dx,cx
                 or      al,al
-                mov     ax,8805h
+                mov     ax,VLM_STATUS_SEND_RECV_ERROR
                 jz      loc_113
                 inc     word ptr ds:data_19e
                 jmp     loc_106
@@ -1465,7 +1451,7 @@ loc_115::
                 inc     data_55
                 or      word ptr [bp+LOCAL_6],1
                 mov     bx,2
-                call    sub_6
+                call    vcall_exe_4h
                 pop     es
                 pop     ds
                 pop     di
@@ -1479,11 +1465,11 @@ loc_115::
                 jmp     loc_46
 loc_116::
                 inc     word ptr ds:data_16e
-                mov     ax,8801h
+                mov     ax,VLM_STATUS_INVALID_CONN_HANDLE
                 jmp     loc_106
 loc_117::
                 mov     bx,2
-                call    sub_6
+                call    vcall_exe_4h
                 pop     es
                 pop     ds
                 pop     di
@@ -1537,7 +1523,7 @@ sub_15::
 loc_119::
                 mov     al,1
                 push    bx
-                call    sub_8
+                call    vcall_nwp_10h
                 pop     bx
                 test    cl,dl
                 jz      loc_118
@@ -1623,7 +1609,7 @@ loc_124::
                 pop     bp
                 mov     bx,500h
                 mov     dl,1
-                call    sub_1
+                call    vcall_conn_0ah
                 jz      loc_125
                 xor     cx,cx
 loc_125::
@@ -1639,7 +1625,7 @@ loc_125::
                 jne     loc_127
 loc_126::
                 pop     ax
-                mov     ax,8854h
+                mov     ax,VLM_STATUS_SFT_III_SWITCH
                 jmp     loc_106
 loc_127::
                 pop     ax
@@ -1658,16 +1644,16 @@ loc_128::
                 mov     si,offset data_133
                 test    byte ptr es:[si+8],0FFh
                 jz      loc_129
-                mov     bx,6
-                call    sub_20
+                mov     bx,IPX_CANCEL_EVENT
+                call    ipx_call
                 cmp     al,0F9h
                 je      loc_128
 loc_129::
                 mov     si,offset data_149
                 test    byte ptr es:[si+8],0FFh
                 jz      loc_130
-                mov     bx,6
-                call    sub_20
+                mov     bx,IPX_CANCEL_EVENT
+                call    ipx_call
                 cmp     al,0F9h
                 je      loc_129
 loc_130::
@@ -1679,7 +1665,7 @@ loc_130::
 sub_16          endp
 
 loc_0cf7:
-                mov     ax,8836h
+                mov     ax,VLM_STATUS_FUNC_INVALID_PARAM
                 retf
 
 loc_0cfb:
@@ -1693,8 +1679,8 @@ loc_0cfb:
                 mov     es:[si+0Ah],bx
                 pop     bx
                 push    bx
-                add     bx,5
-                call    sub_20
+                add     bx,IPX_SCHEDULE
+                call    ipx_call
                 pop     bx
                 xor     ax,ax
                 retf
@@ -1713,7 +1699,7 @@ loc_0d27:
 ;ƒƒƒƒƒ Indexed Entry Point ƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒ
 
 loc_131::
-                call    sub_18
+                call    ipx_get_pkt_size
                 mov     dx,1Eh
                 mov     bx,ax
                 push    es
@@ -1727,7 +1713,7 @@ loc_133::
                 push    bx
                 mov     dx,240h
                 mov     bh,0Bh
-                call    sub_3
+                call    vcall_conn_8h
                 pop     bx
                 jmp     short loc_132
 
@@ -1760,7 +1746,7 @@ loc_135::
                 or      byte ptr data_181,1
                 mov     [bp-0Ch],dx
                 mov     word ptr [bp-2],200h
-                call    sub_18
+                call    ipx_get_pkt_size
 ;*              sub     ax,1Eh
                 db       2Dh, 1Eh, 00h
                 mov     [bp-0Ah],cx
@@ -1811,38 +1797,38 @@ loc_140::
 
 locloop_141::
                 push    cx
-                mov     bx,3
-                call    sub_20
+                mov     bx,IPX_SEND
+                call    ipx_call
 loc_142::
                 test    byte ptr [si+8],0FFh
                 jz      loc_143
-                mov     bx,0Ah
-                call    sub_20
+                mov     bx,IPX_RELINQUISH_CONTROL
+                call    ipx_call
                 jmp     short loc_142
 loc_143::
                 test    byte ptr [si+9],0FFh
                 jz      loc_144
                 jmp     loc_156
 loc_144::
-                mov     bx,0Ah
-                call    sub_20
+                mov     bx,IPX_RELINQUISH_CONTROL
+                call    ipx_call
                 pop     cx
                 mov     ax,[bp-8]
                 cmp     data_180,ax
                 jae     loc_146
                 loop    locloop_141
 
-                mov     bx,8
-                call    sub_20
+                mov     bx,IPX_GET_INTERVAL_MARKER
+                call    ipx_call
                 mov     [bp-0Eh],ax
 loc_145::
-                mov     bx,0Ah
-                call    sub_20
+                mov     bx,IPX_RELINQUISH_CONTROL
+                call    ipx_call
                 mov     ax,[bp-8]
                 cmp     data_180,ax
                 jae     loc_146
-                mov     bx,8
-                call    sub_20
+                mov     bx,IPX_GET_INTERVAL_MARKER
+                call    ipx_call
                 sub     ax,[bp-0Eh]
                 cmp     ax,[bp-0Ch]
                 jbe     loc_145
@@ -1890,8 +1876,8 @@ loc_150::
                 call    sub_17
                 jz      loc_152
 loc_151::
-                mov     bx,8
-                call    sub_20
+                mov     bx,IPX_GET_INTERVAL_MARKER
+                call    ipx_call
                 sub     ax,[bp-0Eh]
                 inc     ax
                 mov     [bp-0Ch],ax
@@ -1927,10 +1913,10 @@ loc_155::
                 jmp     loc_140
 loc_156::
                 pop     cx
-                mov     ax,8806h
+                mov     ax,VLM_STATUS_UNKNOWN_NET_ERROR
                 jmp     short loc_162
 loc_157::
-                mov     ax,8805h
+                mov     ax,VLM_STATUS_SEND_RECV_ERROR
                 jmp     short loc_162
 loc_158::
                 mov     [bp-6],ax
@@ -1952,7 +1938,7 @@ loc_161::
                 mov     [bp-16h],ax
                 mov     bh,0Bh
                 mov     dx,ax
-                call    sub_3
+                call    vcall_conn_8h
 loc_162::
                 and     byte ptr data_181,0FEh
                 mov     [bp-12h],ax
@@ -1983,7 +1969,7 @@ loc_163::
                 assume  ds:seg_b
                 mov     byte ptr data_182,5
                 mov     bh,0Bh
-                call    sub_2
+                call    vcall_conn_7h
                 add     dx,0Eh
                 mov     data_187,dx
 loc_164::
@@ -2004,11 +1990,11 @@ loc_166::
                 pop     di
                 mov     es,cs:data_44
                 mov     si,998h
-                mov     bx,3
-                call    sub_20
+                mov     bx,IPX_SEND
+                call    ipx_call
 loc_167::
-                mov     bx,0Ah
-                call    sub_20
+                mov     bx,IPX_RELINQUISH_CONTROL
+                call    ipx_call
                 test    byte ptr [si+8],0FFh
                 jnz     loc_167
                 test    byte ptr [si+9],0FFh
@@ -2017,8 +2003,8 @@ loc_168::
                 sub     ax,ax
                 cmp     data_180,ax
                 jne     loc_170
-                mov     bx,8
-                call    sub_20
+                mov     bx,IPX_GET_INTERVAL_MARKER
+                call    ipx_call
                 sub     ax,di
                 cmp     ax,bp
                 jbe     loc_168
@@ -2030,7 +2016,7 @@ loc_168::
                 push    cx
                 jmp     short loc_164
 loc_169::
-                mov     ax,8805h
+                mov     ax,VLM_STATUS_SEND_RECV_ERROR
 loc_170::
                 and     byte ptr data_181,0FEh
                 push    ax
@@ -2067,7 +2053,7 @@ loc_171::
                 pop     ds
                 retf
 loc_172::
-                mov     ax,8801h
+                mov     ax,VLM_STATUS_INVALID_CONN_HANDLE
                 pop     cx
                 pop     es
                 pop     ds
@@ -2088,7 +2074,7 @@ loc_173::
                 jmp     loc_184
 loc_174::
                 mov     bh,0Bh
-                call    sub_2
+                call    vcall_conn_7h
                 add     dx,0Eh
                 assume  ds:seg_b
                 mov     data_187,dx
@@ -2107,8 +2093,8 @@ loc_176::
                 or      byte ptr data_181,2
                 mov     es,cs:data_44
                 mov     si,998h
-                mov     bx,3
-                call    sub_20
+                mov     bx,IPX_SEND
+                call    ipx_call
                 push    si
                 call    far ptr sub_29
                 pop     si
@@ -2128,10 +2114,10 @@ loc_178::
                 jb      loc_178
                 mov     es,cs:data_44
                 mov     si,998h
-                mov     bx,3
-                call    sub_20
-                mov     bx,8
-                call    sub_20
+                mov     bx,IPX_SEND
+                call    ipx_call
+                mov     bx,IPX_GET_INTERVAL_MARKER
+                call    ipx_call
                 mov     di,ax
 loc_179::
                 test    byte ptr [si+8],0FFh
@@ -2141,8 +2127,8 @@ loc_179::
 loc_180::
                 test    byte ptr data_181,2
                 jz      loc_181
-                mov     bx,8
-                call    sub_20
+                mov     bx,IPX_GET_INTERVAL_MARKER
+                call    ipx_call
                 sub     ax,di
                 cmp     ax,bp
                 jbe     loc_180
@@ -2181,7 +2167,7 @@ loc_185::
                 pop     cx
                 retf
 loc_186::
-                mov     ax,8801h
+                mov     ax,VLM_STATUS_INVALID_CONN_HANDLE
                 pop     es
                 pop     ds
                 pop     cx
@@ -2224,21 +2210,21 @@ sub_17          endp
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_18          proc    near
+ipx_get_pkt_size proc    near
                 push    cx
                 xor     ax,ax
-                mov     bx,1Ah
-                call    sub_20
+                mov     bx,IPX_GET_MAX_PACKET_SIZE
+                call    ipx_call
                 or      ax,ax
                 jnz     loc_189
-                mov     bx,0Dh
-                call    sub_20
+                mov     bx,IPX_GET_PACKET_SIZE
+                call    ipx_call
 ;*              add     ax,40h
                 db       05h, 40h, 00h
 loc_189::
                 pop     cx
                 retn
-sub_18          endp
+ipx_get_pkt_size endp
 
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
@@ -2249,7 +2235,7 @@ sub_19          proc    near
                 mov     di,9B4h
                 mov     bh,11h
                 mov     dx,0C06h
-                call    sub_2
+                call    vcall_conn_7h
                 jnz     loc_190
                 mov     di,offset data_188
                 push    ds
@@ -2271,8 +2257,8 @@ sub_19          proc    near
                 mov     data_191,dx
                 mov     data_180,0
                 push    cx
-                mov     bx,8
-                call    sub_20
+                mov     bx,IPX_GET_INTERVAL_MARKER
+                call    ipx_call
                 mov     di,ax
                 pop     cx
                 inc     data_192
@@ -2297,7 +2283,7 @@ loc_11d1:
                 cmp     bx,1
                 jb      loc_191
                 jz      loc_192
-                mov     ax,8836h
+                mov     ax,VLM_STATUS_FUNC_INVALID_PARAM
                 pop     ds
                 retf
 loc_191::
@@ -2331,7 +2317,7 @@ loc_192::
 loc_1218:
                 or      bx,bx
                 jz      loc_193
-                mov     ax,8836h
+                mov     ax,VLM_STATUS_FUNC_INVALID_PARAM
                 jmp     short loc_ret_194
 loc_193::
                 assume  ds:seg_a
@@ -2346,19 +2332,19 @@ loc_ret_194::
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_20          proc    near
+ipx_call        proc    near
                 push    si
                 push    di
                 push    bp
                 push    es
                 sti
-                call    dword ptr cs:data_47
+                call    dword ptr cs:ipx_call_ptr2
                 pop     es
                 pop     bp
                 pop     di
                 pop     si
                 retn
-sub_20          endp
+ipx_call        endp
 
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
@@ -2489,12 +2475,12 @@ loc_200::
                 retn
 loc_201::
                 or      byte ptr data_179,2
-                mov     bx,8
-                call    sub_20
+                mov     bx,IPX_GET_INTERVAL_MARKER
+                call    ipx_call
                 mov     di,ax
 loc_202::
-                mov     bx,8
-                call    sub_20
+                mov     bx,IPX_GET_INTERVAL_MARKER
+                call    ipx_call
                 cmp     ax,di
                 je      loc_202
                 mov     data_177,ax
@@ -2547,8 +2533,8 @@ loc_203::
                 sub     bx,bx
                 retn
 loc_204::
-                mov     bx,8
-                call    sub_20
+                mov     bx,IPX_GET_INTERVAL_MARKER
+                call    ipx_call
                 sub     ax,data_177
 ;*              cmp     ax,77h
                 db       3Dh, 77h, 00h
@@ -2575,7 +2561,7 @@ sub_24          endp
                 db      11 dup (0)
 data_44         dw      seg_b
 vlm_call_ptr    dw      0, 0
-data_47         dw      0, 0
+ipx_call_ptr2   dw      0, 0
 data_49         db      0FFh
                 db      0
 data_50         db      3Bh
@@ -2638,11 +2624,13 @@ seg_a           ends
 seg_b           segment byte public
                 assume cs:seg_b  , ds:seg_b
 
-                                                ;* No entry point to code
+int_2f_entry:
                 cmp     ax,7A00h
                 jne     loc_206
-                mov     di,15h
-                mov     bx,434h
+
+                ; ipx installation check
+                mov     di,offset ipx_impl      ; call pointer
+                mov     bx,434h                 ; version number pointer
                 push    cs
                 pop     es
                 mov     al,0FFh
@@ -2650,15 +2638,17 @@ seg_b           segment byte public
 loc_206::
                 jmp     dword ptr cs:data_106
                                                 ;* No entry point to code
+
+ipx_impl:
                 cmp     bx,0
                 jne     loc_207
                 call    sub_25
                 callf   sub_26
 loc_207::
-                jmp     dword ptr cs:data_104
-                db       49h, 50h, 58h, 00h
-data_101        db      0
-                db       00h, 83h,0FBh, 00h, 75h, 07h
+                jmp     dword ptr cs:ipx_call_ptr
+                db      "IPX", 0
+ipx_version_val dw      0
+                db      83h,0FBh, 00h, 75h, 07h
                 db      0E8h, 09h, 00h, 0Eh,0E8h, 10h
                 db       00h
 loc_208::
@@ -2795,8 +2785,8 @@ loc_216::
                 jmp     short loc_216
 loc_217::
                 mov     si,4A6h
-                mov     bx,4
-                call    dword ptr data_104
+                mov     bx,IPX_LISTEN
+                call    dword ptr ipx_call_ptr
 
 loc_ret_218::
                 retf
@@ -2871,9 +2861,11 @@ loc_226::
                 pop     ds
                 mov     si,offset data_159
                 mov     word ptr [si+4],17Ah
-                mov     bx,4
-                jmp     dword ptr data_104
+                mov     bx,IPX_LISTEN
+                jmp     dword ptr ipx_call_ptr
                                                 ;* No entry point to code
+
+                ;; TODO: I think this may send watchdog packets
                 push    cs
                 pop     ds
                 cmp     word ptr [di+0Ch],7
@@ -2898,8 +2890,9 @@ loc_229::
                 rep     movsw
                 mov     si,offset data_159
                 mov     word ptr [si+4],1ADh
-                mov     bx,3
-                jmp     dword ptr es:data_104
+                mov     bx,IPX_SEND
+                jmp     dword ptr es:ipx_call_ptr
+
                                                 ;* No entry point to code
                 push    cs
                 pop     ds
@@ -2925,14 +2918,17 @@ loc_230::
                 push    cs
                 pop     es
                 mov     si,8B8h
-                mov     bx,4
-                jmp     dword ptr cs:data_104
+                mov     bx,IPX_LISTEN
+                jmp     dword ptr cs:ipx_call_ptr
+
 loc_231::
-                mov     ax,7A22h
-                mov     bx,21h
-                int     2Fh                     ; ??INT Non-standard interrupt
+                mov     ax,7A22h                ; dos requester: broadcast
+                mov     bx,21h                  ; ipx
+                int     2Fh
                 or      ax,ax
                 jz      loc_230
+
+                ; mesage not handled
                 mov     word ptr [di+1Eh],0
                 mov     word ptr [di+0Ch],0Ah
                 mov     byte ptr [di+1Bh],11h
@@ -3015,8 +3011,8 @@ sub_28          proc    far
                 push    bp
                 mov     ax,5Ah
                 mov     si,bx
-                mov     bx,5
-                call    dword ptr cs:data_104
+                mov     bx,IPX_SCHEDULE
+                call    dword ptr cs:ipx_call_ptr
                 pop     bp
                 pop     di
                 pop     si
@@ -3057,8 +3053,8 @@ sub_28          endp
 loc_235::
                 pop     si
                 pop     es
-                mov     bx,4
-                jmp     dword ptr data_104
+                mov     bx,IPX_LISTEN
+                jmp     dword ptr ipx_call_ptr
 loc_236::
                 callf   sub_29
                 mov     dx,data_183
@@ -3110,8 +3106,8 @@ loc_239::
                 sub     bx,bx
                 retf
 loc_240::
-                mov     bx,8
-                call    dword ptr data_104
+                mov     bx,IPX_GET_INTERVAL_MARKER
+                call    dword ptr ipx_call_ptr
                 sub     ax,data_177
 ;*              cmp     ax,77h
                 db       3Dh, 77h, 00h
@@ -3125,12 +3121,12 @@ loc_241::
 sub_29          endp
 
                 db      13 dup (0)
-data_104        dw      0, 0
+ipx_call_ptr    dw      0, 0
 data_106        dd      00000h
 data_107        dw      0, 0
-vlm_call_ptr2        dw      0, 0
+vlm_call_ptr2   dw      0, 0
 data_110        dw      0, 0
-data_111        dw      0
+ipx_version2    dw      0
 data_112        db      0
 data_113        db      0
 data_114        db      0
@@ -3219,15 +3215,21 @@ data_156        db      0
 data_157        db      0
 data_158        db      0
                 db      12 dup (0)
-data_159        db      0
-                db       00h, 00h, 00h, 7Ah, 01h
-                dw      seg_b
-                db      0, 0
-data_161        dw      0
-                db      22 dup (0)
-                db       01h, 00h, 62h, 08h
-                dw      seg_b
-                db       20h, 00h,0FFh,0FFh, 00h, 00h
+
+; ipx send event control block
+data_159        dw      0, 0                    ; link
+                dw      17Ah, seg_b             ; event service routine
+                db      0                       ; in-use flag
+                db      0                       ; completion code
+data_161        dw      0                       ; socket number
+                db      4 dup (0)               ; ipx workspace
+                db      12 dup (0)              ; driver workspace
+                db      6 dup (0)               ; local node address
+                dw      1                       ; fragment count
+                dw      862h, seg_b             ; fragment 1 pointer
+                dw      20h                     ; fragment 1 size
+
+                db      0FFh,0FFh, 00h, 00h
                 db       00h, 11h
 data_162        db      0
                 db      11 dup (0)
@@ -3419,27 +3421,27 @@ loc_244::
 loc_245::
                 mov     data_75,ax
                 pop     ds
-                mov     ax,7A00h
-                int     2Fh                     ; ??INT Non-standard interrupt
+                mov     ax,7A00h                ; ipx: installation check
+                int     2Fh
                 mov     bx,es:[bx]
                 assume  ds:seg_c
-                mov     cs:data_208,bx
+                mov     cs:ipx_version,bx
                 mov     cx,es
                 mov     ax,seg_b
                 mov     es,ax
-                mov     word ptr es:data_104,di
-                mov     word ptr es:data_104+2,cx
-                mov     es:data_111,bx
+                mov     word ptr es:ipx_call_ptr,di
+                mov     word ptr es:ipx_call_ptr+2,cx
+                mov     es:ipx_version2,bx
                 push    di
-                mov     di,offset data_101
+                mov     di,offset ipx_version_val
                 mov     ax,bx
                 stosw
                 pop     di
                 push    es
                 mov     ax,seg_a
                 mov     es,ax
-                mov     word ptr es:data_47,di
-                mov     word ptr es:data_47+2,cx
+                mov     word ptr es:ipx_call_ptr2,di
+                mov     word ptr es:ipx_call_ptr2+2,cx
                 mov     cs:data_206,di
                 mov     word ptr cs:data_206+2,cx
                 push    ax
@@ -3640,7 +3642,7 @@ loc_253::
                 mov     ds,cs:data_205
                 mov     ds:data_11e,bx
                 mov     ds:data_12e,es
-;*              mov     dx,offset loc_1         ;*
+;*              mov     dx,offset int_2f_entry ;*
                 db      0BAh, 00h, 00h
                 mov     ax,252Fh
                 int     21h                     ; DOS Services  ah=function 25h
@@ -4148,7 +4150,7 @@ data_202        dw      0
 data_203        dw      0, 0
 data_205        dw      0
 data_206        dw      0, 0
-data_208        dw      0
+ipx_version     dw      0
 data_209        dw      0
 data_210        dw      0
                 db      'NETWARE DOS REQUESTER', 0
