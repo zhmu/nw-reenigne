@@ -5,7 +5,19 @@ import sys
 import subprocess
 import compare_dos_exe
 
+def _get_mtime(f):
+    try:
+        return os.path.getmtime(f)
+    except OSError:
+        return None
+
 def build_item(source_file, out_file, orig_file, append_file=None):
+    src_mtime = _get_mtime(source_file)
+    dst_mtime = _get_mtime(f'out/{out_file}')
+    if dst_mtime is not None and dst_mtime > src_mtime:
+        print(f'# Skipping {out_file} - source not modified')
+        return 0
+
     with open('t.bat', 'wt') as f:
         f.write('set path=%path%;c:\\masm611\\bin\n')
         source_file_dos = source_file.replace('/', '\\')
@@ -13,7 +25,7 @@ def build_item(source_file, out_file, orig_file, append_file=None):
         f.write(f'del out\\{out_obj}\n')
         f.write(f'del out\\{out_file}\n')
         f.write(f'masm {source_file_dos},out\\{out_obj}\n')
-        f.write(f'link out\\{out_obj},out\\{out_file},,,,\n')
+        f.write(f'link out\\{out_obj},out\\{out_file},NUL,,NUL,\n')
         if append_file:
             # append binary data
             append_path_dos = append_file.replace('/', '\\')
