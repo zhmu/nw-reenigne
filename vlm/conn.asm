@@ -1,38 +1,44 @@
 ; The following equates show data references outside the range of the program.
 
-data_1e         equ     0
-data_2e         equ     2
-data_3e         equ     4
-data_4e         equ     6
-data_5e         equ     12h
 data_6e         equ     30h
-data_68e        equ     954Bh                   ;*
 data_84e        equ     3Eh
 data_85e        equ     3Fh
 
+; a lot of conn.vlm functionality is described in interrup.m, #02867
+
 include common.inc
+include vlm.inc
+
+; conn table has 60h (96) byte entries 
+; interrup.m, #02869
+;
+CONN_PROTO_VLMID    equ     0h              ; word, 31h bind, 32h nds
+CONN_STATUS         equ     2h              ; byte
+CONN_REFCOUNT       equ     4h              ; word
+CONN_SOFT_REFCOUNT  equ     6h              ; word
+CONN_NCP_REQTYPE    equ     12h             ; word
 
 ;------------------------------------------------------------  seg_a   ----
 
 seg_a           segment byte public
                 assume cs:seg_a  , ds:seg_a
 
-                dw      0, seg_c
+                dw      offset init_fn, seg_c
                 dw      offset loc_0070, seg_a
                 dw      offset loc_013d, seg_a
-                dw      offset loc_019b, seg_a
-                dw      offset sub_1, seg_a
-                dw      offset sub_2, seg_a
-                dw      offset sub_3, seg_a
-                dw      offset sub_5, seg_a
-                dw      offset sub_6, seg_a
-                dw      offset loc_03ff, seg_a
-                dw      offset loc_040c, seg_a
+                dw      offset conn_stats, seg_a        ; function 3
+                dw      offset alloc_handle, seg_a      ; function 4
+                dw      offset validate_handle, seg_a   ; function 5
+                dw      offset free_handle, seg_a       ; function 6
+                dw      offset conn_get_field, seg_a    ; function 7
+                dw      offset conn_set_field, seg_a    ; function 8
+                dw      offset conn_reset_field, seg_a  ; function 9
+                dw      offset conn_lookup_handle, seg_a    ; function 0Ah
                 dw      offset sub_18, seg_a
                 dw      offset sub_17, seg_a
-                dw      offset sub_20, seg_a
-                dw      offset sub_21, seg_a
-                dw      offset loc_067a, seg_a
+                dw      offset conn_lookup_name, seg_a  ; function 0Dh
+                dw      offset conn_name2handle, seg_a  ; function 0Eh
+                dw      offset get_conn_table, seg_a    ; function 0Fh
                 dw      offset sub_22, seg_a
                 dw      offset loc_09c5, seg_a
                 dw      offset loc_09f1, seg_a
@@ -41,29 +47,30 @@ seg_a           segment byte public
                 dw      VLMID_CONN
 
 data_7          dw      offset loc_2            ; Data table (indexed access)
-data_8          dw      offset loc_4
-data_9          dw      offset loc_1
-data_10         dw      offset loc_1
-data_11         dw      offset loc_1
-data_12         dw      offset loc_1
-data_13         dw      offset loc_5
-data_14         dw      offset loc_10
-data_15         dw      offset loc_9
-data_16         dw      offset loc_11
-data_17         dw      offset loc_1
-data_18         dw      offset loc_1
-data_19         dw      offset loc_12
+                dw      offset loc_4
+                dw      offset bad_func_ret
+                dw      offset bad_func_ret
+                dw      offset bad_func_ret
+                dw      offset bad_func_ret
+                dw      offset loc_5
+                dw      offset loc_10
+                dw      offset loc_9
+                dw      offset loc_11
+                dw      offset bad_func_ret
+                dw      offset bad_func_ret
+                dw      offset loc_12
 
 loc_0070:
-                dw      0FB83h                  ; Data table (indexed access)
-                db       0Dh, 72h, 04h
+                cmp     bx,0dh
+                jc      loc_0079
 
 ;ƒƒƒƒƒ Indexed Entry Point ƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒ
 
-loc_1::
+bad_func_ret::
                 mov     ax,STATUS_NONEXISTANT_FUNC_CALLED
                 retf
-                                                ;* No entry point to code
+
+loc_0079:
                 shl     bx,1
                 jmp     word ptr cs:data_7[bx]  ;*13 entries
 
@@ -71,7 +78,7 @@ loc_1::
 
 loc_2::
                 mov     bx,1
-                mov     cx,15h
+                mov     cx,21                   ; vlm 1.21
 loc_3::
                 xor     ax,ax
                 retf
@@ -96,7 +103,7 @@ loc_6::
                 push    ds
                 push    dx
                 mov     ds,cx
-                mov     dx,ds:data_4e
+                mov     dx,ds:[CONN_SOFT_REFCOUNT]
                 or      dx,dx
                 jnz     loc_7
 ;*              cmp     ax,0FFFFh
@@ -104,7 +111,7 @@ loc_6::
                 jz      loc_8
 loc_7::
                 add     dx,ax
-                mov     ds:data_4e,dx
+                mov     ds:[CONN_SOFT_REFCOUNT],dx
 loc_8::
                 pop     dx
                 pop     ds
@@ -136,9 +143,9 @@ loc_11::
 
 loc_12::
                 cmp     cx,1
-                jne     loc_1
+                jne     bad_func_ret
                 cmp     dx,0
-                jne     loc_1
+                jne     bad_func_ret
                 cmp     byte ptr cs:data_51,0
                 je      loc_14
                 push    ax
@@ -153,11 +160,12 @@ loc_12::
                 push    es
                 mov     ax,seg_a
                 mov     ds,ax
-                mov     ax,data_52
+                mov     ax,conn_tab_ptr
                 test    ax,8000h
                 jz      loc_13
+
                 mov     ax,60h
-                mul     data_44
+                mul     c_conns
                 mov     cx,ax
                 xor     ax,ax
                 shr     cx,1
@@ -169,7 +177,7 @@ loc_12::
                 mov     ah,48h
                 int     21h                     ; DOS Services  ah=function 48h
                                                 ;  allocate memory, bx=bytes/16
-                mov     data_52,ax
+                mov     conn_tab_ptr,ax
                 mov     es,ax
                 xor     ax,ax
                 xor     di,di
@@ -180,7 +188,7 @@ loc_12::
                 shr     di,cl
                 add     ax,di
                 pop     es
-                mov     data_65,ax
+                mov     conn_tbl_limit,ax
 loc_13::
                 pop     es
                 pop     ds
@@ -208,7 +216,7 @@ loc_013d:
                 mov     es,ax
                 mov     ds,ax
                 mov     bx,data_61
-                mov     cx,data_46
+                mov     cx,c_max_tasks
 
 locloop_15::
                 test    word ptr [bx+2],0FFFFh
@@ -229,7 +237,7 @@ loc_17::
 
                 cmp     byte ptr cs:data_51,0
                 je      loc_18
-                mov     es,es:data_52
+                mov     es,es:conn_tab_ptr
                 mov     ah,49h
                 int     21h                     ; DOS Services  ah=function 49h
                                                 ;  release memory block, es=seg
@@ -243,14 +251,14 @@ loc_19::
                 xor     ax,ax
                 retf
 
-loc_019b:
+conn_stats:
                 push    cx
                 push    si
                 push    di
                 push    ds
                 mov     ax,seg_a
                 mov     ds,ax
-                mov     si,offset data_43
+                mov     si,offset conn_statistics
                 cmp     cx,[si]
                 jbe     loc_20
                 mov     cx,[si]
@@ -266,23 +274,23 @@ loc_20::
                 xor     ax,ax
                 retf
 
-;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
-;                              SUBROUTINE
-;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
-
-sub_1           proc    far
+; allocates a connection table slot.
+; returns: ax = status (0 on success), cx = slot segment (0 on failure)
+alloc_handle           proc    far
                 push    dx
                 push    si
                 push    ds
                 push    es
                 mov     ax,seg_a
                 mov     ds,ax
-                mov     cx,data_44
-                mov     ax,data_52
+                mov     cx,c_conns
+                mov     ax,conn_tab_ptr
                 mov     es,ax
 
+                ; walk through connection table, find first with
+    ;           ; status = 0
 locloop_21::
-                cmp     byte ptr es:data_70,0
+                cmp     byte ptr es:[CONN_STATUS],0
                 je      loc_23
 ;*              add     ax,6
                 db      5, 6, 0
@@ -291,75 +299,75 @@ locloop_21::
 
                 call    sub_29
                 jz      loc_22
-                inc     data_47
+                inc     fails_alloc_handle
                 xor     cx,cx
-                mov     ax,883Fh
-                jmp     short loc_24
-loc_22::
+                mov     ax,VLM_STATUS_LOCAL_CONN_TAB_FULL
+                jmp     short sub_1_ret
+loc_22::        ; issue disconnect request to nwp.vlm
                 mov     dl,1
                 push    bp
                 mov     bp,VLMID_CONN
                 push    bp
                 mov     bp,VLMID_NWP
                 push    bp
-                mov     bp,5
+                mov     bp,5                    ; disconnect
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 mov     es,cx
-loc_23::
-                mov     byte ptr es:data_2e,1
+
+loc_23::        ; available connection found
+                mov     byte ptr es:[CONN_STATUS],1
                 xor     ax,ax
                 mov     cx,es
-loc_24::
+sub_1_ret::
                 pop     es
                 pop     ds
                 pop     si
                 pop     dx
                 retf
-sub_1           endp
+alloc_handle           endp
 
 
-;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
-;                              SUBROUTINE
-;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
-
-sub_2           proc    far
+; function 5: "Conn Validate Handle". cx = handle
+validate_handle proc    far
                 push    dx
                 push    ds
                 push    es
-                mov     ax,8801h
+                mov     ax,VLM_STATUS_INVALID_CONN_HANDLE	
                 jcxz    loc_25
                 mov     ax,seg_a
                 mov     ds,ax
                 mov     es,cx
-                mov     ax,8801h
-                test    byte ptr es:data_2e,1
+                mov     ax,VLM_STATUS_INVALID_CONN_HANDLE	
+                test    byte ptr es:[CONN_STATUS],1
                 jz      loc_25
-                cmp     cx,data_52
+
+                cmp     cx,conn_tab_ptr
                 jb      loc_25
-                cmp     cx,data_65
+                cmp     cx,conn_tbl_limit
                 jae     loc_25
+
                 xor     ax,ax
 loc_25::
                 pop     es
                 pop     ds
                 pop     dx
                 retf
-sub_2           endp
+validate_handle endp
 
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_3           proc    far
+free_handle           proc    far
                 push    bx
                 push    cx
                 push    dx
                 push    di
                 push    es
-                callf   sub_2
+                callf   validate_handle
                 or      ax,ax
                 jnz     loc_26
                 callf   sub_17
@@ -390,7 +398,7 @@ loc_26::
                 pop     cx
                 pop     bx
                 retf
-sub_3           endp
+free_handle           endp
 
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
@@ -402,15 +410,15 @@ sub_4           proc    near
                 push    ds
                 mov     ds,cx
                 xor     ax,ax
-                cmp     word ptr ds:data_1e,32h
+                cmp     word ptr ds:[CONN_PROTO_VLMID],VLMID_NDS
                 jne     loc_27
-                cmp     word ptr ds:data_5e,5555h
+                cmp     word ptr ds:[CONN_NCP_REQTYPE],5555h
                 je      loc_27
-                mov     al,ds:data_2e
+                mov     al,ds:[CONN_STATUS]
                 and     al,20h                  ; ' '
                 mov     cl,5
                 shr     al,cl
-                cmp     word ptr ds:data_3e,1
+                cmp     word ptr ds:[CONN_REFCOUNT],1
                 cmc
                 adc     al,0
 loc_27::
@@ -424,7 +432,7 @@ sub_4           endp
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_5           proc    far
+conn_get_field  proc    far
                 xor     bl,bl
                 jmp     short loc_34
 
@@ -433,9 +441,10 @@ loc_ret_28::
 
 ;ﬂﬂﬂﬂ External Entry into Subroutine ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
 
-sub_6           proc far
+conn_set_field           proc far
                 mov     bl,1
-                callf   sub_2
+loc_02b1:
+                callf   validate_handle
                 or      ax,ax
                 jnz     loc_ret_28
                 call    sub_4
@@ -477,22 +486,23 @@ loc_32::
 
 loc_ret_33::
                 retf
-sub_6           endp
+conn_set_field           endp
 
 data_21         dw      offset sub_8            ; Data table (indexed access)
-data_22         dw      offset sub_9
-data_23         dw      offset sub_10
-data_24         dw      offset sub_11
-data_25         dw      offset sub_12
-data_26         dw      offset sub_13
-data_27         dw      offset sub_14
-data_28         dw      offset sub_15
-data_29         dw      offset sub_16
+                dw      offset sub_9
+                dw      offset sub_10
+                dw      offset sub_11
+                dw      offset sub_12
+                dw      offset sub_13
+                dw      offset sub_14
+                dw      offset sub_15
+                dw      offset sub_16
+
 loc_34::
-                callf   sub_2
+                callf   validate_handle
                 or      ax,ax
                 jnz     loc_ret_33
-sub_5           endp
+conn_get_field  endp
 
 ;ﬂﬂﬂﬂ External Entry into Subroutine ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
 
@@ -551,7 +561,7 @@ loc_37::
 sub_7           endp
 
 loc_38::
-                mov     ax,8836h
+                mov     ax,VLM_STATUS_FUNC_INVALID_PARAM
                 jmp     short loc_37
 
 
@@ -696,27 +706,33 @@ sub_16          proc    near
                 retn
 sub_16          endp
 
-loc_03ff:
-                db      0B3h, 02h,0E9h,0ADh,0FEh
+conn_reset_field:
+                mov     bl,2
+                jmp     loc_02b1
+
 data_30         dw      offset loc_48           ; Data table (indexed access)
 data_31         dw      offset loc_46
 data_32         dw      offset loc_46
 data_33         dw      offset loc_54
-loc_040c:
-                db       2Eh, 38h, 3Eh,0B5h, 0Ah, 73h
-                db       04h,0B8h, 36h, 88h
+
+conn_lookup_handle:
+                cmp     cs:data_56,bh
+                jnc     loc_0417
+
+                mov     ax,VLM_STATUS_FUNC_INVALID_PARAM
 
 loc_ret_43::
                 retf
-                                                ;* No entry point to code
+
+loc_0417:
                 jcxz    loc_44
-                callf   sub_2
+                callf   validate_handle
                 or      ax,ax
                 jnz     loc_ret_43
                 add     cx,6
                 jmp     short loc_45
 loc_44::
-                mov     cx,cs:data_52
+                mov     cx,cs:conn_tab_ptr
 loc_45::
                 push    bx
                 push    dx
@@ -742,10 +758,10 @@ loc_45::
 ;ƒƒƒƒƒ Indexed Entry Point ƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒ
 
 loc_46::
-                cmp     data_65,cx
+                cmp     conn_tbl_limit,cx
                 jbe     loc_53
                 mov     bh,[bp+0Dh]
-                callf   sub_5
+                callf   conn_get_field
                 or      ax,ax
                 jnz     loc_47
                 cmp     [bp+0Ah],dl
@@ -767,10 +783,10 @@ loc_47::
 ;ƒƒƒƒƒ Indexed Entry Point ƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒ
 
 loc_48::
-                cmp     data_65,cx
+                cmp     conn_tbl_limit,cx
                 jbe     loc_53
                 mov     bh,[bp+0Dh]
-                callf   sub_5
+                callf   conn_get_field
                 or      ax,ax
                 jnz     loc_50
                 cmp     [bp+0Ah],dl
@@ -796,7 +812,7 @@ loc_52::
                 pop     bx
                 retf
 loc_53::
-                mov     ax,8801h
+                mov     ax,VLM_STATUS_INVALID_CONN_HANDLE	
                 jmp     short loc_52
 
 ;ƒƒƒƒƒ Indexed Entry Point ƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒ
@@ -809,11 +825,11 @@ loc_54::
                 pop     es
 loc_55::
                 mov     di,sp
-                cmp     data_65,cx
+                cmp     conn_tbl_limit,cx
                 jbe     loc_57
                 mov     bh,[bp+0Dh]
                 mov     dx,[bp+0Ah]
-                callf   sub_5
+                callf   conn_get_field
                 or      ax,ax
                 jnz     loc_56
                 push    cx
@@ -957,11 +973,11 @@ loc_63::
                 dec     di
                 dec     di
                 stosw
-                mov     ax,8836h
+                mov     ax,VLM_STATUS_FUNC_INVALID_PARAM
                 jmp     short loc_62
 loc_64::
-                inc     es:data_48
-                mov     ax,8851h
+                inc     es:fails_add_name
+                mov     ax,VLM_STATUS_NAME_TABLE_FULL
                 jmp     short loc_62
 sub_18          endp
 
@@ -989,7 +1005,7 @@ loc_66::
                 xor     ax,ax
                 retn
 loc_67::
-                mov     ax,8801h
+                mov     ax,VLM_STATUS_INVALID_CONN_HANDLE
                 or      ax,ax
                 retn
 sub_19          endp
@@ -999,13 +1015,13 @@ sub_19          endp
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_20          proc    far
+conn_lookup_name proc    far
                 push    cx
                 push    si
                 push    di
                 push    ds
                 push    es
-                callf   sub_2
+                callf   validate_handle
                 or      ax,ax
                 jnz     loc_69
                 push    di
@@ -1031,7 +1047,7 @@ loc_69::
                 pop     si
                 pop     cx
                 retf
-sub_20          endp
+conn_lookup_name endp
 
 loc_70::
                 xor     ch,ch
@@ -1047,7 +1063,7 @@ loc_70::
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_21          proc    far
+conn_name2handle proc    far
                 push    bp
                 mov     bp,sp
                 push    cx
@@ -1099,27 +1115,28 @@ loc_75::
                 pop     bp
                 retf
 loc_76::
-                mov     ax,8801h
+                mov     ax,VLM_STATUS_INVALID_CONN_HANDLE
                 jmp     short loc_75
-sub_21          endp
+conn_name2handle endp
 
-loc_067a:
+get_conn_table:
                 push    ds
                 mov     ax,seg_a
                 mov     ds,ax
-                mov     cx,data_52
-                mov     dx,data_44
+                mov     cx,conn_tab_ptr
+                mov     dx,c_conns
                 xor     ax,ax
                 pop     ds
                 retf
+
 data_34         dw      offset loc_79           ; Data table (indexed access)
-data_35         dw      offset loc_85
-data_36         dw      offset loc_90
-data_37         dw      offset loc_93
-data_38         dw      offset loc_94
-data_39         dw      offset loc_96
-data_40         dw      offset loc_99
-data_41         dw      offset loc_101
+                dw      offset loc_85
+                dw      offset loc_90
+                dw      offset loc_93
+                dw      offset loc_94
+                dw      offset loc_96
+                dw      offset loc_99
+                dw      offset loc_101
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
 ;                              SUBROUTINE
@@ -1139,7 +1156,7 @@ loc_78::
                 mov     cx,seg seg_a
                 mov     ds,cx
                 shl     bx,1
-                mov     cx,data_46
+                mov     cx,c_max_tasks
                 jmp     word ptr data_34[bx]    ;*8 entries
 
 ;ƒƒƒƒƒ Indexed Entry Point ƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒ
@@ -1177,7 +1194,7 @@ locloop_81::
                 add     bx,7
                 loop    locloop_81
 
-                inc     data_49
+                inc     fails_task_call
 loc_82::
                 mov     [bx+2],es
                 call    sub_24
@@ -1311,7 +1328,7 @@ loc_96::
                 push    dx
                 push    es
                 mov     es,cx
-                mov     dx,es:data_3e
+                mov     dx,es:[CONN_REFCOUNT]
                 pop     es
                 or      dx,dx
                 jnz     loc_97
@@ -1321,7 +1338,7 @@ loc_96::
 loc_97::
                 add     dx,ax
                 mov     bh,9
-                callf   sub_6
+                callf   conn_set_field
 loc_98::
                 pop     dx
                 retf
@@ -1386,7 +1403,7 @@ sub_22          endp
 sub_26          proc    near
                 push    es
                 mov     es,cx
-                cmp     word ptr es:data_1e,32h
+                cmp     word ptr es:[CONN_PROTO_VLMID],VLMID_NDS
                 pop     es
                 jz      loc_104
                 retn
@@ -1483,8 +1500,8 @@ sub_28          proc    near
                 pop     ax
                 xor     di,di
                 mov     bp,60h
-                mov     cx,data_44
-                mov     ds,data_52
+                mov     cx,c_conns
+                mov     ds,conn_tab_ptr
                 xor     si,si
                 mov     dh,1
                 mov     dl,es:[di+8]
@@ -1612,7 +1629,7 @@ loc_122::
                 loop    locloop_119
 
 loc_123::
-                mov     ax,883Fh
+                mov     ax,VLM_STATUS_LOCAL_CONN_TAB_FULL
                 or      ax,ax
                 jmp     short loc_125
 loc_124::
@@ -1632,15 +1649,15 @@ loc_09c5:
                 push    si
                 push    di
                 push    ds
-                callf   sub_2
+                callf   validate_handle
                 or      ax,ax
                 jnz     loc_126
                 mov     di,bx
-                callf   sub_20
+                callf   conn_lookup_name
                 jnz     loc_126
                 mov     di,si
                 mov     ds,cx
-                mov     si,data_1e
+                mov     si,CONN_PROTO_VLMID
                 mov     cx,60h
                 rep     movsb
                 mov     ax,0
@@ -1665,12 +1682,12 @@ loc_09f1:
                 pop     ds
                 mov     si,bx
                 xor     cx,cx
-                callf   sub_21
+                callf   conn_name2handle
                 pop     si
 ;*              cmp     ax,0
                 db       3Dh, 00h, 00h
                 jz      loc_127
-                callf   sub_1
+                callf   alloc_handle
 ;*              cmp     ax,0
                 db       3Dh, 00h, 00h
                 jnz     loc_128
@@ -1682,7 +1699,7 @@ loc_09f1:
                 db       3Dh, 00h, 00h
                 jz      loc_127
                 push    ax
-                callf   sub_3
+                callf   free_handle
                 pop     ax
                 jmp     short loc_128
 loc_127::
@@ -1711,18 +1728,21 @@ loc_128::
                 pop     dx
                 pop     bx
                 retf
-data_43         db      11h
-                db      0
-data_44         dw      8
-data_45         dw      30h
-data_46         dw      1Fh
-data_47         dw      0
-data_48         dw      0
-data_49         dw      0
+
+; interrup.m, #02868
+conn_statistics dw      11h                     ; 00 total length
+c_conns         dw      8                       ; 02 number of conn handles allocated
+c_avgnamelen    dw      30h                     ; 04 avg name length
+c_max_tasks     dw      1Fh                     ; 06 max number of tasks
+fails_alloc_handle  dw      0                   ; 08 failed "allocate handle" calls
+fails_add_name  dw      0                       ; 0a failed "add name" calls
+fails_task_call dw      0                       ; 0c failed "task" calls
 data_50         dw      0
 data_51         db      0
-data_52         dw      seg_b
+conn_tab_ptr    dw      seg_b
 vlm_call_ptr    dw      0, 0
+
+; likely used for field get/set/reset
 data_55         db      2
                 db       00h, 02h, 00h, 02h, 00h, 02h
                 db       00h, 10h, 02h, 00h, 20h, 03h
@@ -1747,10 +1767,11 @@ data_62         dw      0
 data_63         dw      0
                 db      60h
                 db      0
-data_65         dw      0
+conn_tbl_limit  dw      0
 data_66         dw      0
-data_67         db      0
-                db      4439 dup (0)
+
+; name table ?
+data_67         db      4440 dup (0)
 
 seg_a           ends
 
@@ -1761,9 +1782,7 @@ seg_a           ends
 seg_b           segment byte public
                 assume cs:seg_b  , ds:seg_b
 
-                db      0, 0
-data_70         db      0
-                db      4797 dup (0)
+                db      4800 dup (0)
 
 seg_b           ends
 
@@ -1774,7 +1793,8 @@ seg_b           ends
 seg_c           segment byte public
                 assume cs:seg_c  , ds:seg_c
 
-                                                ;* No entry point to code
+
+init_fn:
                 push    ax
                 mov     ax,seg_c
                 mov     ds,ax
@@ -1782,8 +1802,8 @@ seg_c           segment byte public
                 mov     ax,7A20h
                 mov     bx,2
                 int     2Fh                     ; ??INT Non-standard interrupt
-                mov     data_76,bx
-                mov     word ptr data_76+2,es
+                mov     vlm_multiplex_ptr,bx
+                mov     word ptr vlm_multiplex_ptr+2,es
                 pop     ax
                 or      ax,ax
                 jz      loc_129
@@ -1811,7 +1831,7 @@ loc_129::
                 mov     bx,6
                 mov     ah,1
                 mov     al,2
-                call    dword ptr data_76
+                call    dword ptr vlm_multiplex_ptr
                 add     sp,4
                 pop     bx
                 push    es
@@ -1820,7 +1840,7 @@ loc_129::
                 mov     ax,data_78
                 or      ax,ax
                 jz      loc_130
-                mov     es:data_52,ax
+                mov     es:conn_tab_ptr,ax
 loc_130::
                 push    ds
                 mov     ax,5D06h
@@ -1833,7 +1853,7 @@ loc_130::
                 mov     word ptr es:data_59+2,ds
                 pop     ds
                 mov     ax,60h
-                mul     es:data_44
+                mul     es:c_conns
                 mov     cx,ax
                 xor     ax,ax
                 shr     cx,1
@@ -1848,11 +1868,11 @@ loc_130::
                 shr     di,cl
                 add     ax,di
                 pop     es
-                mov     es:data_65,ax
+                mov     es:conn_tbl_limit,ax
                 mov     di,offset data_67
                 mov     ax,3
-                add     ax,es:data_45
-                mul     es:data_44
+                add     ax,es:c_avgnamelen
+                mul     es:c_conns
                 mov     cx,ax
                 xor     ax,ax
                 shr     cx,1
@@ -1863,20 +1883,20 @@ loc_130::
                 mov     es:data_63,di
                 stosw
                 mov     es:data_66,di
-                mov     cx,es:data_44
+                mov     cx,es:c_conns
                 rep     stosw
                 stosw
-                test    es:data_46,0FFFFh
+                test    es:c_max_tasks,0FFFFh
                 jz      loc_131
                 mov     ax,7
-                mul     byte ptr es:data_46
+                mul     byte ptr es:c_max_tasks
                 mov     cx,ax
                 xor     ax,ax
                 shr     cx,1
                 mov     es:data_61,di
                 rep     stosw
 loc_131::
-                mov     al,data_83
+                mov     al,c_conn_tab_low
                 mov     es:data_51,al
                 mov     bx,0
                 call    far ptr sub_22
@@ -1891,15 +1911,15 @@ loc_132::
                 mov     ax,3
 ;*              add     ax,2
                 db      5, 2, 0
-                add     ax,es:data_45
-                mul     es:data_44
+                add     ax,es:c_avgnamelen
+                mul     es:c_conns
 ;*              add     ax,4
                 db      5, 4, 0
-                test    byte ptr es:data_44,0FFh
+                test    byte ptr es:c_conns,0FFh
                 jz      loc_133
                 mov     dx,ax
                 mov     ax,7
-                mul     byte ptr es:data_46
+                mul     byte ptr es:c_max_tasks
                 add     ax,dx
 loc_133::
                 add     ax,0AC8h
@@ -1914,7 +1934,7 @@ loc_133::
                 add     si,cx
                 push    dx
                 mov     ax,60h
-                mul     es:data_44
+                mul     es:c_conns
                 mov     cl,4
                 shr     ax,cl
                 mov     cx,ax
@@ -1951,7 +1971,7 @@ loc_134::
                 mov     si,280h
                 push    cs
                 pop     ds
-                call    dword ptr cs:data_76
+                call    dword ptr cs:vlm_multiplex_ptr
                 pop     ds
                 pop     si
                 pop     cx
@@ -1962,7 +1982,7 @@ loc_134::
                 mov     bx,6
                 mov     ah,0
                 mov     al,0
-                call    dword ptr data_76
+                call    dword ptr vlm_multiplex_ptr
                 add     sp,2
                 pop     bx
                 pop     ax
@@ -2014,10 +2034,10 @@ sub_31          endp
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
 sub_32          proc    near
-                cmp     byte ptr data_82,0
+                cmp     byte ptr c_load_low_conn,0
                 je      loc_ret_136
                 mov     bx,5
-                call    dword ptr data_76
+                call    dword ptr vlm_multiplex_ptr
 
 loc_ret_136::
                 retn
@@ -2043,7 +2063,7 @@ copyright       db      'CoPyRiGhT=(C) Copyright 1993 - 1'
                 db      '  All Rights Reserved.'
                 db      0, 0, 0, 0, 0, 0
 vlm_call_ptr2   dw      0, 0
-data_76         dw      0, 0
+vlm_multiplex_ptr dw      0, 0
 data_78         dw      0
                 db      'NETWARE DOS REQUESTER', 0
                 db      'CONN', 0
@@ -2053,27 +2073,22 @@ data_78         dw      0
                 db      'manager  v1.21 (960514)', 0Dh, 0Ah
                 db      0
 data_80         dw      0, 0
-data_82         db      1
-data_83         db      0
-                db      'CONNECTIONS'
-                db       00h, 52h, 0Ah
-                dw      seg_a
+c_load_low_conn db      1
+c_conn_tab_low  db      0
+                db      'CONNECTIONS', 0
+                dw      offset c_conns, seg_a
                 db       02h, 00h, 32h, 00h
-                db      'AVERAGE NAME LENGTH'
-                db       00h, 54h, 0Ah
-                dw      seg_a
+                db      'AVERAGE NAME LENGTH', 0
+                dw      offset c_avgnamelen, seg_a
                 db       02h, 00h, 30h, 00h
-                db      'MAX TASKS'
-                db       00h, 56h, 0Ah
-                dw      seg_a
+                db      'MAX TASKS', 0
+                dw      offset c_max_tasks, seg_a
                 db       05h, 00h,0FEh, 00h
-                db      'LOAD LOW CONN'
-                db       00h,0D8h, 02h
-                dw      seg_c
+                db      'LOAD LOW CONN', 0
+                dw      offset c_load_low_conn, seg_c
                 db       00h, 00h,0FFh,0FFh
-                db      'LOAD CONN TABLE LOW'
-                db       00h,0D9h, 02h
-                dw      seg_c
+                db      'LOAD CONN TABLE LOW', 0
+                dw      offset c_conn_tab_low, seg_c
                 db       00h, 00h,0FFh,0FFh,0DAh, 02h
                 db       0Ch, 00h, 02h, 00h,0E6h, 02h
                 db      0EEh, 02h, 14h, 00h, 02h, 00h
