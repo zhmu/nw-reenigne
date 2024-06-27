@@ -1,4 +1,6 @@
 include  common.inc
+include  vlm.inc
+include  conn.inc
 
 ;------------------------------------------------------------  seg_a   ----
 
@@ -7,36 +9,36 @@ seg_a           segment byte public
 
                 dw      0, seg_b
                 dw      offset loc_0038, seg_a
-                dw      offset loc_0088, seg_a
-                dw      offset loc_008b, seg_a
+                dw      offset loc_0088, seg_a          ; nop, ok
+                dw      offset sec_stats, seg_a         ; statistics
                 dw      offset loc_00ba, seg_a
                 dw      0, 0
                 db      "NVlm"
                 dw      VLMID_SECURITY
 
-data_1          dw      offset loc_2            ; Data table (indexed access)
-data_2          dw      offset loc_1
-data_3          dw      offset loc_4
-data_4          dw      offset loc_5
-data_5          dw      offset loc_1
-data_6          dw      offset loc_1
-data_7          dw      offset loc_1
-data_8          dw      offset loc_1
-data_9          dw      offset loc_1
-data_10         dw      offset loc_1
-data_11         dw      offset loc_1
-data_12         dw      offset loc_1
-data_13         dw      offset loc_6
+data_1          dw      offset loc_2
+                dw      offset ret_nonexist_func
+                dw      offset nop_fn_2
+                dw      offset nop_fn_3
+                dw      offset ret_nonexist_func
+                dw      offset ret_nonexist_func
+                dw      offset ret_nonexist_func
+                dw      offset ret_nonexist_func
+                dw      offset ret_nonexist_func
+                dw      offset ret_nonexist_func
+                dw      offset ret_nonexist_func
+                dw      offset ret_nonexist_func
+                dw      offset loc_6
 
 loc_0038:
-                db       83h,0FBh, 0Dh, 72h, 04h
+                cmp     bx,0dh
+                jc      loc_0041
 
-;ÄÄÄÄÄ Indexed Entry Point ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-
-loc_1::
-                mov     ax,8811h
+ret_nonexist_func::
+                mov     ax,VLM_STATUS_NONEXISTANT_FUNC_CALLED
                 retf
-                                                ;* No entry point to code
+loc_0041:
+
                 shl     bx,1
                 jmp     word ptr cs:data_1[bx]  ;*13 entries
 
@@ -45,27 +47,27 @@ loc_1::
 loc_2::
                 mov     bx,1
                 mov     cx,15h
-loc_3::
+ret_ok::
                 xor     ax,ax
                 retf
 
 ;ÄÄÄÄÄ Indexed Entry Point ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 
-loc_4::
-                jmp     short loc_3
+nop_fn_2::
+                jmp     short ret_ok
 
 ;ÄÄÄÄÄ Indexed Entry Point ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 
-loc_5::
-                jmp     short loc_3
+nop_fn_3::
+                jmp     short ret_ok
 
 ;ÄÄÄÄÄ Indexed Entry Point ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 
 loc_6::
                 cmp     cx,1
-                jne     loc_1
+                jne     ret_nonexist_func
                 cmp     dx,0
-                jne     loc_1
+                jne     ret_nonexist_func
                 push    cx
                 push    dx
                 push    ds
@@ -76,12 +78,12 @@ loc_6::
                 push    bp
                 mov     bp,VLMID_CONN
                 push    bp
-                mov     bp,0Fh
+                mov     bp,CONN_FUNC_GET_NUM_CONNS
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
-                mov     data_26,cx
-                mov     data_25,dx
+                mov     conn_table_seg,cx
+                mov     conn_table_num,dx
                 pop     ds
                 pop     dx
                 pop     cx
@@ -92,14 +94,14 @@ loc_0088:
                 xor     ax,ax
                 retf
 
-loc_008b:
+sec_stats:
                 push    cx
                 push    si
                 push    di
                 push    ds
                 mov     ax,seg_a
                 mov     ds,ax
-                mov     si,offset data_34
+                mov     si,offset statistics
                 cmp     cx,[si]
                 jbe     loc_7
                 mov     cx,[si]
@@ -114,18 +116,39 @@ loc_7::
                 pop     cx
                 xor     ax,ax
                 retf
-                                                ;* No entry point to code
-                jcxz    $+2
-                db       69h, 01h, 6Fh, 01h,0ABh, 01h
-                db       39h, 02h, 42h, 02h, 46h, 02h
+
+loc_00ac        dw      offset loc_00e3
+                dw      offset loc_0169
+                dw      offset loc_016f
+                dw      offset loc_01ab
+                dw      offset loc_0239
+                dw      offset loc_0242
+                dw      offset loc_0246
 
 loc_00ba:
-                db       3Ch, 07h, 73h, 14h
-                db      'PQRSTUVW'
-                db       1Eh, 06h, 32h,0E4h, 93h, 03h
-                db      0DBh, 2Eh,0FFh,0A7h,0ACh, 00h
-                db      0B8h, 11h, 88h,0CBh
-loc_8::
+                cmp     al,7
+                jnc     loc_00da
+
+                push    ax
+                push    cx
+                push    dx
+                push    bx
+                push    sp
+                push    bp
+                push    si
+                push    di
+                push    ds
+                push    es
+                xor     ah,ah
+                xchg    ax,bx
+                add     bx,bx
+                jmp     cs:[bx+offset loc_00ac]
+
+loc_00da:
+                mov     ax,VLM_STATUS_NONEXISTANT_FUNC_CALLED
+                retf
+
+restore_all_ret_ok::
                 pop     es
                 pop     ds
                 pop     di
@@ -138,57 +161,69 @@ loc_8::
                 pop     ax
                 xor     ax,ax
                 retf
-                                                ;* No entry point to code
+
+;
+; call: ds:si = 24 bytes ???
+;       cx = flag
+;
+loc_00e3:
+                ; construct initial 64 byte initial
+    ;           ; 24 x <input>, ""Authorized NetWare Client",  15 x \0
                 push    cx
                 mov     ax,seg_a
                 mov     es,ax
                 mov     di,offset data_28
-                mov     cx,0Ch
+                mov     cx,12
                 rep     movsw
                 mov     ds,ax
-                mov     si,offset data_33       ; ('Authorized NetWare Clien')
-                mov     cx,19h
+                mov     si,offset s_auth_nwclient
+                mov     cx,25
                 rep     movsb
                 xor     ax,ax
-                mov     cx,0Fh
+                mov     cx,15
                 rep     stosb
-                mov     si,0F1Ah
-                mov     bx,0F04h
-                mov     di,0F6Ah
-                call    sub_4
+
+                ; calculate MD4 of payload
+                mov     si,offset data_28
+                mov     bx,offset md4_init_magic
+                mov     di,offset data_30
+                call    calculate_md4
                 pop     cx
                 jcxz    loc_9
-                mov     bh,14h
+
+		        ; set bit 5 (packet signing active) of the 'security options' field
+                mov     bh,CONN_FIELD_SECURITY_OPTIONS
                 push    bp
                 mov     bp,VLMID_SECURITY
                 push    bp
                 mov     bp,VLMID_CONN
                 push    bp
-                mov     bp,7
+                mov     bp,CONN_FUNC_GET_FIELD
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
-                mov     bh,14h
-                or      dl,20h                  ; ' '
+                mov     bh,CONN_FIELD_SECURITY_OPTIONS
+                or      dl,CONN_SECOPT_PACKET_SIGNING_ACTIVE
                 push    bp
                 mov     bp,VLMID_SECURITY
                 push    bp
                 mov     bp,VLMID_CONN
                 push    bp
-                mov     bp,8
+                mov     bp,CONN_FUNC_SET_FIELD
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
+
                 call    sub_3
                 lea     si,[bx+10h]
                 xchg    si,di
                 mov     cx,4
                 rep     movsw
                 mov     di,bx
-                mov     si,offset data_24
+                mov     si,offset md4_init_magic
                 mov     cl,8
                 rep     movsw
-                jmp     short loc_8
+                jmp     short restore_all_ret_ok
 loc_9::
                 mov     bp,sp
                 mov     di,[bp+4]
@@ -196,11 +231,14 @@ loc_9::
                 mov     si,offset data_30
                 mov     cx,4
                 rep     movsw
-                jmp     loc_8
-                                                ;* No entry point to code
-                call    sub_4
-                jmp     loc_8
-                                                ;* No entry point to code
+                jmp     restore_all_ret_ok
+
+
+loc_0169:
+                call    calculate_md4
+                jmp     restore_all_ret_ok
+
+loc_016f:
                 push    di
                 xchg    bx,ax
                 call    sub_1
@@ -209,6 +247,7 @@ loc_9::
                 cmp     bl,42h                  ; 'B'
                 je      loc_10
                 xchg    dx,ax
+
 loc_10::
                 mov     es:[di],ax
                 mov     es:[di+2],dx
@@ -227,10 +266,11 @@ loc_10::
                 pop     es
                 mov     cx,4
                 rep     movsw
-                jmp     loc_8
+                jmp     restore_all_ret_ok
 loc_11::
                 jmp     loc_21
-                                                ;* No entry point to code
+
+loc_01ab:
                 mov     byte ptr cs:data_31,1
 loc_12::
                 sub     di,8
@@ -309,29 +349,33 @@ loc_20::
 loc_21::
                 mov     ax,0FFFFh
                 jmp     short loc_20
-                                                ;* No entry point to code
+
+loc_0239:
                 mov     byte ptr cs:data_31,2
                 jmp     loc_12
-                                                ;* No entry point to code
+
+loc_0242:
                 xor     ax,ax
                 jmp     short loc_19
-                                                ;* No entry point to code
+
+loc_0246:
                 push    bp
                 mov     bp,VLMID_SECURITY
                 push    bp
                 mov     bp,VLMID_CONN
                 push    bp
-                mov     bp,5
+                mov     bp,CONN_FUNC_VALIDATE_HANDLE
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 jnz     loc_20
+
                 call    sub_3
                 mov     si,bx
                 add     si,10h
                 mov     cx,4
                 rep     movsw
-                jmp     loc_8
+                jmp     restore_all_ret_ok
 
 ;ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 ;                              SUBROUTINE
@@ -340,7 +384,7 @@ loc_21::
 sub_1           proc    near
                 mov     ax,seg_a
                 mov     es,ax
-                mov     di,0F1Ah
+                mov     di,offset data_28
                 push    bx
                 push    dx
                 push    si
@@ -398,8 +442,8 @@ loc_23::
                 push    es
                 pop     ds
                 mov     si,offset data_28
-                mov     bx,0F5Ah
-                mov     di,0F6Ah
+                mov     bx,offset data_29
+                mov     di,offset data_30
                 cmp     byte ptr data_31,1
                 jae     loc_24
                 mov     bx,data_32
@@ -407,25 +451,31 @@ loc_23::
 loc_24::
                 jmp     short loc_25
 
-;ßßßß External Entry into Subroutine ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
-
+; on entry:     cx = conn entry handle
 sub_3::
                 mov     ax,seg_a
                 mov     ds,ax
                 mov     ax,cx
-                sub     ax,data_26
+                sub     ax,conn_table_seg
                 mov     dl,6
-                div     dl
+                div     dl                      ; ax = (cx - conn_table_seg) / 6
                 mov     dl,18h
-                mul     dl
+                mul     dl                      ; ax = ax * 18h
                 mov     bx,offset data_36
                 add     bx,ax
                 mov     data_32,bx
                 retn
 
-;ßßßß External Entry into Subroutine ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
-
-sub_4::
+;
+; calculate md4 hash
+;
+; bx =
+; si =
+; di = 
+;
+; saves: bx, cx, dx, bp
+;
+calculate_md4::
 loc_25::
                 push    bx
                 push    cx
@@ -1720,26 +1770,25 @@ sub_2           endp
 
                 db      10 dup (0)
 vlm_call_ptr    dw      0, 0
-data_24         db      1
-                db       23h, 45h, 67h, 89h,0ABh,0CDh
-                db      0EFh,0FEh,0DCh,0BAh, 98h, 76h
-                db       54h, 32h, 10h
-data_25         dw      8
-data_26         dw      0
+
+; md4 magic initialization constants
+md4_init_magic  db       01h,  23h,  45h,  67h
+                db       89h, 0ABh, 0CDh, 0EFh
+                db      0FEh, 0DCh, 0BAh,  98h
+                db       76h,  54h,  32h,  10h
+conn_table_num  dw      8                   ; number of connection table entries
+conn_table_seg  dw      0                   ; segment of connection table
                 db      0, 0
-data_28         db      0
-                db      63 dup (0)
-data_29         db      0
-                db      15 dup (0)
-data_30         db      0
-                db      15 dup (0)
+data_28         db      64 dup (0)
+data_29         db      16 dup (0)
+data_30         db      16 dup (0)
 data_31         db      0
 data_32         dw      0
-data_33         db      'Authorized NetWare Client'
-data_34         db      2
-                db      0
-data_36         db      0
-                db      1207 dup (0)
+s_auth_nwclient db      'Authorized NetWare Client'
+statistics      dw      2
+
+; 18h per entry, ~50 entries ???
+data_36         db      1208 dup (0)
 
 seg_a           ends
 
@@ -1822,7 +1871,7 @@ loc_26::
                 cmp     word ptr ds:[828h],0
                 je      loc_29
                 call    sub_5
-                cmp     byte ptr ds:[8B1h],0
+                cmp     ds:v_sig_level,0
                 jne     loc_28
                 mov     ax,0FFFFh
                 retf
@@ -1886,8 +1935,10 @@ loc_29::
                 mov     es,ax
                 cmp     byte ptr data_46,0
                 je      loc_30
+
+                ; overwrite calculate_md4 with optimized implementation
                 mov     si,offset data_37
-                mov     di,2FCh
+                mov     di,offset calculate_md4
                 mov     cx,5EAh
                 rep     movsb
 loc_30::
@@ -1906,12 +1957,12 @@ loc_30::
                 push    bp
                 mov     bp,VLMID_CONN
                 push    bp
-                mov     bp,0Fh
+                mov     bp,CONN_FUNC_GET_NUM_CONNS
                 push    bp
                 call    dword ptr cs:vlm_call_ptr2
                 pop     bp
-                mov     es:data_26,cx
-                mov     es:data_25,dx
+                mov     es:conn_table_seg,cx
+                mov     es:conn_table_num,dx
                 mov     ax,seg_b
                 mov     ds,ax
 loc_31::
@@ -1923,7 +1974,7 @@ loc_31::
                 mov     ax,seg_a
                 mov     es,ax
                 mov     ax,18h
-                mul     es:data_25
+                mul     es:conn_table_num
                 add     ax,0F98h
 ;*              add     ax,0Fh
                 db       05h, 0Fh, 00h
@@ -1954,6 +2005,8 @@ sub_5           proc    near
                 push    ds
                 pop     es
                 call    dword ptr ds:[8ADh]
+
+		; cpu detection
                 pushf
                 pop     ax
                 and     ax,0FFFh
@@ -1973,13 +2026,16 @@ sub_5           proc    near
                 pop     ax
                 test    ax,0F000h
                 jz      loc_ret_32
-                dec     byte ptr ds:[8B2h]
+                dec     byte ptr ds:[8B2h]		; data_46
 
 loc_ret_32::
                 retn
 sub_5           endp
 
                 db      90h
+
+; alternative implementation - 1514 bytes
+; maybe 286+ implementation?
 data_37         db      9Ch
                 db      0FAh
                 db      'fPfSfQfRfWfUWSf'
@@ -2247,9 +2303,7 @@ start::
                 mov     al,6
                 int     21h                     ; DOS Services  ah=function 4Ch
                                                 ;  terminate with al=return code
-                db      'CoPyRiGhT=(C) Copyright 1993 - 1'
-                db      '996 Novell, Inc.  All Rights Res'
-                db      'erved.'
+                db      'CoPyRiGhT=(C) Copyright 1993 - 1996 Novell, Inc.  All Rights Reserved.'
                 db      10 dup (0)
 data_40         dw      0, 0
 vlm_call_ptr2   dw      0, 0
@@ -2259,18 +2313,15 @@ data_44         dw      0
                 db      'SECURITY', 0
                 db      'TRAN', 0
                 db      'VeRsIoN=1.21', 0
-                db      'SECURITY.VLM - NetWare security '
-                db      'enhancement module  v1.21 (96051'
-                db      '4)', 0Dh, 0Ah
-                db      0, 0, 0, 0, 0, 1
+                db      'SECURITY.VLM - NetWare security enhancement module  v1.21 (960514)', 0Dh, 0Ah
+                db      0, 0, 0, 0, 0
+v_sig_level     db      1
 data_46         db      0
-                db      'SIGNATURE LEVEL'
-                db       00h,0B1h, 08h
-                dw      seg_b
+                db      'SIGNATURE LEVEL', 0
+                dw      offset v_sig_level, seg_b
                 db      0, 0, 3, 0
-                db      'CONNECTIONS'
-                db       00h, 14h, 0Fh
-                dw      seg_a
+                db      'CONNECTIONS', 0
+                dw      offset conn_table_num, seg_a
                 db       02h, 00h, 32h, 00h,0B3h, 08h
                 db       10h, 01h, 00h, 00h,0C3h, 08h
                 db      0CBh, 08h, 0Ch, 00h, 02h, 00h

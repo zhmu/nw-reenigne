@@ -1215,7 +1215,7 @@ loc_85::
                 push    bx
                 mov     ah,51h                  ; 'Q'
                 pushf
-                call    dword ptr data_257
+                call    dword ptr int21_prev_ptr1
                 mov     ax,bx
                 pop     bx
                 mov     ds,ax
@@ -1266,7 +1266,7 @@ loc_91::
                 or      cx,cx
                 jnz     loc_92
                 assume  ds:seg_a
-                lds     dx,data_155
+                lds     dx,int21_prev_ptr3
                 mov     ax,2521h
                 int     21h                     ; DOS Services  ah=function 25h
                                                 ;  set intrpt vector al to ds:dx
@@ -1436,7 +1436,7 @@ loc_96::
                 mov     ax,cs:data_179
                 pushf
                 assume  ds:seg_b
-                call    dword ptr data_257
+                call    dword ptr int21_prev_ptr1
                 jc      loc_ret_97
                 xor     al,al
 
@@ -2782,7 +2782,7 @@ loc_188::
                 jne     loc_191
 loc_189::
                 pushf
-                call    dword ptr cs:data_155
+                call    dword ptr cs:int21_prev_ptr3
                 jc      loc_191
                 mov     ax,5C5Ch
                 cmp     es:[di],ax
@@ -2800,7 +2800,7 @@ loc_190::
                 mov     ax,4300h
                 mov     dx,di
                 pushf
-                call    dword ptr cs:data_155
+                call    dword ptr cs:int21_prev_ptr3
                 jc      loc_191
                 mov     di,6D9h
                 mov     si,di
@@ -3036,7 +3036,7 @@ sub_46          proc    near
                 mov     di,6DCh
                 mov     ah,60h                  ; '`'
                 pushf
-                call    dword ptr cs:data_155
+                call    dword ptr cs:int21_prev_ptr3
                 mov     ax,5C5Ch
                 cmp     es:[di],ax
                 je      loc_ret_213
@@ -3656,7 +3656,7 @@ loc_266::
                                                 ;* No entry point to code
                 mov     bx,[bp+2]
                 pushf
-                call    dword ptr data_155
+                call    dword ptr int21_prev_ptr3
                 mov     [bp],ax
                 pushf
                 pop     bx
@@ -3966,7 +3966,7 @@ loc_287::
                 mov     ds,[bp+0Ah]
                 xor     cx,cx
                 pushf
-                call    dword ptr cs:data_155
+                call    dword ptr cs:int21_prev_ptr3
                 mov     [bp],ax
                 mov     [bp+4],cx
                 pushf
@@ -4335,7 +4335,7 @@ loc_313::
                 push    cx
                 push    dx
                 mov     ah,51h                  ; 'Q'
-                call    dword ptr cs:data_155
+                call    dword ptr cs:int21_prev_ptr3
                 mov     ax,bx
                 mov     es,ax
                 mov     [bp],es
@@ -4354,7 +4354,7 @@ locloop_314::
                 je      loc_315
                 sub     bx,di
                 mov     ah,3Eh                  ; '>'
-                call    dword ptr cs:data_155
+                call    dword ptr cs:int21_prev_ptr3
 loc_315::
                 inc     dx
                 loop    locloop_314
@@ -5258,7 +5258,7 @@ loc_374::
                 pop     es
                 mov     ah,60h                  ; '`'
                 pushf
-                call    dword ptr cs:data_155
+                call    dword ptr cs:int21_prev_ptr3
                 jc      loc_376
                 inc     di
                 inc     di
@@ -5330,7 +5330,7 @@ loc_377::
                 db      12 dup (0)
 data_154        db      8
                 db      0
-data_155        dd      00000h
+int21_prev_ptr3        dd      00000h
 data_157        db      0
 data_158        db      1
 data_159        dw      seg_b
@@ -5457,7 +5457,7 @@ data_252        dw      0
 data_253        dw      0
 data_254        dw      0
 vlm_call_ptr3   dw      0, 0
-data_257        dw      0, 0
+int21_prev_ptr1        dw      0, 0
 data_259        db      0
                 db      22 dup (0)
                 db      0FFh, 00h
@@ -5723,7 +5723,7 @@ loc_385::
                 pop     es
                 popf
                 pushf
-                call    dword ptr cs:data_257
+                call    dword ptr cs:int21_prev_ptr1
                 pushf
                 push    bx
                 mov     bx,2
@@ -5794,7 +5794,7 @@ sub_59          endp
 loc_387::
                 popf
                 pushf
-                call    dword ptr cs:data_257
+                call    dword ptr cs:int21_prev_ptr1
                 push    bp
                 mov     bp,sp
                 clc
@@ -5830,7 +5830,7 @@ loc_388::
 loc_389::
                 call    sub_59
                 popf
-                jmp     dword ptr cs:data_257
+                jmp     dword ptr cs:int21_prev_ptr1
 loc_390::
                 jmp     loc_379
 loc_391::
@@ -5858,7 +5858,7 @@ loc_392::
                 popf
 loc_393::
                 call    sub_59
-                jmp     dword ptr cs:data_257
+                jmp     dword ptr cs:int21_prev_ptr1
 loc_394::
                 popf
                 push    bx
@@ -6047,10 +6047,10 @@ int_21h_entry   proc    far
 loc_410::
                 popf
                 jmp     loc_388
-loc_411::
+loc_411::	; ah = e2/e3 - netware directory services/connection control
                 mov     cs:data_327,80h
                 jmp     short loc_413
-loc_412::
+loc_412::	; ah = 5c/3d - flock/open
                 mov     cs:data_327,0
 loc_413::
                 mov     cs:data_328,0
@@ -6314,7 +6314,7 @@ loc_429::
                 mov     ax,word ptr data_239
                 mov     bx,word ptr data_241
                 mov     ds,data_246
-                call    dword ptr cs:data_257
+                call    dword ptr cs:int21_prev_ptr1
                 pushf
                 push    ax
                 push    bx
@@ -6676,14 +6676,14 @@ loc_447::
                 mov     ax,3521h
                 int     21h                     ; DOS Services  ah=function 35h
                                                 ;  get intrpt vector al in es:bx
-                mov     word ptr data_257,bx
-                mov     word ptr data_257+2,es
-                mov     cs:data_375,bx
-                mov     cs:data_376,es
+                mov     word ptr int21_prev_ptr1,bx
+                mov     word ptr int21_prev_ptr1+2,es
+                mov     cs:int21_prev_ptr2,bx
+                mov     cs:int21_prev_ptr2+2,es
                 pop     ds
                 assume  ds:seg_a
-                mov     word ptr data_155,bx
-                mov     word ptr data_155+2,es
+                mov     word ptr int21_prev_ptr3,bx
+                mov     word ptr int21_prev_ptr3+2,es
                 mov     ds,data_159
                 mov     ax,7A20h
                 mov     bx,1
@@ -6836,8 +6836,8 @@ loc_452::
                 call    dword ptr data_169
                 pop     es
 loc_453::
-                mov     bx,cs:data_375
-                mov     dx,cs:data_376
+                mov     bx,cs:int21_prev_ptr2
+                mov     dx,cs:int21_prev_ptr2+2
                 push    bp
                 mov     bp,VLMID_NETX
                 push    bp
@@ -6847,8 +6847,9 @@ loc_453::
                 push    bp
                 call    dword ptr cs:vlm_call_ptr2
                 pop     bp
-                mov     ax,4452h
-                int     21h                     ; ??INT Non-standard interrupt
+
+                mov     ax,4452h		; dr-dos: get version
+                int     21h
                 mov     bx,5244h
                 jc      loc_455
                 cmp     ax,1072h
@@ -6859,7 +6860,7 @@ loc_454::
                 xchg    bx,ax
                 mov     di,offset data_303
                 stosw
-loc_455::
+loc_455::	; not dr-dos
                 mov     ds,data_159
                 mov     cx,ds
                 mov     dx,offset int_21h_entry
@@ -7198,8 +7199,7 @@ data_370        dw      0, 0
                 db      0, 0
 data_374        db      0
                 db      0
-data_375        dw      0
-data_376        dw      0                       ; segment storage
+int21_prev_ptr2 dw      0, 0
 data_377        db      0
 data_378        db      54h
                 db       06h, 82h, 0Ah, 88h, 0Ah, 8Eh
