@@ -1285,6 +1285,8 @@ loc_96::
                 jne     loc_98
                 test    byte ptr es:data_132,20h        ; ' '
                 jz      loc_97
+
+                ; packet signature verification
                 push    ds
                 push    es
                 pop     ds

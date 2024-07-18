@@ -14,6 +14,10 @@ data_146e       equ     3
 
 include common.inc
 include dos.inc
+include netx.inc
+include conn.inc
+include exe.inc
+include nwp.inc
 
 CDS_DATA_NW     equ     4E57h   ; NW
 
@@ -26,7 +30,7 @@ seg_a           segment byte public
                 dw      0h, seg_c
                 dw      offset loc_004c, seg_a
                 dw      offset loc_0253, seg_a
-                dw      offset loc_029d, seg_a
+                dw      offset gen_stats, seg_a
                 dw      offset sub_3, seg_a
                 dw      offset sub_4, seg_a
                 dw      offset loc_03e4, seg_a
@@ -131,7 +135,7 @@ loc_7::
                 push    bp
                 mov     bp,VLMID_NETX
                 push    bp
-                mov     bp,6
+                mov     bp,NETX_FUNC_06
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
@@ -146,7 +150,7 @@ loc_7::
                 push    bp
                 mov     bp,VLMID_NWP
                 push    bp
-                mov     bp,0Fh
+                mov     bp,NWP_FUNC_0F
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
@@ -295,7 +299,7 @@ loc_24::
                 push    bp
                 mov     bp,VLMID_CONN
                 push    bp
-                mov     bp,0Dh
+                mov     bp,CONN_FUNC_0D
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
@@ -357,7 +361,7 @@ loc_0253:
                 push    bp
                 mov     bp,VLMID_EXE
                 push    bp
-                mov     bp,4
+                mov     bp,EXE_FUNC_04
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
@@ -384,7 +388,7 @@ loc_28::
                 pop     bx
                 retf
 
-loc_029d:
+gen_stats:
                 push    cx
                 push    si
                 push    di
@@ -428,7 +432,7 @@ loc_30::
                 push    bp
                 mov     bp,VLMID_CONN
                 push    bp
-                mov     bp,5
+                mov     bp,CONN_FUNC_VALIDATE_HANDLE
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
@@ -444,7 +448,7 @@ loc_31::
                 push    bp
                 mov     bp,VLMID_NETX
                 push    bp
-                mov     bp,6
+                mov     bp,NETX_FUNC_06
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
@@ -618,7 +622,7 @@ loc_42::
                 push    bp
                 mov     bp,VLMID_NETX
                 push    bp
-                mov     bp,5
+                mov     bp,NETX_FUNC_05
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
@@ -773,7 +777,7 @@ loc_60::
                 push    bp
                 mov     bp,VLMID_CONN
                 push    bp
-                mov     bp,10h
+                mov     bp,CONN_FUNC_10
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
@@ -844,7 +848,7 @@ loc_65::
                 push    bp
                 mov     bp,VLMID_NWP
                 push    bp
-                mov     bp,0Fh
+                mov     bp,NWP_FUNC_0F
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
@@ -1017,9 +1021,9 @@ data_45         dw      408h, seg_b
 dos_lol_ptr     dw      0, 0
 dos_sda_ptr     dd      00000h
 dos_cds_ptr     dd      00000h
-data_53         db      6
-                db      0
-int21_prev_ptr2 dd      00000h
+; interrupt.m, #02889
+data_53         dw      6                       ; 00 - size of statistics
+int21_prev_ptr2 dd      00000h                  ; 02 - previous int21 vector
 seg_b_value     dw      seg_b
 data_57         dw      0
 data_58         db       00h, 00h               ; segment storage

@@ -19,7 +19,10 @@ data_111e       equ     14h
 data_112e       equ     15h
 data_113e       equ     18h
 
-include  common.inc
+include common.inc
+include conn.inc
+include nwp.inc
+include ipxncp.inc
 
 ;------------------------------------------------------------  seg_a   ----
 
@@ -46,101 +49,75 @@ seg_a           segment byte public
                 db      "NVlm"
                 dw      VLMID_NDS
 
-;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
-;                              SUBROUTINE
-;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
-
-sub_1           proc    near
+conn_alloc_handle proc    near
                 push    bp
                 mov     bp,VLMID_NDS
                 push    bp
                 mov     bp,VLMID_CONN
                 push    bp
-                mov     bp,4
+                mov     bp,CONN_FUNC_ALLOC_HANDLE
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
-sub_1           endp
+conn_alloc_handle endp
 
-
-;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
-;                              SUBROUTINE
-;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
-
-sub_2           proc    near
+conn_validate_handle proc    near
                 push    bp
                 mov     bp,VLMID_NDS
                 push    bp
                 mov     bp,VLMID_CONN
                 push    bp
-                mov     bp,5
+                mov     bp,CONN_FUNC_VALIDATE_HANDLE
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
-sub_2           endp
+conn_validate_handle endp
 
 
-;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
-;                              SUBROUTINE
-;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
-
-sub_3           proc    near
+conn_set_field  proc    near
                 push    bp
                 mov     bp,VLMID_NDS
                 push    bp
                 mov     bp,VLMID_CONN
                 push    bp
-                mov     bp,8
+                mov     bp,CONN_FUNC_SET_FIELD
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
-sub_3           endp
+conn_set_field  endp
 
 
-;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
-;                              SUBROUTINE
-;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
-
-sub_4           proc    near
+conn_get_field  proc    near
                 push    bp
                 mov     bp,VLMID_NDS
                 push    bp
                 mov     bp,VLMID_CONN
                 push    bp
-                mov     bp,7
+                mov     bp,CONN_FUNC_GET_FIELD
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
-sub_4           endp
+conn_get_field  endp
 
 
-;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
-;                              SUBROUTINE
-;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
-
-sub_5           proc    near
+conn_lookup_handle  proc    near
                 push    bp
                 mov     bp,VLMID_NDS
                 push    bp
                 mov     bp,VLMID_CONN
                 push    bp
-                mov     bp,0Ah
+                mov     bp,CONN_FUNC_LOOKUP_HANDLE
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
-sub_5           endp
+conn_lookup_handle  endp
 
-
-;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
-;                              SUBROUTINE
-;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
-
-sub_6           proc    near
+vcall_nwp_5     proc    near
                 push    dx
                 mov     dl,1
                 push    bp
@@ -148,49 +125,39 @@ sub_6           proc    near
                 push    bp
                 mov     bp,VLMID_NWP
                 push    bp
-                mov     bp,5
+                mov     bp,NWP_FUNC_05
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 pop     dx
                 retn
-sub_6           endp
+vcall_nwp_5     endp
 
-
-;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
-;                              SUBROUTINE
-;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
-
-sub_7           proc    near
+vcall_ipxncp_6  proc    near
                 push    bp
                 mov     bp,VLMID_NDS
                 push    bp
                 mov     bp,VLMID_IPXNCP
                 push    bp
-                mov     bp,6
+                mov     bp,IPXNCP_FUNC_06
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
-sub_7           endp
+vcall_ipxncp_6  endp
 
-
-;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
-;                              SUBROUTINE
-;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
-
-sub_8           proc    near
+conn_free_handle proc    near
                 push    bp
                 mov     bp,VLMID_NDS
                 push    bp
                 mov     bp,VLMID_CONN
                 push    bp
-                mov     bp,6
+                mov     bp,CONN_FUNC_FREE_HANDLE
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
-sub_8           endp
+conn_free_handle endp
 
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
@@ -213,7 +180,7 @@ loc_1::
                 push    bp
                 mov     bp,VLMID_CONN
                 push    bp
-                mov     bp,10h
+                mov     bp,CONN_FUNC_10
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
@@ -270,7 +237,7 @@ loc_2::
                 mov     al,17h
                 mov     bx,1
                 xor     dx,dx
-                call    sub_7
+                call    vcall_ipxncp_6
                 pop     es
                 pop     ds
                 pop     si
@@ -278,16 +245,17 @@ loc_2::
                 pop     dx
                 pop     bx
                 retf
+
 data_10         dw      offset loc_4            ; Data table (indexed access)
-data_11         dw      offset loc_5
-data_12         dw      offset loc_11
-data_13         dw      offset loc_12
-data_14         dw      offset loc_6
-data_15         dw      offset loc_7
-data_16         dw      offset loc_13
-data_17         dw      offset loc_14
-data_18         dw      offset loc_15
-data_19         dw      offset loc_16
+                dw      offset loc_5
+                dw      offset loc_11
+                dw      offset loc_12
+                dw      offset loc_6
+                dw      offset loc_7
+                dw      offset loc_13
+                dw      offset loc_14
+                dw      offset loc_15
+                dw      offset loc_16
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
 ;                              SUBROUTINE
@@ -637,8 +605,8 @@ loc_34::
                 jnc     loc_35
                 mov     dx,ax
 loc_35::
-                mov     bh,9
-                call    sub_3
+                mov     bh,CONN_FIELD_REFCOUNT
+                call    conn_set_field
                 xchg    dx,ax
                 push    ds
                 mov     ds,cx
@@ -728,7 +696,7 @@ loc_041a:
 loc_40::
                 mov     dx,32h
                 mov     bx,100h
-                call    sub_5
+                call    conn_lookup_handle
                 jnz     loc_41
                 mov     dl,1
                 callf   sub_16
@@ -1032,8 +1000,8 @@ loc_0627:
                 push    bp
                 mov     bp,sp
                 sub     sp,2
-                mov     bh,0Dh
-                call    sub_4
+                mov     bh,CONN_FIELD_CONN_NUMBER
+                call    conn_get_field
                 jz      loc_64
                 jmp     loc_73
 loc_63::
@@ -1066,7 +1034,7 @@ loc_65::
                 pop     ax
                 push    cx
                 mov     cx,ax
-                call    sub_6
+                call    vcall_nwp_5
                 pop     cx
                 xor     ax,ax
                 jmp     loc_73
@@ -1089,7 +1057,7 @@ loc_66::
 loc_67::
                 xor     dx,dx
                 mov     bx,0D40h
-                call    sub_5
+                call    conn_lookup_handle
                 jnz     loc_68
                 mov     es,cx
                 test    byte ptr es:data_2e,2
@@ -1097,7 +1065,7 @@ loc_67::
                 jmp     short loc_67
 loc_68::
                 inc     word ptr [bp-2]
-                call    sub_1
+                call    conn_alloc_handle
                 xor     dl,dl
                 push    bp                      ; PARAMETER_4
                 mov     bp,VLMID_NDS
@@ -1127,7 +1095,7 @@ loc_70::
                 or      bx,[bp-2]
                 jz      loc_71
                 push    ax
-                call    sub_6
+                call    vcall_nwp_5
                 pop     ax
 loc_71::
                 or      ax,ax
@@ -1163,13 +1131,13 @@ loc_74::
                 jmp     short loc_73
 loc_75::
                 push    ax
-                call    sub_6
-                call    sub_1
+                call    vcall_nwp_5
+                call    conn_alloc_handle
                 pop     ax
                 jmp     short loc_73
 loc_76::
                 push    ax
-                call    sub_6
+                call    vcall_nwp_5
                 pop     ax
                 mov     cx,di
                 jmp     short loc_73
@@ -1236,7 +1204,7 @@ loc_79::
                 mov     dx,32h
                 push    bx
                 mov     bx,100h
-                call    sub_5
+                call    conn_lookup_handle
                 pop     bx
                 pop     dx
                 jnz     loc_78
@@ -1295,7 +1263,7 @@ loc_80::
                 mov     dx,2
                 mov     al,17h
                 mov     cx,[bp-4]
-                call    sub_7
+                call    vcall_ipxncp_6
                 jmp     loc_78
 sub_15          endp
 
@@ -1308,7 +1276,7 @@ sub_16          proc    far
                 push    bx
                 push    dx
                 push    si
-                call    sub_2
+                call    conn_validate_handle
                 jnz     loc_83
                 dec     dl
                 jnz     loc_82
@@ -1326,10 +1294,10 @@ sub_16          proc    far
                 xor     ax,ax
                 mov     bx,ax
                 mov     dx,ax
-                call    sub_7
+                call    vcall_ipxncp_6
 loc_81::
                 push    ax
-                call    sub_8
+                call    conn_free_handle
                 pop     ax
                 jmp     short loc_83
 loc_82::
@@ -1341,9 +1309,9 @@ loc_82::
                 mov     ds,cx
                 mov     ds:data_4e,ax
                 mov     ds:data_3e,ax
-                mov     bh,9
+                mov     bh,CONN_FIELD_REFCOUNT
                 xor     dx,dx
-                call    sub_3
+                call    conn_set_field
                 and     byte ptr ds:data_2e,0BFh
                 pop     ds
                 callf   sub_13
@@ -1397,14 +1365,14 @@ loc_84::
                 pop     ds
                 mov     bx,100h
                 xor     dx,dx
-                call    sub_7
+                call    vcall_ipxncp_6
                 jz      loc_86
                 cmp     al,0FFh
                 jne     loc_85
                 mov     ax,8808h
 loc_85::
                 push    ax
-                call    sub_8
+                call    conn_free_handle
                 pop     ax
                 jmp     loc_90
 loc_86::
@@ -1430,7 +1398,7 @@ loc_86::
                 mov     bx,101h
                 mov     dx,1
                 mov     al,17h
-                call    sub_7
+                call    vcall_ipxncp_6
                 jnz     loc_87
                 assume  ds:seg_b
                 mov     dx,data_62
@@ -1446,7 +1414,7 @@ loc_87::
                 mov     si,dx
                 mov     dl,1
                 callf   sub_16
-                call    sub_1
+                call    conn_alloc_handle
                 mov     dx,si
                 push    ds
                 mov     ds,cx
@@ -1501,14 +1469,14 @@ loc_88::
                 pop     bp
                 jmp     short loc_90
 loc_89::
-                call    sub_8
+                call    conn_free_handle
                 jmp     short loc_90
                                                 ;* No entry point to code
                 cmp     ax,89FFh
                 jne     loc_90
-                mov     bh,0Dh
+                mov     bh,CONN_FIELD_CONN_NUMBER
                 mov     dx,0
-                call    sub_3
+                call    conn_set_field
                 mov     ax,8808h
 loc_90::
                 mov     [bp-4],ax
@@ -1693,7 +1661,7 @@ loc_105::
                 xor     cx,cx
                 mov     bx,100h
                 mov     dx,32h
-                call    sub_5
+                call    conn_lookup_handle
                 jz      loc_106
                 push    bp
                 mov     bp,VLMID_NDS
@@ -1757,7 +1725,7 @@ loc_109::
                 mov     ds,cx
                 mov     word ptr ds:data_1e,32h
                 pop     ds
-                call    sub_8
+                call    conn_free_handle
                 mov     word ptr [bp-2],8855h
                 jmp     loc_95
 loc_110::

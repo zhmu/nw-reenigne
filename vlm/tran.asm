@@ -1,27 +1,28 @@
 ; The following equates show data references outside the range of the program.
 
 include common.inc
+include conn.inc
 
 ;------------------------------------------------------------  seg_a   ----
 
 seg_a           segment byte public
                 assume cs:seg_a  , ds:seg_a
 
-                dw      0000h,    seg_b
-                dw      loc_0038, seg_a
-                dw      loc_0051, seg_a
-                dw      loc_0054, seg_a
-                dw      loc_0075, seg_a
-                dw      loc_0075, seg_a
-                dw      loc_0075, seg_a
-                dw      loc_0075, seg_a
-                dw      loc_0075, seg_a
-                dw      loc_0075, seg_a
-                dw      loc_0075, seg_a
+                dw      offset init_fn,    seg_b
+                dw      offset loc_0038, seg_a         ; 01
+                dw      offset ret_ok, seg_a
+                dw      offset tran_stats, seg_a       ; 03 statistics
+                dw      offset tran_forward, seg_a
+                dw      offset tran_forward, seg_a
+                dw      offset tran_forward, seg_a
+                dw      offset tran_forward, seg_a
+                dw      offset tran_forward, seg_a
+                dw      offset tran_forward, seg_a
+                dw      offset tran_forward, seg_a
                 dw      0, 0
                 db      "NVlm"
                 dw      VLMID_TRANS
-data_5          dw      offset loc_1            ; Data table (indexed access)
+data_5          dw      offset get_version            ; Data table (indexed access)
 
 loc_0038:
                 cmp     bx,1
@@ -36,24 +37,24 @@ loc_0041:
 
 ;컴컴� Indexed Entry Point 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
 
-loc_1:
-                mov     bx,1
+get_version:
+                mov     bx,1                      ; vlm 1.21
                 mov     cx,15h
                 xor     ax,ax
                 retf
 
-loc_0051:
+ret_ok:
                 xor     ax,ax
                 retf
 
-loc_0054:
+tran_stats:
                 push    cx
                 push    si
                 push    di
                 push    ds
                 mov     ax,seg_a
                 mov     ds,ax
-                mov     si,offset data_7
+                mov     si,offset tran_statistics
                 cmp     cx,[si]
                 jbe     loc_2
                 mov     cx,[si]
@@ -69,7 +70,12 @@ loc_2:
                 xor     ax,ax
                 retf
 
-loc_0075:
+tran_forward:
+                ; input
+                ;   cx  = connection handle
+                ;
+                ; calls transport vlm
+                ;
                 push    bp
                 mov     bp,sp
                 sub     sp,12h
@@ -77,7 +83,7 @@ loc_0075:
                 push    ds
                 mov     ax,seg_a
                 mov     ds,ax
-                pop     word ptr [bp-0Ch]
+                pop     word ptr [bp-0Ch]       ; ds
                 pop     ax
                 mov     [bp-4],ax
                 mov     [bp-6],bx
@@ -86,19 +92,21 @@ loc_0075:
                 mov     bx,[bp]
                 mov     ax,ss:[bx+6]
                 mov     [bp-2],ax
-                mov     bh,0Fh
+
+                mov     bh,CONN_FIELD_TRANSPORT_FOR_VLMID
                 push    bp
                 mov     bp,VLMID_TRANS
                 push    bp
                 mov     bp,VLMID_CONN
                 push    bp
-                mov     bp,7
+                mov     bp,CONN_FUNC_GET_FIELD
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
-                jnz     loc_3
+                jnz     tran_forward_ret
                 or      dx,dx
                 jz      loc_6
+
                 mov     ax,VLMID_TRANS
                 push    ax
                 push    dx
@@ -109,38 +117,43 @@ loc_0075:
                 mov     dx,[bp-0Ah]
                 mov     ds,[bp-0Ch]
                 call    dword ptr cs:vlm_call_ptr
-loc_3:
+
+tran_forward_ret:
                 add     sp,12h
                 pop     bp
                 retf
 loc_4:
                 add     sp,4
-                jmp     short loc_3
+                jmp     short tran_forward_ret
 loc_5:
                 mov     ax,[bp-0Eh]
                 mov     bx,[bp-10h]
                 mov     dx,[bp-12h]
                 mov     ds,[bp-0Ch]
-                jmp     short loc_3
-loc_6:
+                jmp     short tran_forward_ret
+
+loc_6:          ; dx = 0, transport for vlmid not set
                 mov     bx,offset data_10
                 mov     dx,[bx]
 loc_7:
                 push    bx
-                mov     bh,0Fh
+                mov     bh,CONN_FIELD_TRANSPORT_FOR_VLMID
                 push    bp
                 mov     bp,VLMID_TRANS
                 push    bp
                 mov     bp,VLMID_CONN
                 push    bp
-                mov     bp,8
+                mov     bp,CONN_FUNC_SET_FIELD
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 pop     bx
-                jnz     loc_3
+                jnz     tran_forward_ret
+
                 or      dx,dx
                 jz      loc_5
+
+                ; dx != 0, issue request to VLM ID [dx]
                 push    bx
                 push    ds
                 mov     ax,VLMID_TRANS
@@ -156,7 +169,9 @@ loc_7:
                 or      al,al
                 jnz     loc_8
                 jmp     short loc_4
+
 loc_8:
+                ; call failed, try next VLM ID
                 pop     ds
                 mov     [bp-0Eh],ax
                 mov     [bp-10h],bx
@@ -166,11 +181,11 @@ loc_8:
                 inc     bx
                 mov     dx,[bx]
                 jmp     short loc_7
+
                 db      14 dup (0)
-data_7          db      2
-                db      0
+tran_statistics dw      2                       ; size of reconds (no statistics)
 vlm_call_ptr    dw      0, 0
-data_10         dw      21h, 22h, 0, 0
+data_10         dw      VLMID_IPXNCP, VLMID_TCPNCP, 0, 0
 data_12         db      0
                 db      0, 0, 0
 data_13         dw      2
@@ -185,7 +200,7 @@ seg_a           ends
 seg_b           segment byte public
                 assume cs:seg_b  , ds:seg_a
 
-                                                ;* No entry point to code
+init_fn:
                 push    ax
                 mov     ax,seg_b
                 mov     ds,ax
@@ -429,9 +444,7 @@ start:
                 mov     al,6
                 int     21h                     ; DOS Services  ah=function 4Ch
                                                 ;  terminate with al=return code
-copyright       db      'CoPyRiGhT=(C) Copyright 1993 - 1'
-                db      '996 Novell, Inc.'
-                db      '  All Rights Reserved.'
+copyright       db      'CoPyRiGhT=(C) Copyright 1993 - 1996 Novell, Inc.  All Rights Reserved.'
                 db      8 dup (0)
 data_18         dw      0, 0
 vlm_call_ptr2   dw      0, 0
@@ -441,10 +454,7 @@ data_23         db      0FFh
                 db      'TRAN', 0
                 db      '<Transport>', 0
                 db      'VeRsIoN=1.21', 0
-                db      'TRAN.VLM     - NetWare transport'
-                db      ' m'
-                db      'ultiplexo'
-                db      'r module  v1.21 (960514)', 0Dh, 0Ah
+                db      'TRAN.VLM     - NetWare transport multiplexor module  v1.21 (960514)', 0Dh, 0Ah
                 db      0, 0, 0
 
 tran            endp

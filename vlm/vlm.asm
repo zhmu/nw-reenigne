@@ -106,7 +106,6 @@ data_104e       equ     2002h                   ;*
 data_105e       equ     2006h                   ;*
 data_106e       equ     200Ah                   ;*
 data_107e       equ     200Eh                   ;*
-data_108e       equ     7                       ;*
 data_109e       equ     16h                     ;*
 data_110e       equ     2Eh                     ;*
 data_111e       equ     28h                     ;*
@@ -135,6 +134,16 @@ data_464e       equ     57A2h                   ;*
 data_465e       equ     58ABh                   ;*
 data_466e       equ     58ADh                   ;*
 data_467e       equ     58AFh                   ;*
+
+include         common.inc
+include         auto.inc
+include         conn.inc
+include         vlm.inc
+include         exe.inc
+include         conn.inc
+include         nwp.inc
+include         trans.inc
+include         general.inc
 
 callf           macro   loc
                 ; push    cs
@@ -203,15 +212,15 @@ data_162        db      0
                 db      'SBSBSBSBSBSBSBSBSBSBSBSBSBSBSBSB'
                 db      'SBSBSBSBSBSBSBSBSBSBSBSBSBSBSBSB'
                 db      'SBSBSBSBSBSBSBSBSBSBSBSBSBSBSBSB'
-data_164        db      0, 0
-data_165        dw      0                       ; segment storage
+cs_prev_sp      dw      0
+cs_prev_ss      dw      0
 data_166        dw      0, 0
 data_168        dw      0
 data_169        dw      0
 data_170        db      0FFh
 data_171        db      0
 data_172        db      0
-data_173        dw      0
+current_vm_id   dw      0
 data_174        dw      0
 data_175        dw      0
 data_176        dw      0
@@ -273,72 +282,72 @@ data_205        db      3
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_21          proc    near
+vcall_auto_5    proc    near
                 push    bp
                 mov     bp,0
                 push    bp                      ; PARAMETER_3
-                mov     bp,60h
+                mov     bp,VLMID_AUTO
                 push    bp                      ; PARAMETER_2
-                mov     bp,5
+                mov     bp,AUTO_FUNC_05
                 push    bp                      ; PARAMETER_1
-                callf   sub_28
+                callf   vlm_call
                 pop     bp
                 retn
-sub_21          endp
+vcall_auto_5    endp
 
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_22          proc    near
+conn_free_handle  proc    near
                 push    bp
                 mov     bp,0
                 push    bp                      ; PARAMETER_3
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp                      ; PARAMETER_2
-                mov     bp,6
+                mov     bp,CONN_FUNC_FREE_HANDLE
                 push    bp                      ; PARAMETER_1
-                callf   sub_28
+                callf   vlm_call
                 pop     bp
                 retn
-sub_22          endp
+conn_free_handle  endp
 
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_23          proc    near
+conn_set_field  proc    near
                 push    bp
                 mov     bp,0
                 push    bp                      ; PARAMETER_3
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp                      ; PARAMETER_2
-                mov     bp,8
+                mov     bp,CONN_FUNC_SET_FIELD
                 push    bp                      ; PARAMETER_1
-                callf   sub_28
+                callf   vlm_call
                 pop     bp
                 retn
-sub_23          endp
+conn_set_field  endp
 
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_24          proc    near
+conn_get_field  proc    near
                 push    bp
                 mov     bp,0
                 push    bp                      ; PARAMETER_3
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp                      ; PARAMETER_2
-                mov     bp,data_108e
+                mov     bp,CONN_FUNC_GET_FIELD
                 push    bp                      ; PARAMETER_1
-                callf   sub_28
+                callf   vlm_call
                 pop     bp
                 retn
-sub_24          endp
+conn_get_field  endp
 
                 db      0CBh,0CBh,0CBh
 data_206        dw      offset loc_15           ; Data table (indexed access)
@@ -369,22 +378,26 @@ int_2Fh_entry   proc    far
                 je      loc_2
                 cmp     ax,1683h
                 jne     loc_11
-                mov     bx,cs:data_173
+
+                ; AX = 1683 -> GET CURRENT VIRTUAL MACHINE ID
+                mov     bx,cs:current_vm_id
                 iret
 int_2Fh_entry   endp
 
-loc_2:
+loc_2:          ; AX = 1606 -> DOSX EXIT BROADCAST
                 and     cs:data_161,7Fh
                 jmp     short loc_11
-loc_3:
+
+loc_3:          ; AX=1605 -> DOSX INIT BROADCAST
                 or      cs:data_161,80h
                 jmp     short loc_11
-loc_4:
+
+loc_4:          ; AX=4B01 -> DOS 5+ TASK SWITCHER: BUILD CALLOUT CHAIN
                 pushf
                 call    dword ptr cs:data_132
                 mov     cs:data_187,bx
                 mov     cs:data_188,es
-                mov     bx,2CAh
+                mov     bx,2CAh                 ; callout info structure (#02817)
                 push    cs
                 pop     es
                 iret
@@ -504,6 +517,7 @@ loc_25:
                 mov     bx,61Dh
                 jmp     short loc_24
                 db      0BBh, 1Ch, 06h,0EBh,0ECh
+
 data_217        dw      offset loc_26           ; Data table (indexed access)
 data_218        dw      offset loc_28
 data_219        dw      offset loc_27
@@ -529,7 +543,7 @@ loc_26:
 ;ƒƒƒƒƒ Indexed Entry Point ƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒ
 
 loc_27:
-                mov     cs:data_173,0
+                mov     cs:current_vm_id,0
 
 ;ƒƒƒƒƒ Indexed Entry Point ƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒ
 
@@ -545,15 +559,15 @@ loc_29:
                 mov     ax,bx
                 mov     bx,0
                 push    bx                      ; PARAMETER_3
-                mov     bx,10h
+                mov     bx,VLMID_CONN
                 push    bx                      ; PARAMETER_2
-                mov     bx,10h
+                mov     bx,CONN_FUNC_10
                 push    bx                      ; PARAMETER_1
                 mov     bx,2
-                callf   sub_28
+                callf   vlm_call
                 pop     bx
                 pop     ax
-                mov     cs:data_173,0
+                mov     cs:current_vm_id,0
                 jmp     short loc_32
 
 ;ƒƒƒƒƒ Indexed Entry Point ƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒ
@@ -568,7 +582,7 @@ loc_30:
 
 loc_31:
                 pop     bx
-                mov     cs:data_173,bx
+                mov     cs:current_vm_id,bx
                 push    bx
 
 ;ƒƒƒƒƒ Indexed Entry Point ƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒ
@@ -675,15 +689,15 @@ loc_36:
                 mov     ax,[bx+6]
                 mov     cs:data_192,ax
                 mov     cx,[bx+4]
-                mov     bh,9
-                call    sub_24
+                mov     bh,CONN_FIELD_REFCOUNT
+                call    conn_get_field
 ;*              cmp     ax,0
                 db       3Dh, 00h, 00h
                 jnz     loc_38
                 cmp     dx,0
                 jne     loc_38
-                mov     bh,15h
-                call    sub_24
+                mov     bh,CONN_FIELD_SOFT_RES_COUNT
+                call    conn_get_field
                 cmp     dx,0
                 jne     loc_38
                 mov     ax,cs
@@ -699,11 +713,11 @@ loc_38:
                 mov     cs:data_193,cx
                 mov     ax,0
                 push    ax                      ; PARAMETER_3
-                mov     ax,10h
+                mov     ax,VLMID_CONN
                 push    ax                      ; PARAMETER_2
-                mov     ax,0Dh
+                mov     ax,CONN_FUNC_0D
                 push    ax                      ; PARAMETER_1
-                callf   sub_28
+                callf   vlm_call
                 jnz     loc_39
                 add     di,bx
 loc_39:
@@ -736,7 +750,7 @@ loc_42:
                 mov     ah,data_181
                 xor     al,al
                 mov     bx,0
-                call    sub_21
+                call    vcall_auto_5
                 pop     bx
                 pop     ax
                 int     24h                     ; DOS Critical error handler
@@ -745,7 +759,7 @@ loc_42:
                 push    bx
                 mov     al,1
                 mov     bx,0
-                call    sub_21
+                call    vcall_auto_5
                 pop     bx
                 pop     ax
                 popf
@@ -798,8 +812,8 @@ loc_45:
                 jcxz    loc_47
 
 locloop_46:
-                mov     bx,2
-                callf   sub_32
+                mov     bx,INT_LEAVE_CS
+                callf   vlm_internal_func
                 loop    locloop_46
 
 loc_47:
@@ -813,17 +827,17 @@ loc_48:
                 cmp     cx,0FFFFh
                 je      loc_49
                 push    bx
-                mov     bh,0
-                call    sub_23
+                mov     bh,CONN_FIELD_ERROR
+                call    conn_set_field
                 pop     bx
-                call    sub_22
+                call    conn_free_handle
 loc_49:
                 xor     cx,cx
                 mov     es:[bx+4],cx
 loc_50:
                 add     sp,18h
                 mov     ax,data_192
-                call    sub_36
+                call    find_vlm_by_id
                 callf   sub_27
                 mov     data_192,0
                 mov     data_193,0
@@ -890,7 +904,7 @@ sub_26          proc    near
                 push    bx
                 mov     ax,1
                 mov     bx,0
-                call    sub_21
+                call    vcall_auto_5
                 pop     bx
                 pop     ax
                 mov     cl,data_172
@@ -898,8 +912,8 @@ sub_26          proc    near
                 jcxz    loc_52
 
 locloop_51:
-                mov     bx,2
-                callf   sub_32
+                mov     bx,INT_LEAVE_CS
+                callf   vlm_internal_func
                 loop    locloop_51
 
 loc_52:
@@ -907,7 +921,7 @@ loc_52:
                 mov     data_192,cx
                 xchg    data_193,cx
                 jcxz    loc_53
-                call    sub_22
+                call    conn_free_handle
 loc_53:
                 pop     ds
                 pop     cx
@@ -937,7 +951,7 @@ loc_56:
                 push    bx
                 push    dx
                 push    si
-                call    sub_34
+                call    cs_enter
                 mov     ax,[di+2]
                 cmp     data_141,ax
                 je      loc_58
@@ -958,7 +972,7 @@ loc_58:
                 clc
 loc_59:
                 lahf
-                call    sub_35
+                call    cs_leave
                 sahf
                 pop     si
                 pop     dx
@@ -978,11 +992,10 @@ loc_61:
 sub_27          endp
 
 
-;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
-;                              SUBROUTINE
-;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
-
-sub_28          proc    far
+;
+; TODO I wonder whether this does a VLM call ...
+;
+vlm_call          proc    far
 
 PARAMETER_1     =       6                       ; bp+6
 PARAMETER_2     =       8                       ; bp+8
@@ -998,20 +1011,24 @@ LOCAL_1         =       -2                      ; bp+0FFFEh
                 push    di
                 push    ds
                 mov     ax,[bp+PARAMETER_2]
-                call    sub_36
+                call    find_vlm_by_id
                 jc      loc_63
+
+                ; vlm found
                 test    word ptr [di],2000h
                 jz      loc_63
+
+                ; 
                 mov     ax,[bp+PARAMETER_1]
                 or      ax,ax
                 jz      loc_62
                 cmp     [di+4],ax
                 ja      loc_65
 loc_62:
-                mov     ax,8811h
+                mov     ax,VLM_STATUS_NONEXISTANT_FUNC_CALLED
                 jmp     short loc_64
 loc_63:
-                mov     ax,8848h
+                mov     ax,VLM_STATUS_NON_EXISTENT_VLM
 loc_64:
                 pop     ds
                 pop     di
@@ -1022,15 +1039,15 @@ loc_65:
                 cmp     cs:data_142,1
                 je      loc_69
                 push    bx
-                mov     bx,1
-                callf   sub_32
+                mov     bx,INT_ENTER_CS
+                callf   vlm_internal_func
                 pop     bx
                 inc     cs:data_170
                 jz      loc_66
                 dec     cs:data_170
                 push    bx
-                mov     bx,2
-                callf   sub_32
+                mov     bx,INT_LEAVE_CS
+                callf   vlm_internal_func
                 pop     bx
                 dec     cs:data_159
                 mov     ax,8846h
@@ -1046,7 +1063,7 @@ loc_66:
 loc_67:
                 dec     cs:data_159
                 dec     cs:data_170
-                mov     ax,8853h
+                mov     ax,VLM_STATUS_MEMMGT_ERROR
                 jmp     short loc_64
 loc_68:
                 callf   sub_27
@@ -1078,7 +1095,7 @@ loc_69:
                 push    di
                 push    ds
                 push    es
-                cmp     ax,8846h
+                cmp     ax,VLM_STATUS_ASYNC_WHILE_BUSY
                 push    cs
                 pop     ds
                 jz      loc_72
@@ -1096,7 +1113,7 @@ loc_70:
                 call    sub_33
                 push    cs
                 pop     ds
-                cmp     ax,8846h
+                cmp     ax,VLM_STATUS_ASYNC_WHILE_BUSY
                 jne     loc_70
 loc_71:
                 mov     data_171,0
@@ -1104,7 +1121,7 @@ loc_72:
                 mov     ax,[bp+PARAMETER_3]
                 or      ax,ax
                 jz      loc_73
-                call    sub_36
+                call    find_vlm_by_id
                 jc      loc_73
                 callf   sub_27
 loc_73:
@@ -1112,8 +1129,8 @@ loc_73:
                 cmp     data_142,1
                 je      loc_74
                 push    bx
-                mov     bx,2
-                callf   sub_32
+                mov     bx,INT_LEAVE_CS
+                callf   vlm_internal_func
                 pop     bx
 loc_74:
                 cmp     data_159,0
@@ -1139,7 +1156,7 @@ loc_76:
                 pop     bp
                 or      ax,ax
                 retf    6
-sub_28          endp
+vlm_call        endp
 
                 db      90h
 data_227        dw      offset loc_77           ; Data table (indexed access)
@@ -1202,7 +1219,7 @@ loc_79:
                 mov     ax,[bp-2]
                 xchg    [bp-6],si
                 mov     ds,[bp-4]
-                callf   sub_28
+                callf   vlm_call
                 xchg    [bp-6],si
                 pop     bx
                 push    cs
@@ -1276,7 +1293,7 @@ loc_85:
                 push    word ptr [si+2]         ; PARAMETER_2
                 mov     bp,offset data_132+2
                 push    bp                      ; PARAMETER_1
-                callf   sub_28
+                callf   vlm_call
                 pop     bp
                 pop     ds
                 pop     si
@@ -1410,7 +1427,7 @@ loc_100:
                 push    word ptr [si+2]         ; PARAMETER_2
                 mov     bp,data_23e
                 push    bp                      ; PARAMETER_1
-                callf   sub_28
+                callf   vlm_call
                 pop     ds
                 pop     si
                 add     si,23h
@@ -1470,20 +1487,26 @@ loc_110:
                 mov     di,1Eh
                 xor     ax,ax
                 retf
+
+INT_GET_VECTOR  equ     0
+INT_ENTER_CS    equ     1
+INT_LEAVE_CS    equ     2
+
 data_241        dw      offset loc_112          ; Data table (indexed access)
-data_242        dw      offset loc_116
-data_243        dw      offset loc_118
-data_244        dw      offset loc_119
+                dw      offset loc_116
+                dw      offset loc_118
+                dw      offset loc_119
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_32          proc    far
+vlm_internal_func   proc    far
                 cmp     bx,4
                 jb      loc_111
-                mov     ax,8811h
+                mov     ax,VLM_STATUS_NONEXISTANT_FUNC_CALLED
                 retf
+
 loc_111:
                 push    ds
                 push    cs
@@ -1554,7 +1577,7 @@ loc_119:
                 mov     word ptr data_178+2,ax
                 xor     ax,ax
                 jmp     short loc_115
-sub_32          endp
+vlm_internal_func          endp
 
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
@@ -1581,9 +1604,9 @@ sub_33          proc    near
                 mov     bp,es:[di+2Ah]
                 mov     es,es:[di+30h]
                 mov     di,bp
-                callf   sub_28
+                callf   vlm_call
                 pop     bp
-                cmp     ax,8846h
+                cmp     ax,VLM_STATUS_ASYNC_WHILE_BUSY
                 je      loc_121
                 push    di
                 push    es
@@ -1610,9 +1633,9 @@ sub_33          endp
 
                                                 ;* No entry point to code
                 xchg    dx,ax
-                mov     bx,1
-                callf   sub_32
-                call    sub_34
+                mov     bx,INT_ENTER_CS
+                callf   vlm_internal_func
+                call    cs_enter
                 xchg    dx,ax
                 push    bp
                 mov     bp,sp
@@ -1647,9 +1670,9 @@ loc_123:
                 mov     bp,es:[di+2Ah]
                 mov     es,es:[di+30h]
                 mov     di,bp
-                callf   sub_28
+                callf   vlm_call
                 pop     bp
-                cmp     ax,8846h
+                cmp     ax,VLM_STATUS_ASYNC_WHILE_BUSY
                 jne     loc_124
                 les     di,dword ptr [bp-4]
                 mov     bx,offset data_147
@@ -1673,34 +1696,32 @@ loc_125:
                 pop     ds
                 add     sp,4
                 pop     bp
-                call    sub_35
-                mov     bx,2
-                callf   sub_32
+                call    cs_leave
+                mov     bx,INT_LEAVE_CS
+                callf   vlm_internal_func
                 cli
                 retf
 
-;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
-;                              SUBROUTINE
-;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
-
-sub_34          proc    near
+; switches stack
+cs_enter        proc    near
                 cli
                 pop     bx
-                           lock inc     cs:data_177
+                lock    inc cs:data_177
                 cmp     cs:data_177,1
                 ja      loc_126
-                mov     word ptr cs:data_164,sp
-                mov     cs:data_165,ss
+                mov     cs:cs_prev_sp,sp
+                mov     cs:cs_prev_ss,ss
                 mov     ax,seg_a
                 mov     ss,ax
                 mov     sp,29Eh
 loc_126:
                 sti
                 jmp     bx                      ;*
+cs_enter        endp
 
 ;ﬂﬂﬂﬂ External Entry into Subroutine ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
 
-sub_35:
+cs_leave        proc
                 cli
                 pop     bx
                 cmp     cs:data_177,1
@@ -1708,16 +1729,18 @@ sub_35:
                 dec     cs:data_177
                 jmp     short loc_128
 loc_127:
-                mov     ss,cs:data_165
-                mov     sp,word ptr cs:data_164
+                mov     ss,cs:cs_prev_ss
+                mov     sp,cs:cs_prev_sp
                 dec     cs:data_177
 loc_128:
                 sti
                 jmp     bx                      ;*
+cs_leave        endp
 
-;ﬂﬂﬂﬂ External Entry into Subroutine ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
-
-sub_36:
+; in:   ax = vlm id
+; out:  on error, cf=1
+;       on success, cf=0 - ds:[di] = vlm entry
+find_vlm_by_id:
                 push    cs
                 pop     ds
                 mov     di,data_140
@@ -1750,7 +1773,8 @@ loc_129:
                 add     ax,data_140
                 xchg    di,ax
                 pop     cx
-loc_130:
+
+loc_130:        ; vlm found
                 clc
                 retn
 loc_131:
@@ -1758,7 +1782,6 @@ loc_131:
 loc_132:
                 stc
                 retn
-sub_34          endp
 
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
@@ -2005,7 +2028,7 @@ sub_44          proc    near
                 sub     sp,10h
                 push    di
                 mov     ax,data_141
-                call    sub_36
+                call    find_vlm_by_id
                 inc     data_160
                 mov     ax,[di+14h]
                 mul     data_245
@@ -2137,7 +2160,7 @@ sub_48          proc    near
                 sub     sp,12h
                 push    di
                 mov     ax,data_141
-                call    sub_36
+                call    find_vlm_by_id
                 inc     data_160
                 lea     bp,[bp-12h]
                 mov     ax,[di+0Ch]
@@ -3012,24 +3035,24 @@ loc_200:
 loc_201:
                 xor     ax,ax
                 push    ax                      ; PARAMETER_3
-                mov     ax,10h
+                mov     ax,VLMID_CONN
                 push    ax                      ; PARAMETER_2
                 mov     ax,1
                 push    ax                      ; PARAMETER_1
                 mov     bx,0Ch
                 mov     cx,1
                 xor     dx,dx
-                callf   sub_28
+                callf   vlm_call
                 xor     ax,ax
                 push    ax                      ; PARAMETER_3
-                mov     ax,1
+                mov     ax,VLMID_EXE
                 push    ax                      ; PARAMETER_2
-                mov     ax,1
+                mov     ax,EXE_FUNC_01
                 push    ax                      ; PARAMETER_1
                 mov     bx,0Ch
                 mov     cx,1
                 xor     dx,dx
-                callf   sub_28
+                callf   vlm_call
                 call    sub_71
                 mov     ax,seg_a
                 mov     es,ax
@@ -3178,11 +3201,11 @@ int_23h_entry   endp
 sub_51          proc    near
                 xor     ax,ax
                 push    ax                      ; PARAMETER_3
-                mov     ax,30h
+                mov     ax,VLMID_NWP
                 push    ax                      ; PARAMETER_2
-                mov     ax,0Fh
+                mov     ax,NWP_FUNC_0F
                 push    ax                      ; PARAMETER_1
-                callf   sub_28
+                callf   vlm_call
                 retn
 sub_51          endp
 
@@ -5562,11 +5585,11 @@ loc_378:
                 mov     di,offset data_338
                 xor     ax,ax
                 push    ax                      ; PARAMETER_3
-                mov     ax,10h
+                mov     ax,VLMID_CONN
                 push    ax                      ; PARAMETER_2
-                mov     ax,0Dh
+                mov     ax,CONN_FUNC_0D
                 push    ax                      ; PARAMETER_1
-                callf   sub_28
+                callf   vlm_call
                 push    cx
                 mov     di,offset data_337
                 mov     al,1
@@ -5581,11 +5604,11 @@ loc_378:
 loc_379:
                 xor     ax,ax
                 push    ax                      ; PARAMETER_3
-                mov     ax,10h
+                mov     ax,VLMID_CONN
                 push    ax                      ; PARAMETER_2
-                mov     ax,0Dh
+                mov     ax,CONN_FUNC_0D
                 push    ax                      ; PARAMETER_1
-                callf   sub_28
+                callf   vlm_call
                 xor     ax,ax
                 mov     di,offset data_337
                 push    cx
@@ -5615,12 +5638,12 @@ loc_380:
                 mov     dx,1
                 xor     ax,ax
                 push    ax                      ; PARAMETER_3
-                mov     ax,20h
+                mov     ax,VLMID_TRANS
                 push    ax                      ; PARAMETER_2
-                mov     ax,6
+                mov     ax,TRANS_FUNC_06
                 push    ax                      ; PARAMETER_1
                 mov     al,14h
-                callf   sub_28
+                callf   vlm_call
                 jnz     loc_381
                 mov     di,[di]
                 xor     cx,cx
@@ -5643,11 +5666,11 @@ loc_381:
                 mov     bx,5
                 xor     ax,ax
                 push    ax                      ; PARAMETER_3
-                mov     ax,43h
+                mov     ax,VLMID_GENERAL
                 push    ax                      ; PARAMETER_2
-                mov     ax,6
+                mov     ax,GENERAL_FUNC_06
                 push    ax                      ; PARAMETER_1
-                callf   sub_28
+                callf   vlm_call
                 cmp     byte ptr data_335,0
                 je      loc_382
                 jmp     loc_386
@@ -5655,11 +5678,11 @@ loc_382:
                 mov     bx,0
                 xor     ax,ax
                 push    ax                      ; PARAMETER_3
-                mov     ax,43h
+                mov     ax,VLMID_GENERAL
                 push    ax                      ; PARAMETER_2
-                mov     ax,9
+                mov     ax,GENERAL_FUNC_09
                 push    ax                      ; PARAMETER_1
-                callf   sub_28
+                callf   vlm_call
                 sub     bl,41h                  ; 'A'
                 mov     dl,bl
                 mov     ah,0Eh
@@ -5678,11 +5701,11 @@ loc_383:
                 mov     bx,0
                 xor     ax,ax
                 push    ax                      ; PARAMETER_3
-                mov     ax,43h
+                mov     ax,VLMID_GENERAL
                 push    ax                      ; PARAMETER_2
-                mov     ax,6
+                mov     ax,GENERAL_FUNC_06
                 push    ax                      ; PARAMETER_1
-                callf   sub_28
+                callf   vlm_call
                 jnz     loc_386
                 mov     ax,es:[di-2]
                 or      ax,ax

@@ -25,6 +25,14 @@ data_324e       equ     3
 data_325e       equ     0Eh
 
 include common.inc
+include trans.inc
+include security.inc
+include conn.inc
+include fio.inc
+include trans.inc
+include ipxncp.inc
+include exe.inc
+include nwp.inc
 
 LSL_GET_SUPPORT_ENTRY_PTRS      equ     2
 
@@ -57,7 +65,7 @@ seg_a           segment byte public
                 push    bp
                 mov     bp,VLMID_TRANS
                 push    bp
-                mov     bp,6
+                mov     bp,TRANS_FUNC_06
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
@@ -73,7 +81,7 @@ vcall_trans_9h  proc    near
                 push    bp
                 mov     bp,VLMID_TRANS
                 push    bp
-                mov     bp,9
+                mov     bp,TRANS_FUNC_09
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
@@ -1679,7 +1687,7 @@ sub_21          proc    near
                 push    bp
                 mov     bp,VLMID_SECURITY
                 push    bp
-                mov     bp,4
+                mov     bp,SECURITY_FUNC_04
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
@@ -1691,19 +1699,19 @@ sub_21          endp
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_22          proc    near
+conn_reset_field  proc    near
                 push    bp
                 mov     bp,VLMID_FIO
                 push    bp
                 mov     bp,VLMID_CONN
                 push    bp
-                mov     bp,9
+                mov     bp,CONN_FUNC_RESET_FIELD
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 or      ax,ax
                 retn
-sub_22          endp
+conn_reset_field  endp
 
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
@@ -1720,8 +1728,8 @@ sub_23          proc    near
                 push    es
                 mov     bp,cx
                 mov     ds,cs:data_151
-                mov     bh,4
-                call    sub_22
+                mov     bh,CONN_FIELD_PBURST
+                call    conn_reset_field
                 jnz     loc_121
                 assume  ds:seg_b
                 cmp     byte ptr data_282,0
@@ -1763,7 +1771,7 @@ loc_123::
                 push    bp
                 mov     bp,VLMID_IPXNCP
                 push    bp
-                mov     bp,6
+                mov     bp,IPXNCP_FUNC_06
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
@@ -1935,7 +1943,7 @@ loc_135::
                 push    bp
                 mov     bp,VLMID_IPXNCP
                 push    bp
-                mov     bp,9
+                mov     bp,IPXNCP_FUNC_09
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
@@ -2088,7 +2096,7 @@ loc_144::
                 push    bp
                 mov     bp,VLMID_EXE
                 push    bp
-                mov     bp,4
+                mov     bp,EXE_FUNC_04
                 push    bp
                 assume  ds:seg_a
                 call    dword ptr cs:vlm_call_ptr
@@ -2163,7 +2171,7 @@ loc_146::
                 push    bp
                 mov     bp,VLMID_EXE
                 push    bp
-                mov     bp,4
+                mov     bp,EXE_FUNC_04
                 push    bp
                 assume  ds:seg_a
                 call    dword ptr cs:vlm_call_ptr
@@ -2179,7 +2187,7 @@ loc_147::
                 push    bp
                 mov     bp,VLMID_NWP
                 push    bp
-                mov     bp,7
+                mov     bp,NWP_FUNC_07
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 call    sub_27
@@ -3172,7 +3180,7 @@ loc_243::
                 push    bp
                 mov     bp,VLMID_SECURITY
                 push    bp
-                mov     bp,4
+                mov     bp,SECURITY_FUNC_04
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp

@@ -14,6 +14,7 @@ data_66e        equ     55CBh                   ;*
 
 include  common.inc
 include  conn.inc
+include  nwp.inc
 
 ;------------------------------------------------------------  seg_a   ----
 
@@ -1656,7 +1657,7 @@ sub_23          proc    near
                 push    bp
                 mov     bp,VLMID_NWP
                 push    bp
-                mov     bp,7
+                mov     bp,NWP_FUNC_07
                 push    bp
                 call    dword ptr vlm_call_ptr
                 pop     bp
@@ -1688,7 +1689,7 @@ loc_108::
                 push    ax
                 mov     ax,VLMID_NWP
                 push    ax
-                mov     ax,0Ah
+                mov     ax,NWP_FUNC_0A
                 push    ax
                 call    dword ptr vlm_call_ptr
                 or      cx,cx

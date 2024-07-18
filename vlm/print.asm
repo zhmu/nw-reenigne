@@ -23,6 +23,10 @@ data_172e       equ     65Ch                    ;*
 data_173e       equ     65Eh                    ;*
 
 include  common.inc
+include  exe.inc
+include  print.inc
+include  trans.inc
+include  conn.inc
 
 ;------------------------------------------------------------  seg_a   ----
 
@@ -53,73 +57,63 @@ seg_a           segment byte public
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_1           proc    near
+vcall_trans_6   proc    near
                 mov     ax,17h
                 push    bp
                 mov     bp,VLMID_PRINT
                 push    bp
-                mov     bp,20h
+                mov     bp,VLMID_TRANS
                 push    bp
-                mov     bp,6
+                mov     bp,TRANS_FUNC_06
                 push    bp
                 call    dword ptr cs:data_45
                 pop     bp
                 retn
-sub_1           endp
+vcall_trans_6   endp
 
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_2           proc    near
+conn_get_field  proc    near
                 push    bp
                 mov     bp,VLMID_PRINT
                 push    bp
-                mov     bp,10h
+                mov     bp,VLMID_CONN
                 push    bp
-                mov     bp,7
+                mov     bp,CONN_FUNC_GET_FIELD
                 push    bp
                 call    dword ptr cs:data_45
                 pop     bp
                 retn
-sub_2           endp
+conn_get_field  endp
 
-
-;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
-;                              SUBROUTINE
-;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
-
-sub_3           proc    near
+vcall_exe_1     proc    near
                 push    bp
                 mov     bp,VLMID_PRINT
                 push    bp
-                mov     bp,1
+                mov     bp,VLMID_EXE
                 push    bp
-                mov     bp,1
+                mov     bp,EXE_FUNC_01
                 push    bp
                 call    dword ptr cs:data_45
                 pop     bp
                 retn
-sub_3           endp
+vcall_exe_1     endp
 
-
-;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
-;                              SUBROUTINE
-;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
-
-sub_4           proc    near
+vcall_exe_4     proc    near
                 push    bp
                 mov     bp,VLMID_PRINT
                 push    bp
-                mov     bp,1
+                mov     bp,VLMID_EXE
                 push    bp
-                mov     bp,4
+                mov     bp,EXE_FUNC_04
                 push    bp
                 call    dword ptr cs:data_45
                 pop     bp
                 retn
-sub_4           endp
+vcall_exe_4     endp
 
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
@@ -158,17 +152,17 @@ loc_2::
 sub_6           endp
 
 data_12         dw      offset loc_4            ; Data table (indexed access)
-data_13         dw      offset loc_5
-data_14         dw      offset loc_3
-data_15         dw      offset loc_8
-data_16         dw      offset loc_3
-data_17         dw      offset loc_3
-data_18         dw      offset loc_3
-data_19         dw      offset loc_3
-data_20         dw      offset loc_3
-data_21         dw      offset loc_3
-data_22         dw      offset loc_3
-data_23         dw      offset loc_8
+                dw      offset loc_5
+                dw      offset loc_3
+                dw      offset loc_8
+                dw      offset loc_3
+                dw      offset loc_3
+                dw      offset loc_3
+                dw      offset loc_3
+                dw      offset loc_3
+                dw      offset loc_3
+                dw      offset loc_3
+                dw      offset loc_8
 
 loc_00d6:
                 db       83h,0FBh, 0Ch, 72h, 04h
@@ -326,7 +320,7 @@ loc_13::
                 push    es
                 push    bx
                 mov     bx,1
-                call    sub_4
+                call    vcall_exe_4
                 pop     bx
                 mov     ds,cs:data_42
                 xchg    dx,bx
@@ -346,7 +340,7 @@ loc_15::
 loc_16::
                 mov     [bp-2],ax
                 mov     bx,2
-                call    sub_4
+                call    vcall_exe_4
                 pop     es
                 pop     ds
                 pop     di
@@ -456,7 +450,7 @@ loc_24::
                 mov     bx,1
                 xor     dx,dx
                 mov     si,6FFh
-                call    sub_1
+                call    vcall_trans_6
                 pop     bx
                 jz      loc_25
                 jmp     loc_16
@@ -492,13 +486,13 @@ loc_031a:
                 pop     bp
                 push    bx
                 mov     bx,1
-                call    sub_4
+                call    vcall_exe_4
                 pop     bx
                 cmp     word ptr es:[di+2Ah],1
                 pushf
                 push    bx
                 mov     bx,2
-                call    sub_4
+                call    vcall_exe_4
                 pop     bx
                 popf
                 jbe     loc_27
@@ -615,8 +609,8 @@ loc_36::
                 pop     bx
 loc_37::
                 push    bx
-                mov     bh,3
-                call    sub_2
+                mov     bh,CONN_FIELD_AUTHENTICATED
+                call    conn_get_field
                 pop     bx
                 jz      loc_38
                 jmp     loc_50
@@ -741,7 +735,7 @@ loc_48::
 loc_49::
                 mov     dx,[bp-6]
                 mov     bx,8
-                call    sub_3
+                call    vcall_exe_1
 loc_50::
                 mov     [bp-2],ax
                 pop     es
@@ -860,7 +854,7 @@ loc_58::
                 xor     dx,dx
                 pop     ds
                 mov     si,6FFh
-                call    sub_1
+                call    vcall_trans_6
                 pop     bx
                 jz      loc_59
                 jmp     loc_50
@@ -947,7 +941,7 @@ loc_63::
                 rep     movsb
                 pop     cx
                 mov     bx,9
-                call    sub_3
+                call    vcall_exe_1
 loc_64::
                 xor     ax,ax
 loc_65::
@@ -1326,7 +1320,7 @@ loc_93::
                 mov     dx,1
                 mov     si,6FFh
                 mov     di,711h
-                call    sub_1
+                call    vcall_trans_6
                 pop     bx
                 jz      loc_96
 loc_94::
@@ -1611,17 +1605,17 @@ sub_12          endp
 sub_13          proc    near
                 push    dx
                 push    bx
-                mov     bh,1
-                call    sub_2
-                cmp     dx,33h
+                mov     bh,CONN_FIELD_TRANSPORT_VLMID
+                call    conn_get_field
+                cmp     dx,VLMID_PNW
                 jne     loc_109
                 clc
                 jmp     short loc_110
 loc_109::
-                mov     bh,8
-                call    sub_2
+                mov     bh,CONN_FIELD_SERVER_VERSION
+                call    conn_get_field
                 xchg    dl,dh
-                cmp     dx,30Bh
+                cmp     dx,30Bh             ; 3.11
 loc_110::
                 pop     bx
                 pop     dx
@@ -1990,7 +1984,7 @@ sub_20          proc    near
                 push    bp
                 mov     bp,VLMID_EXE
                 push    bp
-                mov     bp,4
+                mov     bp,EXE_FUNC_04
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
@@ -2082,7 +2076,7 @@ loc_128::
                 push    bp
                 mov     bp,VLMID_PRINT
                 push    bp
-                mov     bp,0Ah
+                mov     bp,PRINT_FUNC_0A
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
@@ -2280,7 +2274,7 @@ sub_26          proc    near
                 push    bp
                 mov     bp,VLMID_PRINT
                 push    bp
-                mov     bp,0Bh
+                mov     bp,PRINT_FUNC_0B
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp

@@ -5,7 +5,7 @@ include conn.inc
 seg_a           segment byte public
                 assume cs:seg_a  , ds:seg_a
 
-data_1          dw      0, seg_c
+data_1          dw      offset init_fn, seg_c
                 dw      offset loc_00d8, seg_a
                 dw      offset loc_00f1, seg_a
                 dw      offset loc_012a, seg_a
@@ -66,6 +66,7 @@ conn_set_field  proc    near
                 retn
 conn_set_field  endp
 
+; see TODO, this may be the main NCP request/reply invoker
 vcall_trans_6h  proc    near
                 push    bp
                 mov     bp,VLMID_BIND
@@ -212,7 +213,7 @@ loc_014b:
                 push    es
                 mov     [bp-2],cx
                 mov     word ptr [bp-4],0
-                mov     bh,0Dh
+                mov     bh,CONN_FIELD_CONN_NUMBER
                 call    conn_get_field
                 jz      loc_7
                 jmp     loc_14
@@ -241,17 +242,17 @@ loc_8::
                 jnz     loc_10
                 cmp     cx,ax
                 je      loc_10
-                mov     bh,1
+                mov     bh,CONN_FIELD_TRANSPORT_VLMID
                 call    conn_get_field
-                cmp     dx,31h
+                cmp     dx,VLMID_BIND
                 je      loc_9
-                cmp     dx,32h
+                cmp     dx,VLMID_NDS
                 jne     loc_10
 loc_9::
                 mov     word ptr [bp-4],0FFFFh
                 jmp     loc_16
 loc_10::
-                mov     bh,0Fh
+                mov     bh,CONN_FIELD_TRANSPORT_FOR_VLMID
                 call    conn_get_field
                 xor     cx,cx
                 or      dx,dx
@@ -262,7 +263,7 @@ loc_11::
                 call    conn_lookup_handle
                 mov     dx,0
                 jnz     loc_13
-                mov     bh,0Dh
+                mov     bh,CONN_FIELD_CONN_NUMBER
                 call    conn_get_field
                 or      dx,dx
                 jz      loc_11
@@ -273,13 +274,13 @@ loc_12::
                 call    conn_lookup_handle
                 jnz     loc_13
                 push    dx
-                mov     bh,1
+                mov     bh,CONN_FIELD_TRANSPORT_VLMID
                 call    conn_get_field
-                cmp     dx,31h
+                cmp     dx,VLMID_BIND
                 pop     dx
                 jnz     loc_12
                 push    dx
-                mov     bh,0Dh
+                mov     bh,CONN_FIELD_CONN_NUMBER
                 call    conn_get_field
                 or      dx,dx
                 pop     dx
@@ -473,7 +474,7 @@ loc_23::
                 call    conn_lookup_handle
                 pop     dx
                 jnz     loc_25
-                mov     bh,0Dh
+                mov     bh,CONN_FIELD_CONN_NUMBER
                 call    conn_get_field
                 or      dx,dx
                 jz      loc_23
@@ -704,68 +705,123 @@ loc_32::
 sub_13          endp
 
 data_26         dw      8 dup (0)
-data_27         db      0
+
+; TODO THis seems to contain the login key
+login_key       db      0
                 db      7 dup (0)
+
 loc_0505:
-                db       55h, 8Bh,0ECh
-                db      'PQRSTUVW'
-                db       1Eh, 06h, 2Eh,0F6h, 06h,0E8h
-                db       0Ah,0FFh, 74h, 7Ah, 1Eh, 07h
-                db       87h,0F7h,0B9h,0FFh,0FFh, 32h
-                db      0C0h,0F2h,0AEh,0F7h,0D1h, 49h
-                db       2Eh, 8Eh, 06h,0E2h, 0Ah, 06h
-                db       1Fh,0BEh, 0Ah, 01h, 8Bh, 46h
-                db      0EEh, 89h, 44h, 02h, 8Bh, 46h
-                db      0F2h, 89h, 04h, 89h, 4Ch, 04h
-                db       88h, 0Eh, 03h, 01h, 83h,0C1h
-                db       10h, 86h,0E9h, 89h, 0Eh,0FEh
-                db       00h,0BEh, 04h, 01h,0BFh, 16h
-                db       01h,0BBh, 03h, 00h,0BAh, 01h
-                db       00h,0B0h, 17h, 8Bh, 4Eh,0FCh
-                db      0E8h, 25h,0FBh, 8Bh, 5Eh,0F8h
-                db       8Bh, 7Eh,0F0h, 8Bh, 76h,0F2h
-                db       8Eh, 5Eh,0EEh, 8Eh, 46h,0ECh
-                db       74h, 22h, 80h,0FCh, 88h, 75h
-                db       03h,0E9h, 30h, 01h, 50h, 53h
-                db      0BBh, 02h, 00h, 55h,0BDh, 31h
-                db       00h, 55h,0BDh, 60h, 00h, 55h
-                db      0BDh, 05h, 00h, 55h, 2Eh,0FFh
-                db       1Eh,0E4h, 0Ah, 5Dh, 5Bh, 58h
-                db       2Eh, 8Eh, 06h,0E2h, 0Ah, 06h
-                db       1Fh,0E8h,0B9h, 01h, 0Ah,0C0h
-                db       74h, 0Bh, 3Dh, 05h, 88h, 75h
-                db       03h,0E9h, 00h, 01h
+                push    bp
+                mov     bp,sp
+                push    ax
+                push    cx
+                push    dx
+                push    bx
+                push    sp
+                push    bp
+                push    si
+                push    di
+                push    ds
+                push    es
+                test    data_0ae8,0ffh
+                jz      loc_0594
+                push    ds
+                pop     es
+                xchg    si,di
+                mov     cx,0ffffh
+                xor     al,al
+                repne   scasb
+                not     cx
+                dec     cx
+
+                ; construct "read property value" request
+                mov     es,data_34
+                push    es
+                pop     ds
+                mov     si,offset data_010a
+                mov     ax,[bp-12h]
+                mov     [si+2h],ax
+                mov     ax,[bp-0eh]
+                mov     [si],ax
+                mov     [si+4],cx
+                mov     data_0103,cl           ; object name length
+                add     cx,10h
+                xchg    ch,cl
+                mov     data_0fe,cx
+                mov     si,offset data_0104
+                mov     di,offset data_0116
+                mov     bx,3
+                mov     dx,1
+                mov     al,17h
+                mov     cx,[bp-4]
+                call    vcall_trans_6h
+                mov     bx,[bp-8]
+                mov     di,[bp-10h]
+                mov     si,[bp-0eh]
+                mov     ds,[bp-12h]
+                mov     es,[bp-14h]
+                jz      loc_0594
+                cmp     ah,88h
+                jnz     loc_057a
+                jmp     loc_38
+
+loc_057a:
+                push    ax
+                push    bx
+                mov     bx,2
+                push    bp
+                mov     bp,VLMID_BIND
+                push    bp
+                mov     bp,VLMID_AUTO
+                push    bp
+                mov     bp,5
+                push    bp
+                call    dword ptr cs:vlm_call_ptr
+                pop     bp
+                pop     bx
+                pop     ax
+loc_0594:
+                mov     es,cs:data_34
+                push    es
+                pop     ds
+                call    get_login_key
+                or      al,al
+                jz      loc_34
+                cmp     ax,8805h
+                jnz     loc_33
+                jmp     loc_38
+
 loc_33::
                 jmp     loc_42
 loc_34::
                 mov     es,[bp-12h]
                 mov     di,[bp-0Eh]
-                mov     si,17Ah
+                mov     si,offset ncp_req_get_bindery_obj_id
                 mov     [si+6],di
                 mov     [si+8],es
-                mov     word ptr ds:[154h],di
-                mov     word ptr ds:[156h],es
-                mov     cx,30h
-                call    sub_15
+                mov     word ptr ds:[data_53],di
+                mov     word ptr ds:[data_54],es
+                mov     cx,48
+                call    calc_len
                 mov     [si+0Ah],cx
-                mov     byte ptr ds:[179h],cl
+                mov     byte ptr ds:[data_60],cl
                 mov     bx,[bp-8]
                 xchg    bh,bl
-                mov     word ptr ds:[177h],bx
+                mov     word ptr ds:[data_59],bx
                 assume  ds:seg_a
                 mov     data_10,cl
-                mov     word ptr ds:[158h],cx
+                mov     word ptr ds:[data_55],cx
                 add     cx,4
                 xchg    ch,cl
-                mov     word ptr ds:[174h],cx
+                mov     word ptr ds:[data_58],cx
                 add     ch,8
                 mov     data_1,cx
                 push    ds
                 pop     es
-                mov     di,186h
+                mov     di,offset ncp_resp_get_bind_obj_id
                 mov     bx,2
                 mov     dx,1
-                call    sub_14
+                call    bind_ncp_23
                 mov     ax,seg_a
                 mov     ds,ax
                 push    ds
@@ -774,7 +830,7 @@ loc_34::
                 mov     es,[bp-14h]
                 mov     di,[bp-10h]
                 mov     cx,80h
-                call    sub_15
+                call    calc_len
                 push    cx
                 push    word ptr [bp-14h]
                 push    word ptr [bp-10h]
@@ -814,14 +870,14 @@ loc_35::
                 pop     bx
                 mov     al,4
                 call    vcall_nwp_10h
-                call    sub_16
+                call    get_login_key
                 jnz     loc_38
                 call    sub_17
                 call    sub_18
                 jnz     loc_38
 loc_36::
                 push    ax
-                mov     bh,14h
+                mov     bh,CONN_FIELD_SECURITY_OPTIONS
                 call    conn_get_field
                 pop     ax
                 test    dl,0Ah
@@ -864,7 +920,7 @@ loc_39::
 ;                              SUBROUTINE
 ;ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
 
-sub_14          proc    near
+bind_ncp_23     proc    near
                 mov     al,17h
                 mov     cx,[bp-4]
                 call    vcall_trans_6h
@@ -880,7 +936,7 @@ loc_40::
 loc_41::
                 pop     bx
                 jmp     short loc_38
-sub_14          endp
+bind_ncp_23     endp
 
 loc_42::
                 mov     es,[bp-14h]
@@ -888,7 +944,7 @@ loc_42::
                 mov     word ptr ds:[16Eh],di
                 mov     word ptr ds:[170h],es
                 mov     cx,80h
-                call    sub_15
+                call    calc_len
                 mov     byte ptr ds:[15Ah],cl
                 mov     word ptr ds:[172h],cx
                 mov     bl,cl
@@ -897,7 +953,7 @@ loc_42::
                 mov     word ptr ds:[162h],di
                 mov     word ptr ds:[164h],es
                 mov     cl,30h                  ; '0'
-                call    sub_15
+                call    calc_len
                 mov     data_10,cl
                 mov     word ptr ds:[166h],cx
                 add     bl,cl
@@ -905,13 +961,13 @@ loc_42::
                 xor     bh,bh
                 xchg    bh,bl
                 mov     data_8,bx
-                mov     si,15Ch
+                mov     si,offset data_015c
                 mov     bx,[bp-8]
                 xchg    bh,bl
                 mov     data_9,bx
                 mov     bx,4
                 xor     dx,dx
-                call    sub_14
+                call    bind_ncp_23
 loc_43::
                 mov     bh,CONN_FIELD_AUTHENTICATED
                 call    conn_set_field
@@ -927,11 +983,8 @@ loc_43::
 loc_44::
                 jmp     loc_38
 
-;ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
-;                              SUBROUTINE
-;ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
-
-sub_15          proc    near
+; some kind of length calculation for ascii string in ds:si
+calc_len        proc    near
                 mov     dx,cx
                 xor     al,al
                 repne   scasb
@@ -939,32 +992,29 @@ sub_15          proc    near
                 dec     dx
                 add     cx,dx
                 retn
-sub_15          endp
+calc_len        endp
 
 
-;ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
-;                              SUBROUTINE
-;ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
-
-sub_16          proc    near
-                mov     si,13Ch
-                mov     di,148h
-                mov     al,17h
-                mov     bl,1
-                mov     bh,1
-                mov     dx,1
+; Seems to issue 0x2222 23 23 Get Login Key
+get_login_key   proc    near
+                mov     si,offset data_013c
+                mov     di,offset data_0148
+                mov     al,17h              ; bindery request
+                mov     bl,1                ; 1 request
+                mov     bh,1                ; return network errors to caller
+                mov     dx,1                ; 1 response
                 call    vcall_trans_6h
                 jnz     loc_ret_45
                 mov     di,seg seg_a
                 mov     es,di
-                mov     di,offset data_27
+                mov     di,offset login_key
                 mov     si,offset data_50
                 mov     cx,4
                 rep     movsw
 
 loc_ret_45::
                 retn
-sub_16          endp
+get_login_key   endp
 
 
 ;ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
@@ -1027,7 +1077,7 @@ loc_07ce:
                 db       1Eh, 06h, 2Eh, 8Eh, 06h,0E2h
                 db       0Ah, 03h,0DBh, 2Eh,0FFh,0A7h
                 db      0C6h, 07h
-loc_47::
+set_status_ret::
                 mov     [bp-2],ax
 loc_48::
                 pop     es
@@ -1045,38 +1095,40 @@ loc_48::
 
 ;ÄÄÄÄÄ Indexed Entry Point ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 
-loc_49::
+loc_49::        ; return asciiz string of preferred server name
                 mov     word ptr [bp-6],31h
                 push    es
                 pop     ds
                 mov     es,[bp-14h]
-                mov     si,offset data_64
-                mov     cx,data_63
+                mov     si,offset pref_server
+                mov     cx,pref_server_len
                 rep     movsb
                 xor     ax,ax
                 stosb
-                jmp     short loc_47
+                jmp     short set_status_ret
 
 ;ÄÄÄÄÄ Indexed Entry Point ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 
 loc_50::
                 mov     ax,VLM_STATUS_FUNC_INVALID_PARAM
                 cmp     dx,31h
-                jne     loc_47
+                jne     set_status_ret
+
+                ; dx = 31h, set preferred server to ds:si, cx bytes
                 cmp     cx,2Fh
-                ja      loc_47
+                ja      set_status_ret
                 mov     bx,ds
                 or      bx,si
-                jz      loc_47
-                mov     es:data_63,cx
-                mov     di,offset data_64
+                jz      set_status_ret
+                mov     es:pref_server_len,cx
+                mov     di,offset pref_server
                 jcxz    loc_53
 
 locloop_51::
                 lodsb
-                cmp     al,61h                  ; 'a'
+                cmp     al,'a'
                 jb      loc_52
-                cmp     al,7Ah                  ; 'z'
+                cmp     al,'z'
                 jbe     loc_54
 loc_52::
                 stosb
@@ -1085,14 +1137,15 @@ loc_52::
 loc_53::
                 xor     ax,ax
                 stosb
-                jmp     short loc_47
-loc_54::
+                jmp     short set_status_ret
+
+loc_54::        ; invalid character (> 'a', < 'z' - reject)
                 xor     ax,ax
-                mov     es:data_63,ax
-                mov     di,offset data_64
+                mov     es:pref_server_len,ax
+                mov     di,offset pref_server
                 stosb
                 mov     ax,VLM_STATUS_FUNC_INVALID_PARAM
-                jmp     short loc_47
+                jmp     short set_status_ret
 
 ;ÄÄÄÄÄ Indexed Entry Point ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 
@@ -1100,19 +1153,19 @@ loc_55::
                 push    es
                 pop     ds
                 mov     word ptr [bp-2],0
-                cmp     data_63,0
+                cmp     pref_server_len,0
                 je      loc_56
-                mov     cx,data_63
-                mov     si,18Eh
+                mov     cx,pref_server_len
+                mov     si,offset pref_server
                 call    conn_name2handle
                 jnz     loc_58
                 jz      loc_59
                 mov     ax,VLM_STATUS_PREF_SERVER_NOT_FOUND
-                jmp     loc_47
+                jmp     set_status_ret
 loc_56::
                 mov     ax,VLM_STATUS_8859
 loc_57::
-                jmp     loc_47
+                jmp     set_status_ret
 loc_58::
                 push    bp
                 mov     bp,VLMID_BIND
@@ -1482,7 +1535,7 @@ data_33         db      2
                 db      0
 data_34         dw      seg_b
 vlm_call_ptr    dw      0, 0
-                db      0
+data_0ae8       db      0
 data_37         db      7                       ; Data table (indexed access)
                 db       08h, 00h, 08h, 06h, 04h, 0Eh
                 db       04h, 05h, 0Ch, 01h, 07h, 0Bh
@@ -1566,60 +1619,62 @@ data_49         dw      seg_b
                 dw      seg_b
                 db       76h, 00h, 01h
                 db      0Ah, 'DISABLE_AR'
-                db       00h, 00h, 3Dh, 00h, 01h, 00h
-                db      0FEh, 00h
-                dw      seg_b
+data_0fe        dw      00h
+                db      61                              ; read property value
+                dw      100h                            ; object type: user
+data_0103       db      00h                             ; object name length
+data_0104       dw      offset data_0fe, seg_b
                 db      6, 0
-                dw      seg_b
+data_010a       dw      seg_b
                 db       00h, 00h, 00h, 00h,0F2h, 00h
                 dw      seg_b
-                db       0Ch, 00h, 50h, 00h
+                db       0Ch, 00h
+data_0116       db      50h, 00h
                 dw      seg_b
                 db       82h, 00h, 00h, 01h, 11h, 1Ch
                 db       01h
                 dw      seg_b
                 db       03h, 00h, 50h, 00h
                 dw      seg_b
-                db       80h, 00h, 00h, 01h, 17h
-data_50         dw      5 dup (0)
+                db       80h, 00h
+data_012b       db      00h, 01h, 17h
+data_50         dw      4 dup (0)
+data_0136       dw      0
                 db      14h
 data_51         dw      0
 data_52         db      0
-                db       2Bh, 01h
-                dw      seg_b
-                db      3, 0, 0, 0
-                dw      seg_b
-                db       03h, 00h, 2Eh, 01h
-                dw      seg_b
-                db       08h, 00h, 39h, 01h
-                dw      seg_b
-                db      3, 0
+data_013c       dw      offset data_012b, seg_b
+                dw      3
+                dw      0, seg_b
+                db       03h, 00h
+data_0148       dw      offset data_50, seg_b, 8
+                dw      offset data_51, seg_b, 3
 data_53         dw      0
 data_54         dw      0                       ; segment storage
 data_55         dw      0
-                db       00h, 00h, 36h, 01h
-                dw      seg_b
-                db      6
-                db      7 dup (0)
-                db       5Ah, 01h
-                dw      seg_b
+data_015a       db       00h, 00h
+
+; ncp request 2222 23 ??
+data_015c       dw      offset data_0136, seg_b, 6
+                db      6 dup (0)
+                dw      offset data_015a, seg_b
                 db      1, 0
                 db      0, 0, 0, 0, 0, 0
 data_58         dw      0
                 db      35h
 data_59         dw      0
 data_60         db      0
-                db       74h, 01h
-                dw      seg_b
-                db      6
-                db      7 dup (0)
-                db       50h, 00h
-                dw      seg_b
-                db      36h
-                db      0
-data_63         dw      0
-data_64         db      0
-                db      49 dup (0)
+
+; ncp request 2222 23 53: get bindery object id
+ncp_req_get_bindery_obj_id:
+                dw      offset data_58, seg_b, 6
+                db      6 dup (0)
+
+; response buffer for ncp_req_get_bindery_obj_id
+ncp_resp_get_bind_obj_id:
+                dw      offset data_45, seg_b, 36h
+pref_server_len dw      0
+pref_server     db      50 dup (0)
 
 seg_b           ends
 
@@ -1630,41 +1685,86 @@ seg_b           ends
 seg_c           segment byte public
                 assume cs:seg_c  , ds:seg_c
 
-data_65         db      50h
-                db       53h,0B8h
-                dw      seg_c
-                db      8Eh
-data_66         db      0D8h
-                db      0B8h, 20h, 7Ah,0BBh, 02h, 00h
-                db      0CDh, 2Fh, 89h, 1Eh,0F0h, 01h
-                db       8Ch, 06h,0F2h, 01h
-                db      0BBh, 00h, 00h,0BAh, 20h, 00h
-                db      0FFh, 1Eh,0F0h, 01h, 5Bh, 3Dh
-                db       00h, 00h, 58h, 74h, 63h, 50h
-                db       53h, 51h, 56h, 1Eh,0B4h, 02h
-                db      0B0h, 00h
-                db      0BBh, 06h, 00h,0B9h, 05h, 00h
-                db      0BEh, 54h, 02h, 0Eh, 1Fh, 2Eh
-                db      0FFh, 1Eh,0F0h, 01h, 1Fh, 5Eh
-                db       59h, 5Bh, 58h, 53h, 0Eh,0B8h
-                db       66h, 02h, 50h, 0Eh,0B8h, 54h
-                db       02h, 50h, 0Eh,0B8h, 66h, 02h
-                db       50h,0B8h, 05h, 00h
-                db      50h
-                db      0BBh, 06h, 00h,0B4h, 00h,0B0h
-                db       00h,0FFh, 1Eh,0F0h, 01h, 83h
-                db      0C4h, 0Eh, 5Bh, 53h, 0Eh,0B8h
-                db       54h, 02h, 50h, 0Eh,0B8h, 66h
-                db       02h, 50h,0B8h, 06h, 00h
-                db      50h
-                db      0BBh, 06h, 00h,0B4h, 00h,0B0h
-                db       00h,0FFh, 1Eh,0F0h, 01h, 83h
-                db      0C4h, 0Ah, 5Bh,0B8h,0FFh,0FFh
-                db      0CBh
+init_fn:
+                push    ax
+                push    bx
+                mov     ax,seg_c
+                mov     ds,ax
+                mov     ax,07A20h
+                mov     bx,2
+                int     2Fh
+                mov     word ptr [vlm_multiplex_ptr],bx
+                mov     word ptr [vlm_multiplex_ptr+2],es
+                mov     bx,0
+                mov     dx,20h
+                call    dword ptr vlm_multiplex_ptr
+                pop     bx
+                ; cmp     ax,0h
+                db      3Dh, 0h, 0h
+                pop     ax
+                jz      loc_87
+
+                push    ax
+                push    bx
+                push    cx
+                push    si
+                push    ds
+                mov     ah,2
+                mov     al,0
+                mov     bx,6
+                mov     cx,5
+                mov     si,254h
+                push    cs
+                pop     ds
+                call    dword ptr cs:vlm_multiplex_ptr
+                pop     ds
+                pop     si
+                pop     cx
+                pop     bx
+                pop     ax
+
+                push    bx
+                push    cs
+                mov     ax,266h
+                push    ax
+                push    cs
+                mov     ax,254h
+                push    ax
+                push    cs
+                mov     ax,266h
+                push    ax
+                mov     ax,5
+                push    ax
+                mov     bx,6
+                mov     ah,0
+                mov     al,0
+                call    dword ptr vlm_multiplex_ptr
+                add     sp,0eh
+                pop     bx
+
+                push    bx
+                push    cs
+                mov     ax,254h
+                push    ax
+                push    cs
+                mov     ax,266h
+                push    ax
+                mov     ax,6
+                push    ax
+                mov     bx,6
+                mov     ah,0
+                mov     al,0
+                call    dword ptr vlm_multiplex_ptr
+                add     sp,0ah
+                pop     bx
+                mov     ax,0ffffh
+                retf
+
 loc_87::
                 or      ax,ax
                 jz      loc_88
                 jmp     loc_93
+
 loc_88::
                 push    bx
                 mov     ax,7A20h
@@ -1690,7 +1790,7 @@ loc_89::
                 mov     bx,6
                 mov     ah,1
                 mov     al,2
-                call    dword ptr data_68
+                call    dword ptr vlm_multiplex_ptr
                 add     sp,4
                 pop     bx
                 call    sub_22
@@ -1761,27 +1861,31 @@ sub_22          proc    near
                 mov     ax,7A20h
                 mov     bx,3
                 int     2Fh                     ; ??INT Non-standard interrupt
-                mov     data_73,bx
-                mov     word ptr data_73+2,es
+                mov     vlm_parse_ptr,bx
+                mov     word ptr vlm_parse_ptr+2,es
                 mov     cx,2
                 mov     si,22Eh
                 mov     di,23Eh
                 push    ds
                 pop     es
-                call    dword ptr data_73
+                call    dword ptr vlm_parse_ptr
+
                 mov     ax,seg_b
                 mov     es,ax
                 mov     ds,ax
-                mov     di,offset data_64
+                mov     di,offset pref_server
                 cmp     byte ptr [di],0
                 je      loc_94
+
+                ; determine length of preferred server string
                 mov     cx,2Fh
                 xor     al,al
                 repne   scasb
                 neg     cx
                 add     cx,2Eh
                 assume  ds:seg_b
-                mov     data_63,cx
+                mov     pref_server_len,cx
+
 loc_94::
                 pop     es
                 pop     ds
@@ -1815,23 +1919,20 @@ copyright       db      'CoPyRiGhT=(C) Copyright 1993 - 1'
                 db      '996 Novell, Inc.'
                 db      '  All Rights Reserved.'
                 db      14 dup (0)
-data_68         dw      0, 0
+vlm_multiplex_ptr dw      0, 0
 vlm_call_ptr2   dw      0, 0
 data_72         dw      0
-data_73         dw      0, 0
-                db      'PREFERRED SERVER'
-                db       00h, 8Eh, 01h
-                dw      seg_b
+vlm_parse_ptr   dw      0, 0
+                db      'PREFERRED SERVER',0
+                dw      offset pref_server, seg_b
                 db       01h, 00h, 2Fh, 00h
-                db      'BIND RECONNECT'
-                db       00h,0E8h, 0Ah
-                dw      seg_a
+                db      'BIND RECONNECT', 0
+                dw      offset data_0ae8, seg_a
                 db       00h, 00h,0FFh,0FFh,0FEh, 01h
                 db       11h, 01h, 06h, 00h, 0Fh, 02h
                 db       17h, 02h, 0Fh, 00h, 04h, 00h
                 db       26h, 02h
-                db      4Eh
-                db      'ETWARE DOS REQUESTER', 0
+                db      'NETWARE DOS REQUESTER', 0
                 db      'BIND', 0
                 db      'DOSRQSTR.MSG', 0
                 db      'TRAN', 0
@@ -1839,13 +1940,12 @@ data_73         dw      0, 0
                 db      'BIND.VLM     - NetWare bindery p'
                 db      'rotocol module  v1.21 (960514)', 0Dh
                 db      0Ah, 0
-data_76         db      0E2h
-                db       00h,0EEh, 00h, 21h, 01h, 27h
-                db       01h, 06h, 01h, 12h, 01h, 18h
-                db       01h, 21h, 01h, 27h, 01h, 3Eh
-                db       01h, 44h, 01h, 4Ah, 01h, 50h
-                db       01h, 7Ch, 01h, 88h, 01h, 5Eh
-                db       01h, 6Ah, 01h
+; relocation entries
+data_76         dw       0E2h, 0EEh, 121h, 127h
+                dw       106h, 112h, 118h, 121h
+                dw       127h, 13Eh, 144h, 14Ah
+                dw       150h, 17Ch, 188h, 15Eh
+                dw      16Ah
 data_77         dw      11h
 
 bind            endp

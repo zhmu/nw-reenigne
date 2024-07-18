@@ -39,6 +39,13 @@ data_336        equ     64Ah                    ; XXX manually added
 data_337        equ     64Bh                    ; XXX manually added
 
 include  common.inc
+include  conn.inc
+include  exe.inc
+include  general.inc
+include  print.inc
+include  nwp.inc
+include  ipxncp.inc
+include  redir.inc
 
 ;------------------------------------------------------------  seg_a   ----
 
@@ -63,7 +70,7 @@ seg_a           segment byte public
                 push    bp
                 mov     bp,VLMID_EXE
                 push    bp
-                mov     bp,4
+                mov     bp,EXE_FUNC_04
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
@@ -73,216 +80,202 @@ seg_a           segment byte public
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_3           proc    near
+vcall_general_8h proc    near
                 push    bp
                 mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,VLMID_GENERAL
                 push    bp
-                mov     bp,8
+                mov     bp,GENERAL_FUNC_08
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
-sub_3           endp
+vcall_general_8h endp
 
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_4           proc    near
+vcall_conn_name2handle  proc    near
                 push    bp
                 mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,VLMID_CONN
                 push    bp
-                mov     bp,0Eh
+                mov     bp,CONN_FUNC_NAME2HANDLE
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
-sub_4           endp
+vcall_conn_name2handle  endp
 
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_5           proc    near
+vcall_conn_0Dh  proc    near
                 push    bp
                 mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,VLMID_CONN
                 push    bp
-                mov     bp,0Dh
+                mov     bp,CONN_FUNC_0D
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
-sub_5           endp
+vcall_conn_0Dh  endp
 
-
-;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
-;                              SUBROUTINE
-;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
-
-sub_6           proc    near
+vcall_print_0Ch proc    near
                 push    bp
                 mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,VLMID_PRINT
                 push    bp
-                mov     bp,0Ch
+                mov     bp,PRINT_FUNC_0C
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
-sub_6           endp
+vcall_print_0Ch endp
 
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_7           proc    near
+vcall_nwp_4     proc    near
                 push    bp
                 mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,VLMID_NWP
                 push    bp
-                mov     bp,0Ah
+                mov     bp,NWP_FUNC_0A
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
-sub_7           endp
+vcall_nwp_4     endp
 
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_8           proc    near
+vcall_nwp_5     proc    near
                 push    bp
                 mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,VLMID_NWP
                 push    bp
-                mov     bp,5
+                mov     bp,NWP_FUNC_05
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
-sub_8           endp
+vcall_nwp_5     endp
 
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_9           proc    near
+vcall_nwp_9     proc    near
                 push    bp
                 mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,VLMID_NWP
                 push    bp
-                mov     bp,9
+                mov     bp,NWP_FUNC_09
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
-sub_9           endp
+vcall_nwp_9     endp
 
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_10          proc    near
+vcall_print_4   proc    near
                 push    bp
                 mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,VLMID_PRINT
                 push    bp
-                mov     bp,4
+                mov     bp,PRINT_FUNC_04
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
-sub_10          endp
+vcall_print_4   endp
 
 
-;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
-;                              SUBROUTINE
-;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
-
-sub_11          proc    near
+vcall_print_8   proc    near
                 push    bp
                 mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,VLMID_PRINT
                 push    bp
-                mov     bp,8
+                mov     bp,PRINT_FUNC_08
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
-sub_11          endp
+vcall_print_8   endp
 
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_12          proc    near
+vcall_ipxncp_6  proc    near
                 push    bp
                 mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,VLMID_IPXNCP
                 push    bp
-                mov     bp,6
+                mov     bp,IPXNCP_FUNC_06
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
-sub_12          endp
+vcall_ipxncp_6  endp
 
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_13          proc    near
+vcall_redir_8   proc    near
                 push    bp
                 mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,VLMID_REDIR
                 push    bp
-                mov     bp,8
+                mov     bp,REDIR_FUNC_08
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
-sub_13          endp
+vcall_redir_8   endp
 
-
-;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
-;                              SUBROUTINE
-;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
-
-sub_14          proc    near
+vcall_redir_5   proc    near
                 push    bp
                 mov     bp,VLMID_NETX
                 push    bp
                 mov     bp,VLMID_REDIR
                 push    bp
-                mov     bp,5
+                mov     bp,REDIR_FUNC_05
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
                 retn
-sub_14          endp
+vcall_redir_5   endp
 
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
@@ -299,19 +292,19 @@ sub_15          proc    near
 sub_15          endp
 
 data_38         dw      offset loc_6            ; Data table (indexed access)
-data_39         dw      offset loc_7
-data_40         dw      offset loc_19
-data_41         dw      offset loc_22
-data_42         dw      offset loc_28
-data_43         dw      offset loc_29
-data_44         dw      offset loc_34
-data_45         dw      offset loc_41
-data_46         dw      offset loc_47
-data_47         dw      offset loc_49
-data_48         dw      offset loc_50
-data_49         dw      offset loc_45
-data_50         dw      offset loc_45
-data_51         dw      offset loc_66
+                dw      offset loc_7
+                dw      offset loc_19
+                dw      offset loc_22
+                dw      offset loc_28
+                dw      offset loc_29
+                dw      offset loc_34
+                dw      offset loc_41
+                dw      offset loc_47
+                dw      offset loc_49
+                dw      offset loc_50
+                dw      offset loc_45
+                dw      offset loc_45
+                dw      offset loc_66
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
 ;                              SUBROUTINE
@@ -841,7 +834,7 @@ loc_58::
                 mov     bx,1
                 mov     dx,[bp-6]
                 mov     al,16h
-                call    sub_12
+                call    vcall_ipxncp_6
                 mov     cs:data_175,ax
                 pop     word ptr [bp-2]
                 jz      loc_59
@@ -1072,7 +1065,7 @@ loc_77::
                 push    bx
                 call    sub_26
                 pop     ax
-                call    sub_3
+                call    vcall_general_8h
                 pop     ax
                 jmp     short loc_77
 loc_78::
@@ -1396,7 +1389,7 @@ loc_94::
                 add     ax,di
                 mov     di,124h
                 add     di,ax
-                call    sub_5
+                call    vcall_conn_0Dh
                 xor     al,al
                 retn
 sub_27          endp
@@ -1687,7 +1680,7 @@ loc_115::
                 je      loc_116
                 push    dx
                 mov     dl,1
-                call    sub_8
+                call    vcall_nwp_5
                 pop     dx
 loc_116::
                 inc     si
@@ -1695,7 +1688,7 @@ loc_116::
                 dec     dx
                 jnz     loc_115
                 mov     cx,di
-                call    sub_9
+                call    vcall_nwp_9
                 push    bp
                 mov     bp,VLMID_NETX
                 push    bp
@@ -1727,7 +1720,7 @@ sub_31          proc    near
                 push    es
                 call    sub_29
                 pop     es
-                call    sub_5
+                call    vcall_conn_0Dh
                 jnz     loc_120
                 add     di,bx
                 mov     al,5Ch                  ; '\'
@@ -1848,7 +1841,7 @@ sub_33          proc    near
                 mov     ax,16h
                 mov     bx,1
                 mov     dx,bx
-                call    sub_12
+                call    vcall_ipxncp_6
                 pop     di
                 retn
 sub_33          endp
@@ -2393,7 +2386,7 @@ sub_38          endp
                 mov     cx,data_235
                 pop     bx
                 call    sub_48
-                call    sub_12
+                call    vcall_ipxncp_6
                 pop     si
                 pop     di
                 pop     dx
@@ -2608,7 +2601,7 @@ loc_177::
                 mov     ax,16h
                 mov     bx,1
                 mov     dx,bx
-                call    sub_12
+                call    vcall_ipxncp_6
                 pop     es
                 pop     ds
                 pop     si
@@ -2957,7 +2950,7 @@ loc_205::
                 stosb
                 dec     di
                 mov     bx,0
-                call    sub_13
+                call    vcall_redir_8
                 mov     cx,100h
                 repne   scasb
                 mov     word ptr es:[di-1],5C00h
@@ -2993,7 +2986,7 @@ loc_209::
                 push    bx
                 xor     ax,ax
                 mov     bx,5
-                call    sub_13
+                call    vcall_redir_8
                 pop     bx
                 push    cx
                 xor     cx,cx
@@ -3003,7 +2996,7 @@ loc_209::
 loc_210::
                 mov     ax,1
                 mov     bx,5
-                call    sub_13
+                call    vcall_redir_8
                 pop     cx
                 mov     [bp+2],cl
                 jmp     loc_270
@@ -3014,7 +3007,7 @@ loc_211::
                 push    ss
                 pop     es
                 mov     di,65Ch
-                call    sub_14
+                call    vcall_redir_5
                 or      ax,ax
                 jnz     loc_212
                 push    ax
@@ -3169,7 +3162,7 @@ loc_224::
                 xor     dh,dh
                 mov     bx,1
                 mov     byte ptr [bp+1],0
-                call    sub_11
+                call    vcall_print_8
                 jz      loc_225
                 xor     ax,ax
                 jmp     short loc_228
@@ -3180,7 +3173,7 @@ loc_225::
                 mov     ax,4
                 mov     bx,3
                 mov     cx,2
-                call    sub_10
+                call    vcall_print_4
                 jnz     loc_230
                 mov     cx,word ptr es:[65Ch]
                 mov     al,0FFh
@@ -3273,7 +3266,7 @@ loc_238::
                 mul     dl
                 add     si,ax
                 xor     cx,cx
-                call    sub_4
+                call    vcall_conn_name2handle
                 pop     dx
                 pop     si
                 jz      loc_239
@@ -3333,7 +3326,7 @@ loc_242::
                 call    sub_24
                 mov     cx,bx
                 mov     dl,1
-                call    sub_8
+                call    vcall_nwp_5
                 jmp     short loc_245
 loc_243::
                 dec     ax
@@ -3362,7 +3355,7 @@ loc_243::
                 adc     dx,1
                 inc     al
 loc_244::
-                call    sub_9
+                call    vcall_nwp_9
                 or      dx,dx
                 jnz     loc_246
 loc_245::
@@ -3397,7 +3390,7 @@ loc_248::
                 call    sub_48
                 mov     cs:data_175,ax
 loc_249::
-                call    sub_12
+                call    vcall_ipxncp_6
                 mov     bx,ax
                 lahf
                 cmp     bx,8805h
@@ -3672,7 +3665,7 @@ loc_266::
                 push    ss
                 pop     es
                 mov     di,65Ch
-                call    sub_14
+                call    vcall_redir_5
                 or      ax,ax
                 jnz     loc_ret_267
                 mov     bl,1
@@ -4025,14 +4018,14 @@ loc_289::
                 mov     cx,2
                 mov     ax,4
                 push    dx
-                call    sub_10
+                call    vcall_print_4
                 pop     dx
                 jnz     loc_292
                 mov     si,es:[di]
                 mov     bx,1
                 mov     cx,[bp+4]
                 xor     ax,ax
-                call    sub_10
+                call    vcall_print_4
                 cmp     cx,16h
                 jbe     loc_290
                 mov     ax,es:[di+16h]
@@ -4114,7 +4107,7 @@ loc_297::
                 mov     cx,2
                 mov     bx,2
                 push    dx
-                call    sub_10
+                call    vcall_print_4
                 pop     dx
                 jnz     loc_300
 loc_298::
@@ -4139,7 +4132,7 @@ loc_298::
 loc_299::
                 mov     bx,0
                 xor     ax,ax
-                call    sub_10
+                call    vcall_print_4
                 jnz     loc_300
                 xor     al,al
 loc_300::
@@ -4191,7 +4184,7 @@ loc_306::
                 push    es
                 call    sub_29
                 pop     es
-                call    sub_7
+                call    vcall_nwp_4
                 push    es
                 pop     ds
                 pop     dx
@@ -4202,7 +4195,7 @@ loc_306::
                 mov     bx,2
                 mov     cx,41h
                 mov     ax,6
-                call    sub_10
+                call    vcall_print_4
                 pop     dx
                 pop     cx
                 mov     bx,[bp+2]
@@ -4212,7 +4205,7 @@ loc_306::
                 mov     cx,4
                 mov     ax,39h
                 mov     di,4E57h
-                call    sub_10
+                call    vcall_print_4
                 jmp     loc_271
 
 ;ƒƒƒƒƒ Indexed Entry Point ƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒ
@@ -4231,7 +4224,7 @@ loc_308::
                 mov     cx,2
                 push    dx
                 mov     di,4E57h
-                call    sub_10
+                call    vcall_print_4
                 pop     dx
                 mov     ax,[bp+8]
                 mov     [si],ax
@@ -4243,7 +4236,7 @@ loc_308::
                 mov     bx,2
                 mov     cx,6
                 mov     di,4E57h
-                call    sub_10
+                call    vcall_print_4
                 jmp     loc_271
 
 ;ƒƒƒƒƒ Indexed Entry Point ƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒ
@@ -4251,7 +4244,7 @@ loc_308::
 loc_309::
                 mov     di,[bp+2]
                 mov     bx,1
-                call    sub_6
+                call    vcall_print_0Ch
                 jmp     loc_271
 
 ;ƒƒƒƒƒ Indexed Entry Point ƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒ
@@ -4261,7 +4254,7 @@ loc_310::
                 pop     ds
                 mov     si,[bp+2]
                 mov     bx,0
-                call    sub_6
+                call    vcall_print_0Ch
                 jmp     loc_271
                                                 ;* No entry point to code
                 push    ss
@@ -4275,7 +4268,7 @@ loc_310::
                 mov     cx,2
                 mov     di,4E57h
                 push    dx
-                call    sub_10
+                call    vcall_print_4
                 pop     dx
                 jmp     short loc_308
 
@@ -4290,7 +4283,7 @@ loc_311::
                 mov     ax,3Dh
                 mov     bx,1
                 mov     cx,6
-                call    sub_10
+                call    vcall_print_4
                 mov     ax,es:[di]
                 mov     dx,es:[di+4]
                 mov     [bp+6],dx
@@ -4511,7 +4504,7 @@ loc_322::
                 mov     di,652h
                 push    ss
                 pop     es
-                call    sub_12
+                call    vcall_ipxncp_6
                 jmp     loc_270
                                                 ;* No entry point to code
                 xor     bx,bx
@@ -4600,7 +4593,7 @@ sub_52          endp
                 ja      loc_ret_325
                 xor     cx,cx
                 mov     bx,2
-                call    sub_7
+                call    vcall_nwp_4
                 mov     al,dl
                 mov     [bp],dl
 
@@ -4637,7 +4630,7 @@ loc_327::
                 mov     word ptr [di],0FFFFh
                 mov     word ptr [di+2],0FFFFh
                 push    dx
-                call    sub_11
+                call    vcall_print_8
                 pop     dx
                 jmp     short loc_339
 
@@ -4658,7 +4651,7 @@ loc_331::
                 call    sub_53
 loc_332::
                 mov     bx,2
-                call    sub_11
+                call    vcall_print_8
                 cmp     ax,884Ch
                 jne     loc_333
                 xor     al,al
@@ -4794,7 +4787,7 @@ loc_343::
                 mov     al,16h
                 mov     bx,1
                 mov     dx,1
-                call    sub_12
+                call    vcall_ipxncp_6
                 xor     bh,bh
                 mov     di,65Ch
                 add     di,4
@@ -4879,7 +4872,7 @@ loc_350::
                 mov     dx,1
                 mov     al,14h
                 mov     di,652h
-                call    sub_12
+                call    vcall_ipxncp_6
                 jmp     loc_270
                 db      8 dup (0)
 
@@ -4964,7 +4957,7 @@ loc_352::
                 pop     ax
                 mov     si,0ABDh
                 mov     word ptr [si+4],11h
-                call    sub_12
+                call    vcall_ipxncp_6
                 jmp     loc_270
                                                 ;* No entry point to code
                 mov     al,1Ch
@@ -5026,7 +5019,7 @@ loc_354::
                 push    ds
                 pop     es
                 mov     dx,1
-                call    sub_12
+                call    vcall_ipxncp_6
                 jnz     loc_355
                 mov     bx,word ptr ds:[65Ch]
                 mov     [bp+4],bx
@@ -5051,7 +5044,7 @@ loc_356::
                 ja      loc_358
                 mov     al,20h                  ; ' '
                 inc     dx
-                call    sub_12
+                call    vcall_ipxncp_6
                 jnz     loc_355
                 mov     bl,byte ptr ds:[661h]
                 xor     bh,bh
@@ -5066,7 +5059,7 @@ loc_357::
                 mov     word ptr ds:[661h],ax
 loc_358::
                 mov     al,20h                  ; ' '
-                call    sub_12
+                call    vcall_ipxncp_6
                 jmp     loc_270
                                                 ;* No entry point to code
                 cmp     al,2
@@ -5105,7 +5098,7 @@ loc_361::
                 mov     di,0AAAh
                 mov     bx,1
                 mov     dx,bx
-                call    sub_12
+                call    vcall_ipxncp_6
                 mov     ah,0
                 mov     bl,byte ptr ds:[65Ch]
                 cmp     bl,0
@@ -5216,7 +5209,7 @@ loc_371::
                 push    ss
                 pop     ds
                 xor     dx,dx
-                call    sub_12
+                call    vcall_ipxncp_6
                 jmp     loc_270
                                                 ;* No entry point to code
                 call    sub_56
@@ -5317,7 +5310,7 @@ loc_377::
                 mov     bx,2
                 xor     dx,dx
                 mov     si,0ABDh
-                call    sub_12
+                call    vcall_ipxncp_6
                 jmp     loc_270
                                                 ;* No entry point to code
                 mov     byte ptr ss:[0ABCh],5

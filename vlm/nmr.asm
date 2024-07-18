@@ -18,6 +18,7 @@ data_175e       equ     0Ah
 data_176e       equ     0E6F7h
 
 include common.inc
+include exe.inc
 
 ;------------------------------------------------------------  seg_a   ----
 
@@ -46,7 +47,7 @@ sub_2           proc    near
                 push    bp
                 mov     bp,VLMID_EXE
                 push    bp
-                mov     bp,4
+                mov     bp,EXE_FUNC_04
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp

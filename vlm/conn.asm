@@ -8,6 +8,9 @@ data_85e        equ     3Fh
 
 include common.inc
 include vlm.inc
+include nwp.inc
+include nds.inc
+include exe.inc
 
 ; conn table has 60h (96) byte entries 
 ; interrup.m, #02869
@@ -310,7 +313,7 @@ loc_22::        ; issue disconnect request to nwp.vlm
                 push    bp
                 mov     bp,VLMID_NWP
                 push    bp
-                mov     bp,5                    ; disconnect
+                mov     bp,NWP_FUNC_05          ; disconnect
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
@@ -377,7 +380,7 @@ free_handle           proc    far
                 push    bp
                 mov     bp,VLMID_EXE
                 push    bp
-                mov     bp,1
+                mov     bp,EXE_FUNC_01
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
@@ -479,7 +482,7 @@ loc_32::
                 push    bp
                 mov     bp,VLMID_NDS
                 push    bp
-                mov     bp,0Ch
+                mov     bp,NDS_FUNC_0C
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp
@@ -1715,7 +1718,7 @@ loc_127::
                 push    bp
                 mov     bp,VLMID_EXE
                 push    bp
-                mov     bp,1
+                mov     bp,EXE_FUNC_01
                 push    bp
                 call    dword ptr cs:vlm_call_ptr
                 pop     bp

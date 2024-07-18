@@ -13,11 +13,13 @@ VLM_STATUS_FUNC_INVALID_PARAM           equ     8836h
 VLM_STATUS_LOCAL_CONN_TAB_FULL          equ     883fh
 VLM_STATUS_ASYNC_WHILE_BUSY             equ     8846h
 VLM_STATUS_NO_RESPONDING_SERVERS        equ     8847h
+VLM_STATUS_NON_EXISTENT_VLM             equ     8848h
 VLM_STATUS_UNABLE_TO_UNLOAD             equ     884Eh
 VLM_STATUS_CONN_ALREADY_IN_USE          equ     884Fh
 VLM_STATUS_TOO_MANY_REPLY_FRAGS         equ     8850h
 VLM_STATUS_NAME_TABLE_FULL              equ     8851h
 VLM_STATUS_SOCKET_NOT_OPEN              equ     8852h
+VLM_STATUS_MEMMGT_ERROR                 equ     8853h
 VLM_STATUS_SFT_III_SWITCH               equ     8854h
 VLM_STATUS_PREF_SERVER_NOT_FOUND	equ	8855h
 VLM_STATUS_8859                         equ     8859h
