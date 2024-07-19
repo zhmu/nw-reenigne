@@ -1,18 +1,14 @@
 ; The following equates show data references outside the range of the program.
 
-data_1e         equ     0Ah
+data_109e       equ     16h                     ;*
 data_2e         equ     24h
 data_3e         equ     28h
-data_4e         equ     2Ah
 data_5e         equ     2Ch
-data_6e         equ     2Eh
 data_7e         equ     4Ch
 data_8e         equ     4Eh
 data_9e         equ     80h
 data_10e        equ     0BCh
 data_11e        equ     0BEh
-data_12e        equ     2A2h
-data_14e        equ     2B1h
 data_15e        equ     2B3h
 data_16e        equ     3C4h
 data_17e        equ     3C6h
@@ -26,87 +22,7 @@ data_24e        equ     0                       ;*
 data_25e        equ     1                       ;*
 data_26e        equ     3                       ;*
 data_27e        equ     2D55h                   ;*
-data_28e        equ     36Ah                    ;*
-data_29e        equ     36Eh                    ;*
-data_30e        equ     372h                    ;*
-data_31e        equ     376h                    ;*
-data_32e        equ     37Ah                    ;*
-data_33e        equ     37Eh                    ;*
-data_34e        equ     382h                    ;*
-data_35e        equ     386h                    ;*
-data_36e        equ     38Ah                    ;*
-data_37e        equ     38Eh                    ;*
-data_38e        equ     392h                    ;*
-data_39e        equ     396h                    ;*
-data_40e        equ     39Ah                    ;*
-data_41e        equ     39Eh                    ;*
-data_42e        equ     3A2h                    ;*
-data_43e        equ     3A6h                    ;*
-data_44e        equ     3AAh                    ;*
-data_45e        equ     3AEh                    ;*
-data_46e        equ     3B2h                    ;*
 data_47e        equ     0                       ;*
-data_48e        equ     1F22h                   ;*
-data_49e        equ     1F26h                   ;*
-data_50e        equ     1F2Ah                   ;*
-data_51e        equ     1F2Eh                   ;*
-data_52e        equ     1F32h                   ;*
-data_53e        equ     1F36h                   ;*
-data_54e        equ     1F3Ah                   ;*
-data_55e        equ     1F3Eh                   ;*
-data_56e        equ     1F42h                   ;*
-data_57e        equ     1F46h                   ;*
-data_58e        equ     1F4Ah                   ;*
-data_59e        equ     1F4Eh                   ;*
-data_60e        equ     1F52h                   ;*
-data_61e        equ     1F56h                   ;*
-data_62e        equ     1F5Ah                   ;*
-data_63e        equ     1F5Eh                   ;*
-data_64e        equ     1F62h                   ;*
-data_65e        equ     1F66h                   ;*
-data_66e        equ     1F6Ah                   ;*
-data_67e        equ     1F6Eh                   ;*
-data_68e        equ     1F72h                   ;*
-data_69e        equ     1F76h                   ;*
-data_70e        equ     1F7Ah                   ;*
-data_71e        equ     1F7Eh                   ;*
-data_72e        equ     1F82h                   ;*
-data_73e        equ     1F86h                   ;*
-data_74e        equ     1F8Ah                   ;*
-data_75e        equ     1F8Eh                   ;*
-data_76e        equ     1F92h                   ;*
-data_77e        equ     1F96h                   ;*
-data_78e        equ     1F9Ah                   ;*
-data_79e        equ     1F9Eh                   ;*
-data_80e        equ     1FA2h                   ;*
-data_81e        equ     1FA6h                   ;*
-data_82e        equ     1FAAh                   ;*
-data_83e        equ     1FAEh                   ;*
-data_84e        equ     1FB2h                   ;*
-data_85e        equ     1FB6h                   ;*
-data_86e        equ     1FBAh                   ;*
-data_87e        equ     1FBEh                   ;*
-data_88e        equ     1FC2h                   ;*
-data_89e        equ     1FC6h                   ;*
-data_90e        equ     1FCAh                   ;*
-data_91e        equ     1FCEh                   ;*
-data_92e        equ     1FD2h                   ;*
-data_93e        equ     1FD6h                   ;*
-data_94e        equ     1FDAh                   ;*
-data_95e        equ     1FDEh                   ;*
-data_96e        equ     1FE2h                   ;*
-data_97e        equ     1FE6h                   ;*
-data_98e        equ     1FEAh                   ;*
-data_99e        equ     1FEEh                   ;*
-data_100e       equ     1FF2h                   ;*
-data_101e       equ     1FF6h                   ;*
-data_102e       equ     1FFAh                   ;*
-data_103e       equ     1FFEh                   ;*
-data_104e       equ     2002h                   ;*
-data_105e       equ     2006h                   ;*
-data_106e       equ     200Ah                   ;*
-data_107e       equ     200Eh                   ;*
-data_109e       equ     16h                     ;*
 data_110e       equ     2Eh                     ;*
 data_111e       equ     28h                     ;*
 data_112e       equ     2Ah                     ;*
@@ -145,6 +61,24 @@ include         nwp.inc
 include         trans.inc
 include         general.inc
 
+MEMTYPE_CONV    equ     1
+MEMTYPE_EMS     equ     2
+MEMTYPE_XMS     equ     4
+
+EMS_FN_GET_NUM_PAGES            equ     42h
+EMS_FN_ALLOC_MEMORY             equ     43h
+EMS_FN_FREE_MEMORY              equ     45h
+EMS_FN_GET_VERSION              equ     46h
+EMS_FN_REALLOC_PAGES            equ     51h
+EMS_FN_SET_HANDLE_NAME          equ     5301h
+EMS_FN_MOVE_MEMORY              equ     5700h
+
+XMS_FN_GET_VERSION              equ     0
+XMS_FN_QUERY_AVAILABLE          equ     8
+XMS_FN_FREE_MEMORY              equ     0ah
+XMS_FN_MOVE_MEMORY              equ     0bh
+XMS_FN_RELEASE_UMB              equ     11h
+
 callf           macro   loc
                 ; push    cs
                 call    loc
@@ -155,47 +89,42 @@ endm
 seg_a           segment byte public
                 assume cs:seg_a  , ds:seg_a
 
-data_132        dw      0
-                dw      seg_a ; 954Bh
-                db      16h
-                db      0Ch
-                dw      seg_a ; 954Bh
-                db      0A9h                ; 8
-                db      0Ch
-                dw      seg_a
-                db      0E6h, 0Dh
-                dw      seg_a
-                db       41h, 0Eh
-                dw      seg_a
-                db       00h, 00h, 00h, 00h, 4Eh, 56h
-                db       4Ch, 4Dh, 01h, 00h
-data_137        dw      80h
-data_138        dw      0
-data_139        dw      0
-data_140        dw      1300h
-data_141        dw      0
-data_142        db      0FFh
-data_143        db      0
-data_144        db      0, 0
-data_145        dw      0
-data_146        dw      0
-data_147        dw      0
-data_148        dw      0
-data_149        dw      30h
-data_150        dw      seg_a
-data_151        db      0, 0
-data_152        dw      0
-data_153        dd      00000h
-data_155        dw      3Ch
-data_156        dw      seg_a
-data_157        db      0, 0
-data_158        dw      0
-data_159        dw      0
-data_160        dw      0
-                db      0
-data_161        db      0
-data_162        db      0
-                db      79 dup (0)
+data_132        dw      0, seg_a
+                dw      offset loc_0c16, seg_a                  ; vlm notify
+                dw      offset loc_0ca9, seg_a
+                dw      offset vlm_statistics, seg_a            ; vlm statistics
+                dw      offset vlm_internal_func, seg_a
+                dw      0, 0
+                db      "NVLM"
+                dw      VLMID_EXE
+
+; interrupt.m, #02865
+vlm_stats       dw      80h                                     ; 00 - size of statistics records
+vlm_num_mapped  dw      0                                       ; 02 - number of times a vlm has been mapped in memory
+vlm_num_calls   dw      0                                       ; 04 - number of times a valm has been called
+vlm_vcb_offset  dw      1300h                                   ; 06 - offset of vcbArray buffer
+vlm_id_currently_mapped        dw      0                        ; 08 - id of vlm currently mapped
+vlm_memory_type db      0FFh                                    ; 0a - memory type
+vlm_num_loaded  db      0                                       ; 0b - number of loaded vlms
+vlm_mem_handle  dw      0                                       ; 0c - ems/xms handle, or 0
+vlm_swap_seg    dw      0                                       ; 0e - start segment for memory swap
+vlm_global_seg  dw      0                                       ; 10 - segment for global memory, or 0
+; 12 - 12 bytes for async calls queue structure
+data_147        dd      0                                       ; queue head
+                dw      30h, seg_a                              ; queue tail
+                dw      0                                       ; current queue size
+                dw      0                                       ; maximum queue size
+; 1eh - 12h bytes for sync calls queue structure
+data_153        dd      0                                       ; queue head
+                dw      3Ch, seg_a                              ; queue tail
+data_157        dw      0                                       ; current queue size
+                dw      0                                       ; maximum queue size
+vlm_reent_level dw      0                                       ; 2a - current re-entrance level
+mapout_count    dw      0                                       ; 2c - number of times ems/xms map-out performed
+                db      0                                       ; 2e - stack switch control
+switcher_loaded db      0                                       ; 2f - non-zero if switcher loaded
+conf_file_path  db      80 dup (0)                              ; 30 - path to config file
+                ; temporary stack, switched to by cs_enter
                 db      'SBSBSBSBSBSBSBSBSBSBSBSBSBSBSBSB'
                 db      'SBSBSBSBSBSBSBSBSBSBSBSBSBSBSBSB'
                 db      'SBSBSBSBSBSBSBSBSBSBSBSBSBSBSBSB'
@@ -214,10 +143,11 @@ data_162        db      0
                 db      'SBSBSBSBSBSBSBSBSBSBSBSBSBSBSBSB'
 cs_prev_sp      dw      0
 cs_prev_ss      dw      0
-data_166        dw      0, 0
+; interrupt.l, #02750
+xms_entry_ptr   dw      0, 0
 data_168        dw      0
 data_169        dw      0
-data_170        db      0FFh
+data_170        db      0FFh                    ; in-use flag of module moved to conventional memory
 data_171        db      0
 data_172        db      0
 current_vm_id   dw      0
@@ -235,8 +165,7 @@ data_184        dw      0, 0
 data_186        dw      offset sub_29, seg sub_29
 data_187        dw      0
 data_188        dw      0                       ; segment storage
-                db       2Fh, 07h
-                dw      seg_a
+                dw     72Fh, seg_a
                 db      8 dup (0)
                 db      0FFh,0FFh,0FFh,0FFh, 00h, 80h
                 db       00h, 00h, 00h, 00h
@@ -350,16 +279,17 @@ conn_get_field  proc    near
 conn_get_field  endp
 
                 db      0CBh,0CBh,0CBh
-data_206        dw      offset loc_15           ; Data table (indexed access)
-data_207        dw      offset loc_16
-data_208        dw      offset loc_17
-data_209        dw      offset loc_18
-data_210        dw      offset loc_20
-data_211        dw      offset loc_21
-data_212        dw      offset loc_22
-data_213        dw      offset loc_23
-data_214        dw      offset loc_23
-data_215        dw      offset loc_23
+
+int2f_vlm_funcs dw      offset int2f_7a20_00           ; Data table (indexed access)
+                dw      offset int2f_7a20_01
+                dw      offset int2f_7a20_02
+                dw      offset int2f_7a20_03
+                dw      offset int2f_7a20_04
+                dw      offset int2f_7a20_05
+                dw      offset int2f_7a20_06
+                dw      offset int2f_7a20_0789
+                dw      offset int2f_7a20_0789
+                dw      offset int2f_7a20_0789
 
 ;€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€
 ;
@@ -385,11 +315,11 @@ int_2Fh_entry   proc    far
 int_2Fh_entry   endp
 
 loc_2:          ; AX = 1606 -> DOSX EXIT BROADCAST
-                and     cs:data_161,7Fh
+                and     cs:switcher_loaded,7Fh
                 jmp     short loc_11
 
 loc_3:          ; AX=1605 -> DOSX INIT BROADCAST
-                or      cs:data_161,80h
+                or      cs:switcher_loaded,80h
                 jmp     short loc_11
 
 loc_4:          ; AX=4B01 -> DOS 5+ TASK SWITCHER: BUILD CALLOUT CHAIN
@@ -404,12 +334,13 @@ loc_4:          ; AX=4B01 -> DOS 5+ TASK SWITCHER: BUILD CALLOUT CHAIN
 loc_5:
                 cmp     ah,5
                 jne     loc_10
+
+                ; AH=05 -> CRITICAL ERROR HANDLER: EXPAND ERROR TO STRING
                 or      al,al
                 jnz     loc_6
                 mov     al,0FFh
                 iret
-loc_6:
-                cmp     al,1
+loc_6:          cmp     al,1
                 jne     loc_7
                 cmp     bl,58h                  ; 'X'
                 je      loc_8
@@ -427,7 +358,7 @@ loc_8:
                 clc
                 push    cs
                 pop     es
-                mov     di,2ECh
+                mov     di,2ECh                 ; es:di = error message
                 retf    2
 loc_9:
                 push    bp
@@ -442,40 +373,42 @@ loc_10:
                 je      loc_13
 loc_11:
                 jmp     dword ptr cs:data_132
-loc_12:
+loc_12:         ; AX=1125 -> NETWORK REDIRECTOR: REDIRECTED PRINTER MODE
                 call    sub_26
                 jmp     short loc_11
-loc_13:
+
+loc_13:         ; AX=7A20 -> VLM API
                 cmp     bx,0Ah
                 jae     loc_14
                 add     bx,bx
-                jmp     word ptr cs:data_206[bx]        ;*10 entries
-loc_14:
+                jmp     word ptr cs:int2f_vlm_funcs[bx]        ;*10 entries
+
+loc_14:         ; invalid subfunction, return es:bx = 0:0
                 xor     bx,bx
                 mov     es,bx
                 iret
 
 ;ƒƒƒƒƒ Indexed Entry Point ƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒ
 
-loc_15:
+int2f_7a20_00:  ; AX=7A20, BX=0 -> GET VLM CALL ADDRESS
                 mov     bx,0AA9h
                 jmp     short loc_24
 
 ;ƒƒƒƒƒ Indexed Entry Point ƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒ
 
-loc_16:
+int2f_7a20_01:  ; AX=7A20, BX=1 -> GET VLM CALLA ADDRESS
                 mov     bx,0F27h
                 jmp     short loc_24
 
 ;ƒƒƒƒƒ Indexed Entry Point ƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒ
 
-loc_17:
+int2f_7a20_02:; ; AX=7A20, BX=2 -> GET VLM MULTIPLEX ADDRESS
                 mov     bx,1138h
                 jmp     short loc_19
 
 ;ƒƒƒƒƒ Indexed Entry Point ƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒ
 
-loc_18:
+int2f_7a20_03:  ; AX=7A20, BX=3 -> GET VLM PARSE API ADDRESS
                 mov     bx,16FFh
 loc_19:
                 mov     es,cs:data_174
@@ -483,25 +416,25 @@ loc_19:
 
 ;ƒƒƒƒƒ Indexed Entry Point ƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒ
 
-loc_20:
+int2f_7a20_04:  ; AX=7A20, BX=4 -> GET VLM MULTICAST CALLOUT
                 mov     bx,2C6h
                 jmp     short loc_24
 
 ;ƒƒƒƒƒ Indexed Entry Point ƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒ
 
-loc_21:
+int2f_7a20_05:  ; AX=7A20, BX=5 -> GET VLM INT 24 ADDRESS
                 mov     bx,796h
                 jmp     short loc_24
 
 ;ƒƒƒƒƒ Indexed Entry Point ƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒ
 
-loc_22:
+int2f_7a20_06:  ; AX=7A20, BX=6 -> GET VLM ??? ENTRYPOINT
                 mov     bx,2BEh
                 jmp     short loc_24
 
 ;ƒƒƒƒƒ Indexed Entry Point ƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒ
 
-loc_23:
+int2f_7a20_0789:
                 shr     bx,1
                 jmp     dword ptr cs:data_132
 loc_24:
@@ -516,27 +449,34 @@ loc_25:
                                                 ;* No entry point to code
                 mov     bx,61Dh
                 jmp     short loc_24
-                db      0BBh, 1Ch, 06h,0EBh,0ECh
+
+                mov     bx,61Ch
+                jmp     short loc_24
 
 data_217        dw      offset loc_26           ; Data table (indexed access)
-data_218        dw      offset loc_28
-data_219        dw      offset loc_27
-data_220        dw      offset loc_31
-data_221        dw      offset loc_31
-data_222        dw      offset loc_32
-data_223        dw      offset loc_29
-data_224        dw      offset loc_30
-data_225        dw      083ch                   ;; TODO offset loc_37
-data_226        dw      172h
-                db      0CBh, 53h, 8Ah,0D8h, 32h,0FFh
-                db       03h,0DBh, 2Eh,0FFh,0A7h, 1Fh
-                db       07h
+                dw      offset loc_28
+                dw      offset loc_27
+                dw      offset loc_31
+                dw      offset loc_31
+                dw      offset loc_32
+                dw      offset loc_29
+                dw      offset loc_30
+
+                cmp     al,8
+                jc      loc_0734
+                retf
+loc_0734:
+                push    bx
+                mov     bl,al
+                xor     bh,bh
+                add     bx,bx
+                jmp     word ptr cs:data_217[bx]
 
 ;ƒƒƒƒƒ Indexed Entry Point ƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒ
 
 loc_26:
-                inc     cs:data_161
-                mov     al,cs:data_161
+                inc     cs:switcher_loaded
+                mov     al,cs:switcher_loaded
                 and     al,80h
                 jmp     short loc_33
 
@@ -573,9 +513,9 @@ loc_29:
 ;ƒƒƒƒƒ Indexed Entry Point ƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒ
 
 loc_30:
-                test    cs:data_161,7Fh
+                test    cs:switcher_loaded,7Fh
                 jz      loc_32
-                dec     cs:data_161
+                dec     cs:switcher_loaded
                 jmp     short loc_32
 
 ;ƒƒƒƒƒ Indexed Entry Point ƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒ
@@ -771,7 +711,7 @@ loc_43:
                 jne     loc_45
                 test    data_180,0FFh
                 jz      loc_45
-                test    data_161,80h
+                test    switcher_loaded,80h
                 jz      loc_45
                 cmp     word ptr data_178+2,0
                 je      loc_45
@@ -817,7 +757,7 @@ locloop_46:
                 loop    locloop_46
 
 loc_47:
-                mov     cs:data_159,cx
+                mov     cs:vlm_reent_level,cx
                 mov     ah,4Ch
                 int     21h                     ; DOS Services  ah=function 4Ch
                                                 ;  terminate with al=return code
@@ -917,7 +857,7 @@ locloop_51:
                 loop    locloop_51
 
 loc_52:
-                mov     data_159,cx
+                mov     vlm_reent_level,cx
                 mov     data_192,cx
                 xchg    data_193,cx
                 jcxz    loc_53
@@ -933,19 +873,19 @@ loc_ret_54:
 sub_26          endp
 
 
-;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
-;                              SUBROUTINE
-;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
-
+;
+; I wonder whether this moves a VLM to conventional memory... ?
+;
 sub_27          proc    far
                 inc     data_170
-                cmp     data_142,1
+                cmp     vlm_memory_type,MEMTYPE_CONV
                 jne     loc_56
 loc_55:
                 dec     data_170
                 clc
                 retf
-loc_56:
+
+loc_56:         ; memory type != conventional
                 cmp     word ptr [di+10h],0FFFFh
                 je      loc_55
                 push    bx
@@ -953,13 +893,15 @@ loc_56:
                 push    si
                 call    cs_enter
                 mov     ax,[di+2]
-                cmp     data_141,ax
+                cmp     vlm_id_currently_mapped,ax
                 je      loc_58
-                inc     data_138
+
+                ; current vlm not mapped, need to change
+                inc     vlm_num_mapped
                 inc     word ptr [di+6]
-                cmp     data_142,4
+                cmp     vlm_memory_type,MEMTYPE_XMS
                 jne     loc_60
-                call    sub_44
+                call    map_xms_vlm
                 or      ax,ax
                 jnz     loc_61
                 call    sub_42
@@ -967,7 +909,7 @@ loc_56:
                 jnz     loc_61
 loc_57:
                 mov     ax,[di+2]
-                mov     data_141,ax
+                mov     vlm_id_currently_mapped,ax
 loc_58:
                 clc
 loc_59:
@@ -991,9 +933,9 @@ loc_61:
                 jmp     short loc_59
 sub_27          endp
 
-
 ;
-; TODO I wonder whether this does a VLM call ...
+; PARAMETER_1 = function index to call
+; PARAMETER_2 = vlm id to call
 ;
 vlm_call          proc    far
 
@@ -1006,7 +948,7 @@ LOCAL_1         =       -2                      ; bp+0FFFEh
                 push    bp
                 mov     bp,sp
                 sub     sp,4
-                inc     cs:data_139
+                inc     cs:vlm_num_calls
                 push    ax
                 push    di
                 push    ds
@@ -1035,33 +977,37 @@ loc_64:
                 pop     bp
                 jmp     loc_76
 loc_65:
-                inc     cs:data_159
-                cmp     cs:data_142,1
+                inc     cs:vlm_reent_level
+                cmp     cs:vlm_memory_type,MEMTYPE_CONV
                 je      loc_69
+
+                ; memory type != conventional
                 push    bx
                 mov     bx,INT_ENTER_CS
                 callf   vlm_internal_func
                 pop     bx
                 inc     cs:data_170
                 jz      loc_66
+
+                ; already busy?
                 dec     cs:data_170
                 push    bx
                 mov     bx,INT_LEAVE_CS
                 callf   vlm_internal_func
                 pop     bx
-                dec     cs:data_159
-                mov     ax,8846h
+                dec     cs:vlm_reent_level
+                mov     ax,VLM_STATUS_ASYNC_WHILE_BUSY
                 jmp     short loc_64
 loc_66:
-                cmp     cs:data_159,1
+                cmp     cs:vlm_reent_level,1
                 je      loc_68
                 cmp     word ptr [bp+PARAMETER_3],0
                 jne     loc_68
-                push    cs:data_141
+                push    cs:vlm_id_currently_mapped
                 pop     word ptr [bp+PARAMETER_3]
                 jmp     short loc_68
 loc_67:
-                dec     cs:data_159
+                dec     cs:vlm_reent_level
                 dec     cs:data_170
                 mov     ax,VLM_STATUS_MEMMGT_ERROR
                 jmp     short loc_64
@@ -1074,9 +1020,9 @@ loc_69:
                 mov     ds,[di+0Ch]
                 mov     di,[bp+PARAMETER_1]
                 add     di,di
-                add     di,di
+                add     di,di                                   ; di = PARAMETER_1 * 4
                 mov     ax,[di]
-                mov     di,[di+2]
+                mov     di,[di+2]                               ; resolve pointer
                 mov     [bp+LOCAL_2],ax
                 mov     [bp+LOCAL_1],di
                 pop     ds
@@ -1086,7 +1032,7 @@ loc_69:
                 cld
                 nop
                 nop
-                call    dword ptr [bp+LOCAL_2]  ;*
+                call    dword ptr [bp+LOCAL_2]                  ; call VLM function
                 nop
                 nop
                 cld
@@ -1125,15 +1071,15 @@ loc_72:
                 jc      loc_73
                 callf   sub_27
 loc_73:
-                dec     data_159
-                cmp     data_142,1
+                dec     vlm_reent_level
+                cmp     vlm_memory_type,MEMTYPE_CONV
                 je      loc_74
                 push    bx
                 mov     bx,INT_LEAVE_CS
                 callf   vlm_internal_func
                 pop     bx
 loc_74:
-                cmp     data_159,0
+                cmp     vlm_reent_level,0
                 jne     loc_75
                 cmp     word ptr data_157,0
                 je      loc_75
@@ -1159,29 +1105,37 @@ loc_76:
 vlm_call        endp
 
                 db      90h
-data_227        dw      offset loc_77           ; Data table (indexed access)
-data_228        dw      offset loc_78
-data_229        dw      offset loc_78
-data_230        dw      offset loc_78
-data_231        dw      offset loc_78
-data_232        dw      offset loc_78
-data_233        dw      offset loc_78
-data_234        dw      offset loc_78
-data_235        dw      offset loc_78
-data_236        dw      offset loc_78
-data_237        dw      offset loc_78
-data_238        dw      offset loc_78
-data_239        dw      offset loc_78
-data_240        dw      offset loc_78
-                db       83h,0FBh, 0Eh, 72h, 04h,0B8h
-                db       11h, 88h,0CBh, 03h,0DBh, 2Eh
-                db      0FFh,0A7h,0FAh, 0Bh
+
+data_227        dw      offset vlm_exe_get_version           ; Data table (indexed access)
+                dw      offset loc_78
+                dw      offset loc_78
+                dw      offset loc_78
+                dw      offset loc_78
+                dw      offset loc_78
+                dw      offset loc_78
+                dw      offset loc_78
+                dw      offset loc_78
+                dw      offset loc_78
+                dw      offset loc_78
+                dw      offset loc_78
+                dw      offset loc_78
+                dw      offset loc_78
+
+loc_0c16:
+                cmp     bx,0eh
+                jc      loc_0c1f
+                mov     ax,STATUS_NONEXISTANT_FUNC_CALLED
+                retf
+
+loc_0c1f:
+                add     bx,bx
+                jmp     word ptr cs:data_227[bx]
 
 ;ƒƒƒƒƒ Indexed Entry Point ƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒ
 
-loc_77:
-                mov     bx,1
-                mov     cx,15h
+vlm_exe_get_version:
+                mov     bx,1                            ; vlm 1.21
+                mov     cx,21
                 xor     ax,ax
                 retf
 
@@ -1252,7 +1206,7 @@ sub_29          proc    far
                 retf
 sub_29          endp
 
-                                                ;* No entry point to code
+loc_0ca9:
                 push    cx
                 push    dx
                 push    si
@@ -1272,12 +1226,12 @@ loc_82:
                 mov     ax,884Eh
                 jmp     loc_94
 loc_83:
-                cmp     data_161,0
+                cmp     switcher_loaded,0
                 jne     loc_82
                 mov     cx,0FFFFh
 loc_84:
                 mov     si,data_175
-                mov     dl,data_143
+                mov     dl,vlm_num_loaded
                 xor     ax,ax
 loc_85:
                 or      dl,dl
@@ -1333,30 +1287,30 @@ loc_88:
                                                 ;  set intrpt vector al to ds:dx
                 push    cs
                 pop     ds
-                mov     dx,word ptr data_144
-                cmp     data_142,2
+                mov     dx,vlm_mem_handle
+                cmp     vlm_memory_type,MEMTYPE_EMS
                 jne     loc_90
                 or      dx,dx
                 jz      loc_93
-                mov     ah,45h                  ; 'E'
-                callf   sub_45
+                mov     ah,EMS_FN_FREE_MEMORY
+                callf   ems_call
                 jnc     loc_91
 loc_89:
                 xor     bx,bx
-                mov     ax,8853h
+                mov     ax,VLM_STATUS_MEMMGT_ERROR
                 jmp     short loc_94
 loc_90:
-                cmp     data_142,4
+                cmp     vlm_memory_type,MEMTYPE_XMS
                 jne     loc_92
-                mov     ah,0Ah
-                call    dword ptr data_166
+                mov     ah,XMS_FN_FREE_MEMORY
+                call    dword ptr xms_entry_ptr
                 or      ax,ax
                 jz      loc_89
 loc_91:
                 call    sub_30
                 jmp     short loc_93
 loc_92:
-                mov     es,data_145
+                mov     es,vlm_swap_seg
                 mov     ah,49h
                 int     21h                     ; DOS Services  ah=function 49h
                                                 ;  release memory block, es=seg
@@ -1377,15 +1331,15 @@ loc_94:
 
 sub_30          proc    near
                 push    dx
-                mov     dx,data_146
+                mov     dx,vlm_global_seg
                 or      dx,dx
                 jz      loc_95
-                call    sub_31
+                call    release_seg
 loc_95:
-                mov     dx,data_145
+                mov     dx,vlm_swap_seg
                 or      dx,dx
                 jz      loc_96
-                call    sub_31
+                call    release_seg
 loc_96:
                 pop     dx
                 retn
@@ -1396,11 +1350,11 @@ sub_30          endp
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_31          proc    near
-                test    word ptr data_166+2,0FFFFh
+release_seg     proc    near
+                test    word ptr xms_entry_ptr+2,0FFFFh
                 jz      loc_97
-                mov     ah,11h
-                call    dword ptr data_166
+                mov     ah,XMS_FN_RELEASE_UMB
+                call    dword ptr xms_entry_ptr
                 or      ax,ax
                 jnz     loc_ret_98
 loc_97:
@@ -1411,7 +1365,7 @@ loc_97:
 
 loc_ret_98:
                 retn
-sub_31          endp
+release_seg     endp
 
 loc_99:
                 push    ax
@@ -1435,9 +1389,11 @@ loc_100:
 loc_101:
                 pop     ax
                 jmp     short loc_94
-                                                ;* No entry point to code
+
+vlm_statistics:
                 cmp     cx,0FACEh
                 je      loc_110
+
                 push    cx
                 push    si
                 push    di
@@ -1446,11 +1402,11 @@ loc_101:
                 pop     ds
                 or      ax,ax
                 jnz     loc_103
-                cmp     data_137,cx
+                cmp     vlm_stats,cx
                 jae     loc_102
-                mov     cx,data_137
+                mov     cx,vlm_stats
 loc_102:
-                mov     si,offset data_137
+                mov     si,offset vlm_stats
                 rep     movsb
                 jmp     short loc_107
 loc_103:
@@ -1459,7 +1415,7 @@ loc_103:
                 mov     cx,23h
 loc_104:
                 dec     ax
-                mov     si,data_140
+                mov     si,vlm_vcb_offset
 loc_105:
                 cmp     word ptr [si],0
                 je      loc_109
@@ -1484,7 +1440,7 @@ loc_109:
 loc_110:
                 push    cs
                 pop     es
-                mov     di,1Eh
+                mov     di,1Eh                  ; returns es:di = ???
                 xor     ax,ax
                 retf
 
@@ -1526,14 +1482,14 @@ loc_112:
                 mov     cl,4
                 shr     bx,cl
                 add     ax,bx
-                mov     cx,data_145
-                cmp     data_142,1
+                mov     cx,vlm_swap_seg
+                cmp     vlm_memory_type,MEMTYPE_CONV
                 je      loc_113
-                mov     cx,data_146
+                mov     cx,vlm_global_seg
 loc_113:
                 cmp     ax,cx
                 jb      loc_114
-                mov     bx,data_140
+                mov     bx,vlm_vcb_offset
                 add     cx,[bx+0Eh]
                 cmp     ax,cx
                 ja      loc_114
@@ -1548,7 +1504,7 @@ loc_115:
 ;ƒƒƒƒƒ Indexed Entry Point ƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒ
 
 loc_116:
-                test    data_161,80h
+                test    switcher_loaded,80h
                 jz      loc_117
                 push    ax
                 mov     ax,1681h
@@ -1562,7 +1518,7 @@ loc_117:
 
 loc_118:
                 dec     data_172
-                test    data_161,80h
+                test    switcher_loaded,80h
                 jz      loc_115
                 push    ax
                 mov     ax,1682h
@@ -1713,7 +1669,7 @@ cs_enter        proc    near
                 mov     cs:cs_prev_ss,ss
                 mov     ax,seg_a
                 mov     ss,ax
-                mov     sp,29Eh
+                mov     sp,offset cs_prev_sp
 loc_126:
                 sti
                 jmp     bx                      ;*
@@ -1743,7 +1699,7 @@ cs_leave        endp
 find_vlm_by_id:
                 push    cs
                 pop     ds
-                mov     di,data_140
+                mov     di,vlm_vcb_offset
 loc_129:
                 cmp     word ptr [di],0
                 je      loc_132
@@ -1758,7 +1714,7 @@ loc_129:
                 mov     es,cx
                 mov     ds,cx
                 mov     di,data_176
-                mov     cl,data_143
+                mov     cl,vlm_num_loaded
                 inc     cl
                 xor     ch,ch
                 cld
@@ -1766,11 +1722,11 @@ loc_129:
                 pop     es
                 jnz     loc_131
                 neg     cl
-                add     cl,data_143
+                add     cl,vlm_num_loaded
                 xchg    di,ax
                 mov     al,23h                  ; '#'
                 mul     cl
-                add     ax,data_140
+                add     ax,vlm_vcb_offset
                 xchg    di,ax
                 pop     cx
 
@@ -1973,7 +1929,7 @@ LOCAL_1         =       -2                      ; bp+0FFFEh
                 mul     data_245
                 mov     [bp+LOCAL_8],ax
                 mov     [bp+LOCAL_7],dx
-                mov     ax,word ptr data_144
+                mov     ax,vlm_mem_handle
                 mov     [bp+LOCAL_6],ax
                 mov     ax,[di+10h]
                 mov     dx,[di+12h]
@@ -1999,9 +1955,9 @@ sub_42          endp
 sub_43          proc    near
                 push    ss
                 pop     ds
-                mov     ah,0Bh
+                mov     ah,XMS_FN_MOVE_MEMORY
                 mov     dx,bx
-                call    dword ptr cs:data_166
+                call    dword ptr cs:xms_entry_ptr
                 mov     bx,seg seg_a
                 mov     ds,bx
                 mov     bx,dx
@@ -2019,17 +1975,17 @@ sub_43          endp
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_44          proc    near
+map_xms_vlm     proc    near
                 xor     ax,ax
-                cmp     data_141,ax
+                cmp     vlm_id_currently_mapped,ax
                 je      loc_ret_141
                 push    bp
                 mov     bp,sp
                 sub     sp,10h
                 push    di
-                mov     ax,data_141
+                mov     ax,vlm_id_currently_mapped
                 call    find_vlm_by_id
-                inc     data_160
+                inc     mapout_count
                 mov     ax,[di+14h]
                 mul     data_245
                 mov     [bp-10h],ax
@@ -2039,7 +1995,7 @@ sub_44          proc    near
                 mov     [bp-0Ah],ax
                 mov     ax,[di+0Ch]
                 mov     [bp-8],ax
-                mov     ax,word ptr data_144
+                mov     ax,vlm_mem_handle
                 mov     [bp-6],ax
                 mov     ax,[di+10h]
                 mov     dx,[di+12h]
@@ -2048,13 +2004,13 @@ sub_44          proc    near
                 pop     di
                 lea     si,[bp-10h]
                 call    sub_43
-                mov     data_141,0
+                mov     vlm_id_currently_mapped,0
                 add     sp,10h
                 pop     bp
 
 loc_ret_141:
                 retn
-sub_44          endp
+map_xms_vlm     endp
 
 data_245        dw      10h
 
@@ -2062,18 +2018,17 @@ data_245        dw      10h
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_45          proc    far
-                int     67h                     ; EMS Memory        ah=func 45h
-                                                ;  release handle dx, & memory
+ems_call        proc    far
+                int     67h
                 or      ah,ah
                 jnz     loc_142
                 clc
                 retf
 loc_142:
                 stc
-                mov     ax,8853h
+                mov     ax,VLM_STATUS_MEMMGT_ERROR
                 retf
-sub_45          endp
+ems_call        endp
 
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
@@ -2113,7 +2068,7 @@ LOCAL_1         =       -2                      ; bp+0FFFEh
                 mov     [bp+9],ax
                 mov     ax,[di+10h]
                 mov     [bp+7],ax
-                mov     ax,word ptr data_144
+                mov     ax,vlm_mem_handle
                 mov     [bp+5],ax
                 mov     byte ptr [bp+PARAMETER_1],1
                 call    sub_47
@@ -2136,8 +2091,8 @@ sub_47          proc    near
                 mul     dx
                 mov     [si],ax
                 mov     [si+2],dx
-                mov     ax,5700h
-                callf   sub_45
+                mov     ax,EMS_FN_MOVE_MEMORY
+                callf   ems_call
                 jc      loc_143
                 xor     ax,ax
 loc_143:
@@ -2153,15 +2108,15 @@ sub_47          endp
 
 sub_48          proc    near
                 xor     ax,ax
-                cmp     data_141,ax
+                cmp     vlm_id_currently_mapped,ax
                 je      loc_ret_144
                 push    bp
                 mov     bp,sp
                 sub     sp,12h
                 push    di
-                mov     ax,data_141
+                mov     ax,vlm_id_currently_mapped
                 call    find_vlm_by_id
-                inc     data_160
+                inc     mapout_count
                 lea     bp,[bp-12h]
                 mov     ax,[di+0Ch]
                 mov     [bp+9],ax
@@ -2173,11 +2128,11 @@ sub_48          proc    near
                 mov     [bp+10h],ax
                 mov     ax,[di+10h]
                 mov     [bp+0Eh],ax
-                mov     ax,word ptr data_144
+                mov     ax,vlm_mem_handle
                 mov     [bp+0Ch],ax
                 mov     byte ptr [bp+0Bh],1
                 call    sub_47
-                mov     data_141,0
+                mov     vlm_id_currently_mapped,0
                 pop     di
                 add     sp,12h
                 pop     bp
@@ -2353,9 +2308,9 @@ loc_151:
                 push    ax                      ; PARAMETER_1
                 call    sub_96
                 add     sp,4
-                mov     ax,3
-                push    ax                      ; PARAMETER_1
-                call    sub_95
+                mov     ax,3                    ; "(C) Copyright ..."
+                push    ax
+                call    msg_show2
                 add     sp,2
                 mov     ax,45h
                 push    ax                      ; PARAMETER_3
@@ -2388,9 +2343,9 @@ loc_152:
                 push    cs
                 mov     ax,2BBFh
                 push    ax
-                mov     ax,47h
-                push    ax                      ; PARAMETER_1
-                call    sub_95
+                mov     ax,47h                  ; "WARNING: Message file ... incorrect ..."
+                push    ax
+                call    msg_show2
                 add     sp,6
 loc_153:
                 pop     ds
@@ -2403,7 +2358,7 @@ loc_153:
                 mov     cl,al
                 xor     ch,ch
                 jcxz    loc_154
-                call    sub_52
+                call    parse_cmd_arg
 loc_154:
                 mov     ax,2
                 push    ax                      ; PARAMETER_4
@@ -2412,7 +2367,7 @@ loc_154:
                 push    ax                      ; PARAMETER_2
                 mov     ax,44h
                 push    ax                      ; PARAMETER_1
-                call    sub_93
+                call    msg_read
                 add     sp,8
                 push    cs
                 pop     ds
@@ -2422,16 +2377,16 @@ loc_154:
                 or      ax,ax
                 jnz     loc_155
                 mov     ax,4
-                push    ax                      ; PARAMETER_1
-                call    sub_95
+                push    ax                      ; "<beep>""
+                call    msg_show2
                 add     sp,2
                 mov     ax,8
-                push    ax                      ; PARAMETER_1
-                call    sub_94
+                push    ax                      ; "The VLM.EXE file is already loaded ..."
+                call    msg_show
                 add     sp,2
                 mov     ax,8
-                push    ax                      ; PARAMETER_1
-                call    sub_95
+                push    ax                      ; ^^
+                call    msg_show2
                 add     sp,2
                 mov     al,2
                 jmp     loc_177
@@ -2445,16 +2400,16 @@ loc_155:
                 or      ax,ax
                 jnz     loc_156
                 mov     ax,4
-                push    ax                      ; PARAMETER_1
-                call    sub_95
+                push    ax                      ; "<beep>"
+                call    msg_show2
                 add     sp,2
                 mov     ax,1Eh
-                push    ax                      ; PARAMETER_1
-                call    sub_94
+                push    ax                      ; "A task switcher has been detected [...]"
+                call    msg_show
                 add     sp,2
                 mov     ax,1Eh
-                push    ax                      ; PARAMETER_1
-                call    sub_95
+                push    ax                      ; ^^
+                call    msg_show2
                 add     sp,2
                 mov     al,0Ah
                 jmp     loc_177
@@ -2503,7 +2458,7 @@ loc_158:
                 mov     si,di
                 mov     di,seg seg_a
                 mov     es,di
-                mov     di,offset data_162
+                mov     di,offset conf_file_path
                 mov     cx,4Fh
                 rep     movsb
                 xor     al,al
@@ -2570,8 +2525,8 @@ loc_160:
                 pop     ax
                 call    sub_54
                 mov     ax,9
-                push    ax                      ; PARAMETER_1
-                call    sub_95
+                push    ax                      ; "The VLM.EXE is pre-initializing the VLMs."
+                call    msg_show2
                 add     sp,2
                 mov     si,offset data_364
                 mov     di,1323h
@@ -2636,8 +2591,8 @@ loc_166:
                 add     di,23h
                 pop     si
                 mov     ax,0Ah
-                push    ax                      ; PARAMETER_1
-                call    sub_95
+                push    ax                      ; "."
+                call    msg_show2
                 add     sp,2
                 jmp     loc_161
 loc_167:
@@ -2680,7 +2635,7 @@ loc_171:
                 call    sub_50
                 call    sub_55
                 call    sub_65
-                call    sub_62
+                call    ems_detect
                 jc      loc_173
                 mov     ax,data_320
                 add     ax,data_323
@@ -2699,14 +2654,14 @@ loc_172:
                 pop     dx
                 pop     cx
                 mov     data_314,ax
-                mov     ah,42h                  ; 'B'
-                callf   sub_45
+                mov     ah,EMS_FN_GET_NUM_PAGES
+                callf   ems_call
                 cmp     data_314,bx
                 ja      loc_173
                 mov     data_328,bx
                 or      byte ptr data_327,2
 loc_173:
-                call    sub_63
+                call    xms_detect
                 jc      loc_175
                 mov     ax,data_320
                 add     ax,data_323
@@ -2726,8 +2681,8 @@ loc_174:
                 pop     dx
                 pop     cx
                 mov     data_315,ax
-                mov     ah,8
-                call    dword ptr es:data_12e
+                mov     ah,XMS_FN_QUERY_AVAILABLE
+                call    dword ptr es:xms_entry_ptr
                 cmp     data_315,ax
                 ja      loc_175
                 mov     data_329,ax
@@ -2748,22 +2703,22 @@ loc_176:
                 test    byte ptr data_327,0FFh
                 jnz     loc_179
                 mov     ax,4
-                push    ax                      ; PARAMETER_1
-                call    sub_95
+                push    ax                      ; "<beep>"
+                call    msg_show2
                 add     sp,2
                 mov     ax,0Bh
-                push    ax                      ; PARAMETER_1
-                call    sub_94
+                push    ax                      ; "There is insufficient memory [...]"
+                call    msg_show
                 add     sp,2
                 mov     ax,0Bh
-                push    ax                      ; PARAMETER_1
-                call    sub_95
+                push    ax                      ; ^^
+                call    msg_show2
                 add     sp,2
                 mov     al,8
 loc_177:
                 push    ax
                 mov     ah,3Eh                  ; '>'
-                mov     bx,data_434
+                mov     bx,msg_file_handle
                 or      bx,bx
                 jz      loc_178
                 int     21h                     ; DOS Services  ah=function 3Eh
@@ -2785,16 +2740,16 @@ loc_180:
                 jmp     loc_188
 loc_181:
                 mov     ax,4
-                push    ax                      ; PARAMETER_1
-                call    sub_95
+                push    ax                      ; newline
+                call    msg_show2
                 add     sp,2
                 mov     ax,28h
-                push    ax                      ; PARAMETER_1
-                call    sub_94
+                push    ax                      ; "The VLM.EXE file cannot use conventional memory [...]"
+                call    msg_show
                 add     sp,2
                 mov     ax,28h
-                push    ax                      ; PARAMETER_1
-                call    sub_95
+                push    ax                      ; ^^
+                call    msg_show2
                 add     sp,2
                 jmp     short loc_184
 loc_182:
@@ -2803,16 +2758,16 @@ loc_182:
                 test    byte ptr data_327,4
                 jnz     loc_185
                 mov     ax,4
-                push    ax                      ; PARAMETER_1
-                call    sub_95
+                push    ax                      ; newline
+                call    msg_show2
                 add     sp,2
                 mov     ax,26h
-                push    ax                      ; PARAMETER_1
-                call    sub_94
+                push    ax                      ; "The VLM.EXE file cannot use XMS [...]"
+                call    msg_show
                 add     sp,2
                 mov     ax,26h
-                push    ax                      ; PARAMETER_1
-                call    sub_95
+                push    ax                      ; ^^
+                call    msg_show2
                 add     sp,2
                 jmp     short loc_184
 loc_183:
@@ -2820,15 +2775,15 @@ loc_183:
                 jnz     loc_187
                 mov     ax,4
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,2
                 mov     ax,24h
-                push    ax                      ; PARAMETER_1
-                call    sub_94
+                push    ax                      ; "The VLM.EXE file cannot use EMS [...]"
+                call    msg_show
                 add     sp,2
                 mov     ax,24h
-                push    ax                      ; PARAMETER_1
-                call    sub_95
+                push    ax                      ; ^^
+                call    msg_show2
                 add     sp,2
 loc_184:
                 test    byte ptr data_327,4
@@ -2836,8 +2791,8 @@ loc_184:
 loc_185:
                 call    sub_59
                 mov     ax,27h
-                push    ax                      ; PARAMETER_1
-                call    sub_95
+                push    ax                      ; "The VLM.EXE file is using XMS"
+                call    msg_show2
                 add     sp,2
                 jmp     short loc_189
 loc_186:
@@ -2846,8 +2801,8 @@ loc_186:
 loc_187:
                 call    sub_58
                 mov     ax,25h
-                push    ax                      ; PARAMETER_1
-                call    sub_95
+                push    ax                      ; ""he VLM.EXE file is using EMS"
+                call    msg_show2
                 add     sp,2
                 jmp     short loc_189
 loc_188:
@@ -2855,14 +2810,14 @@ loc_188:
                 mov     di,1186h
                 call    sub_61
                 mov     bx,data_313
-                add     bx,400h
+                add     bx,400h                 ; +16KB
                 mov     ah,48h
                 int     21h                     ; DOS Services  ah=function 48h
                                                 ;  allocate memory, bx=bytes/16
                 mov     word ptr es:[2Ch],ax
                 mov     ax,29h
-                push    ax                      ; PARAMETER_1
-                call    sub_95
+                push    ax                      ; "The VLM.EXE is using conventional memory"
+                call    msg_show2
                 add     sp,2
 loc_189:
                 call    sub_66
@@ -3076,7 +3031,7 @@ loc_201:
                 int     21h                     ; ??INT Non-standard interrupt
                 jnc     loc_204
 loc_202:
-                mov     cx,data_434
+                mov     cx,msg_file_handle
 loc_203:
                 mov     ah,3Eh                  ; '>'
                 mov     bx,cx
@@ -3095,6 +3050,7 @@ loc_204:
                 mov     cx,21h
                 rep     movsb
                 retf
+
 data_264        db      0B8h
                 dw      seg_a
                 db       8Eh,0C0h, 26h, 8Eh, 06h,0AFh
@@ -3130,17 +3086,17 @@ loc_207:
                 mov     si,[si-2]
                 mov     ax,4
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,2
                 mov     ax,2Eh
-                push    ax                      ; PARAMETER_1
-                call    sub_94
+                push    ax                      ; "A duplicate VLM ID was found [...]"
+                call    msg_show
                 add     sp,2
                 push    ds
                 push    si
                 mov     ax,2Eh
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,6
                 stc
                 retn
@@ -3158,7 +3114,7 @@ sub_49          endp
 sub_50          proc    near
                 mov     ax,seg_a
                 mov     es,ax
-                mov     bx,es:data_140
+                mov     bx,es:vlm_vcb_offset
                 mov     al,data_369
                 inc     al
                 mov     ah,25h                  ; '%'
@@ -3169,7 +3125,7 @@ sub_50          proc    near
                 shr     bx,cl
                 add     bx,11h
                 mov     data_330,bx
-                mov     di,es:data_140
+                mov     di,es:vlm_vcb_offset
                 mov     es:[di+14h],bx
                 push    es
                 mov     es,data_417
@@ -3214,7 +3170,7 @@ sub_51          endp
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_52          proc    near
+parse_cmd_arg   proc    near
 loc_209:
                 call    sub_53
                 cmp     al,3Eh                  ; '>'
@@ -3236,7 +3192,7 @@ loc_209:
                 cmp     al,56h                  ; 'V'
                 jne     loc_211
                 jmp     loc_227
-loc_210:
+loc_210:        ; /H and /?
                 call    sub_72
                 xor     ax,ax
                 jmp     short loc_212
@@ -3245,18 +3201,18 @@ loc_211:
                 mov     si,0Fh
                 mov     ax,4
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
+                add     sp,2
+                push    si                      ; "An invalid command line option was specified"
+                call    msg_show
                 add     sp,2
                 push    si                      ; PARAMETER_1
-                call    sub_94
-                add     sp,2
-                push    si                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,2
                 mov     al,1
 loc_212:
                 mov     ah,3Eh                  ; '>'
-                mov     bx,cs:data_434
+                mov     bx,cs:msg_file_handle
                 int     21h                     ; DOS Services  ah=function 3Eh
                                                 ;  close file, bx=file handle
                 mov     ah,4Ch
@@ -3269,7 +3225,7 @@ loc_214:
                 jmp     loc_283
 loc_215:
                 jmp     loc_278
-loc_216:
+loc_216:        ; /C
                 call    sub_53
                 push    es
                 push    cs
@@ -3283,26 +3239,26 @@ loc_217:
                 jnz     loc_217
                 pop     es
                 jmp     short loc_220
-loc_218:
+loc_218:        ; /M
                 lodsb
                 dec     cx
-                mov     ah,1
-                cmp     al,43h                  ; 'C'
+                mov     ah,MEMTYPE_CONV
+                cmp     al,'C'
                 je      loc_219
-                mov     ah,4
-                cmp     al,58h                  ; 'X'
+                mov     ah,MEMTYPE_XMS
+                cmp     al,'X'
                 je      loc_219
-                mov     ah,2
-                cmp     al,45h                  ; 'E'
+                mov     ah,MEMTYPE_EMS
+                cmp     al,'E'
                 jne     loc_211
 loc_219:
-                mov     es:data_142,ah
+                mov     es:vlm_memory_type,ah
 loc_220:
                 or      cx,cx
                 jz      loc_ret_213
                 js      loc_ret_213
                 jmp     loc_209
-loc_221:
+loc_221:        ; /P
                 lodsb
                 dec     cx
                 jz      loc_211
@@ -3336,16 +3292,18 @@ loc_225:
                 jmp     short loc_223
 loc_226:
                 jmp     loc_211
-loc_227:
+loc_227:        ; /V
                 lodsb
                 dec     cx
-                sub     al,30h                  ; '0'
+                sub     al,'0'
                 cmp     al,4
                 ja      loc_226
-                mov     cs:data_309,al
+                mov     cs:message_level,al
+
+                ; comment out 'message level' parameter so it can't be overridden
                 mov     byte ptr cs:data_354,3Bh        ; ('MESSAGE LEVEL') ';'
                 jmp     short loc_220
-sub_52          endp
+parse_cmd_arg   endp
 
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
@@ -3504,12 +3462,12 @@ sub_57          endp
 
 sub_58          proc    near
                 mov     byte ptr es:[28h],2
-                mov     ah,43h                  ; 'C'
+                mov     ah,EMS_FN_ALLOC_MEMORY
                 mov     bx,data_314
-                callf   sub_45
-                mov     ax,5301h
+                callf   ems_call
+                mov     ax,EMS_FN_SET_HANDLE_NAME
                 mov     si,8F2h
-                callf   sub_45
+                callf   ems_call
                 jmp     short loc_234
 
 ;ﬂﬂﬂﬂ External Entry into Subroutine ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
@@ -3674,13 +3632,13 @@ sub_61          endp
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_62          proc    near
+ems_detect      proc    near
                 push    es
                 mov     ah,35h                  ; '5'
                 mov     al,67h                  ; 'g'
                 int     21h                     ; DOS Services  ah=function 35h
                                                 ;  get intrpt vector al in es:bx
-                mov     di,data_1e
+                mov     di,0ah
                 mov     si,offset data_304      ; ('EMMXXXX0')
                 mov     cx,8
                 cld
@@ -3691,21 +3649,21 @@ loc_239:
                 stc
                 retn
 loc_240:
-                mov     ah,46h                  ; 'F'
-                callf   sub_45
+                mov     ah,EMS_FN_GET_VERSION
+                callf   ems_call
                 jc      loc_239
                 cmp     al,40h                  ; '@'
                 jb      loc_239
                 clc
                 retn
-sub_62          endp
+ems_detect      endp
 
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_63          proc    near
+xms_detect      proc    near
                 mov     ax,4300h
                 int     2Fh                     ; HIMEM.SYS installed state, al
                 cmp     al,80h
@@ -3719,15 +3677,15 @@ loc_242:
                 int     2Fh                     ; Get HIMEM entrypoint ptr,es:bx
                 mov     dx,es
                 pop     es
-                mov     es:data_12e,bx
-                mov     word ptr es:data_12e+2,dx
-                mov     ah,0
-                call    dword ptr es:data_12e
+                mov     word ptr es:xms_entry_ptr,bx
+                mov     word ptr es:xms_entry_ptr+2,dx
+                mov     ah,XMS_FN_GET_VERSION
+                call    dword ptr es:xms_entry_ptr
                 cmp     ax,200h
                 jb      loc_241
                 clc
                 retn
-sub_63          endp
+xms_detect      endp
 
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
@@ -3977,8 +3935,8 @@ loc_266:
                 pop     cx
                 mov     bx,ax
                 mov     dx,es:data_112e
-                mov     ah,51h                  ; 'Q'
-                callf   sub_45
+                mov     ah,EMS_FN_REALLOC_PAGES
+                callf   ems_call
 loc_267:
                 mov     bx,data_322
                 push    es
@@ -4133,23 +4091,23 @@ sub_71          endp
 sub_72          proc    near
                 mov     ax,0Ch
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,2
                 mov     ax,0Dh
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,2
                 mov     ax,0Eh
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,2
                 retn
 sub_72          endp
 
-loc_278:
+loc_278:        ; /U
                 mov     ax,4
-                push    ax                      ; PARAMETER_1
-                call    sub_95
+                push    ax                      ; <newline>
+                call    msg_show2
                 add     sp,2
                 push    cs
                 pop     ds
@@ -4159,8 +4117,8 @@ loc_278:
                 or      ax,ax
                 jz      loc_279
                 mov     ax,20h
-                push    ax                      ; PARAMETER_1
-                call    sub_95
+                push    ax                      ; "The VLM.EXE file is not loaded"
+                call    msg_show2
                 add     sp,2
                 mov     al,3
                 jmp     loc_212
@@ -4182,15 +4140,15 @@ loc_279:
 loc_280:
                 mov     ax,4
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
+                add     sp,2
+                mov     ax,21h
+                push    ax                      ; "The loaded VLM.EXE has a different version [...]"
+                call    msg_show
                 add     sp,2
                 mov     ax,21h
                 push    ax                      ; PARAMETER_1
-                call    sub_94
-                add     sp,2
-                mov     ax,21h
-                push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,2
                 mov     al,5
                 jmp     loc_212
@@ -4205,16 +4163,16 @@ loc_281:
                 jz      loc_282
                 mov     ax,4
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,2
                 mov     ax,22h
-                push    ax                      ; PARAMETER_1
-                call    sub_94
+                push    ax                      ; "The loaded VLM.EXE indicates it is unsafe to unload [...]"
+                call    msg_show
                 add     sp,2
                 push    bx
                 mov     ax,22h
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,4
                 mov     al,4
                 jmp     loc_212
@@ -4224,13 +4182,13 @@ loc_282:
                                                 ;  release memory block, es=seg
                 mov     ax,23h
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,2
                 mov     al,0
                 jmp     loc_212
                 db       45h, 4Dh, 53h, 00h, 58h, 4Dh
                 db       53h, 00h, 43h, 4Fh, 4Eh, 00h
-loc_283:
+loc_283:        ; /D
                 push    cs
                 pop     ds
                 mov     ax,7A20h
@@ -4240,7 +4198,7 @@ loc_283:
                 jz      loc_284
                 mov     ax,11h
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,2
                 mov     al,3
                 jmp     loc_212
@@ -4259,12 +4217,12 @@ loc_284:
                 push    bx
                 mov     ax,10h
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,6
                 mov     ax,seg_a
                 mov     es,ax
                 mov     di,1Eh
-                mov     cx,es:data_137
+                mov     cx,es:vlm_stats
                 xor     ax,ax
                 xor     bx,bx
                 push    bx
@@ -4274,21 +4232,21 @@ loc_284:
                 push    bx
                 call    dword ptr data_302
                 mov     dx,0E45h
-                cmp     es:data_142,2
+                cmp     es:vlm_memory_type,MEMTYPE_EMS
                 je      loc_285
                 mov     dx,0E49h
-                cmp     es:data_142,4
+                cmp     es:vlm_memory_type,MEMTYPE_XMS
                 je      loc_285
                 mov     dx,0E4Dh
 loc_285:
                 push    ds
                 push    dx
-                push    es:data_141
-                push    es:data_139
-                push    es:data_138
+                push    es:vlm_id_currently_mapped
+                push    es:vlm_num_calls
+                push    es:vlm_num_mapped
                 mov     ax,12h
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,0Ch
                 mov     bl,byte ptr es:[29h]
                 xor     bh,bh
@@ -4298,11 +4256,11 @@ loc_285:
                 push    bx
                 mov     ax,13h
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,0Ah
                 mov     ax,14h
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,2
                 push    word ptr es:[34h]
                 push    word ptr es:[36h]
@@ -4310,17 +4268,17 @@ loc_285:
                 push    word ptr es:[32h]
                 mov     ax,16h
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,0Ah
                 push    word ptr es:[3Ah]
                 push    word ptr es:[38h]
                 mov     ax,17h
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,6
                 mov     ax,15h
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,2
                 push    word ptr es:[40h]
                 push    word ptr es:[42h]
@@ -4328,23 +4286,23 @@ loc_285:
                 push    word ptr es:[3Eh]
                 mov     ax,16h
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,0Ah
                 push    word ptr es:[46h]
                 push    word ptr es:[44h]
                 mov     ax,17h
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,6
                 push    word ptr es:[4Ah]
                 push    word ptr es:[48h]
                 mov     ax,18h
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,6
                 mov     ax,19h
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,2
                 mov     ax,1
                 mov     cx,23h
@@ -4375,47 +4333,47 @@ loc_287:
                 push    word ptr es:[di+2]
                 mov     ax,1Ah
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,4
                 push    word ptr es:[di]
                 mov     ax,1Ah
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,4
                 push    word ptr es:[di+4]
                 mov     ax,1Ah
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,4
                 push    word ptr es:[di+6]
                 mov     ax,1Ah
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,4
                 push    word ptr es:[di+8]
                 mov     ax,1Ah
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,4
                 push    word ptr es:[di+0Ch]
                 mov     ax,1Ah
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,4
                 push    word ptr es:[di+0Eh]
                 mov     ax,1Ah
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,4
                 push    word ptr es:[di+10h]
                 mov     ax,1Ah
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,4
                 push    word ptr es:[di+12h]
                 mov     ax,1Ah
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,4
                 mov     ax,es:[di+14h]
                 test    word ptr es:[di],4000h
@@ -4430,7 +4388,7 @@ loc_288:
                 push    ax
                 mov     ax,1Bh
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,4
                 mov     ax,es:[di+16h]
                 test    word ptr es:[di],4000h
@@ -4445,7 +4403,7 @@ loc_289:
                 push    ax
                 mov     ax,1Bh
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,4
                 mov     ax,es:[di+18h]
                 call    sub_73
@@ -4456,7 +4414,7 @@ loc_290:
                 push    ax
                 mov     ax,1Bh
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,4
                 call    sub_77
                 pop     ax
@@ -4470,14 +4428,14 @@ loc_291:
                 push    data_316
                 mov     ax,1Ch
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,6
                 push    data_324
                 push    data_323
                 push    data_322
                 mov     ax,1Dh
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,8
                 call    sub_77
                 mov     al,0
@@ -4551,8 +4509,8 @@ PARAMETER_1     =       4                       ; bp+4
                 mov     ax,seg_a
                 mov     ds,ax
                 assume  ds:seg_a
-                mov     si,data_140
-                mov     ax,8848h
+                mov     si,vlm_vcb_offset
+                mov     ax,VLM_STATUS_NON_EXISTENT_VLM
                 cmp     bx,0Bh
                 jb      loc_295
                 jmp     loc_310
@@ -4593,7 +4551,7 @@ loc_299:
                 mov     cx,0Bh
                 cld
                 rep     movsw
-                mov     es:data_141,0
+                mov     es:vlm_id_currently_mapped,0
                 jmp     short loc_309
 loc_300:
                 push    si
@@ -4630,7 +4588,7 @@ loc_304:
                 push    cs
                 pop     es
                 mov     ax,si
-                sub     ax,data_140
+                sub     ax,vlm_vcb_offset
 ;*              sub     ax,23h
                 db       2Dh, 23h, 00h
                 or      ax,ax
@@ -4685,7 +4643,7 @@ loc_310:
 ;ƒƒƒƒƒ Indexed Entry Point ƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒ
 
 loc_311:
-                mov     di,data_140
+                mov     di,vlm_vcb_offset
 loc_312:
                 cmp     word ptr [di],0
                 je      loc_313
@@ -4695,9 +4653,10 @@ loc_313:
                 or      word ptr [di],1000h
                 xor     ax,ax
                 jmp     short loc_309
+
 data_278        dw      offset loc_316          ; Data table (indexed access)
-data_279        dw      offset loc_318
-data_280        dw      offset loc_319
+                dw      offset loc_318
+                dw      offset loc_319
 
 ;ƒƒƒƒƒ Indexed Entry Point ƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒ
 
@@ -4706,7 +4665,7 @@ loc_314:
                 pop     ds
                 mov     ax,[bp-2]
                 assume  ds:seg_b
-                cmp     al,data_309
+                cmp     al,message_level
                 ja      loc_315
                 xor     bx,bx
                 mov     bl,ah
@@ -4792,7 +4751,7 @@ loc_322:
                 mov     data_462,di
                 call    sub_77
                 push    word ptr [bp-4]         ; PARAMETER_1
-                call    sub_94
+                call    msg_show
                 add     sp,2
                 mov     si,offset data_380
                 mov     di,offset data_461
@@ -5003,7 +4962,7 @@ loc_342:
                 push    ax
                 mov     ax,2Dh
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,2
                 pop     ax
                 pop     dx
@@ -5019,7 +4978,7 @@ loc_342:
 loc_343:
                 push    cs
                 pop     ds
-                cmp     byte ptr data_309,3
+                cmp     byte ptr message_level,3
                 jb      loc_344
                 push    dx
                 push    ax
@@ -5037,11 +4996,11 @@ loc_345:
                 jz      loc_344
                 mov     ax,4
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,2
                 mov     ax,2Ah
-                push    ax                      ; PARAMETER_1
-                call    sub_94
+                push    ax                      ; "There is a missing or invalid value for %s on line %u [...]"
+                call    msg_show
                 add     sp,2
                 push    cs:data_402
                 push    cs
@@ -5049,7 +5008,7 @@ loc_345:
                 push    ax
                 mov     ax,2Ah
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,8
                 jmp     short loc_344
                                                 ;* No entry point to code
@@ -5084,7 +5043,7 @@ loc_347:
                 jz      loc_348
                 push    cs
                 pop     ds
-                cmp     byte ptr data_309,3
+                cmp     byte ptr message_level,3
                 jb      loc_348
                 push    cs
                 mov     ax,5304h
@@ -5100,11 +5059,11 @@ loc_349:
                 jz      loc_348
                 mov     ax,4
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,2
                 mov     ax,2Bh
-                push    ax                      ; PARAMETER_1
-                call    sub_94
+                push    ax                      ; "There is a missing or invalid ON/OFF for "%s' on line %u [...]"
+                call    msg_show
                 add     sp,2
                 push    cs:data_402
                 push    cs
@@ -5112,7 +5071,7 @@ loc_349:
                 push    ax
                 mov     ax,2Bh
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,8
                 jmp     short loc_348
                                                 ;* No entry point to code
@@ -5134,7 +5093,7 @@ loc_349:
                 jz      loc_350
                 push    cs
                 pop     ds
-                cmp     byte ptr data_309,3
+                cmp     byte ptr message_level,3
                 jb      loc_350
                 push    ax
                 push    cs
@@ -5151,11 +5110,11 @@ loc_351:
                 jz      loc_350
                 mov     ax,4
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,2
                 mov     ax,2Ch
-                push    ax                      ; PARAMETER_1
-                call    sub_94
+                push    ax                      ; "There is an invalid string length specified for %s on line %u [...]"
+                call    msg_show
                 add     sp,2
                 push    cs:data_402
                 push    cs
@@ -5163,7 +5122,7 @@ loc_351:
                 push    ax
                 mov     ax,2Ch
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,8
                 jmp     short loc_350
                                                 ;* No entry point to code
@@ -5200,7 +5159,7 @@ loc_353:
                 inc     data_369
                 push    cs
                 pop     ds
-                cmp     byte ptr data_309,3
+                cmp     byte ptr message_level,3
                 jb      loc_354
                 push    ds
                 mov     ax,5304h
@@ -5275,7 +5234,7 @@ loc_359:
                 sub     di,4
                 mov     data_370,di
 loc_360:
-                cmp     byte ptr data_309,3
+                cmp     byte ptr message_level,3
                 jb      loc_361
                 push    ds
                 mov     ax,5304h
@@ -5387,7 +5346,7 @@ sub_76          endp
 sub_77          proc    near
                 mov     ax,4
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,2
                 retn
 sub_77          endp
@@ -5562,7 +5521,7 @@ loc_375:
                 jz      loc_378
                 cmp     ax,8855h
                 je      loc_377
-                cmp     byte ptr data_309,1
+                cmp     byte ptr message_level,1
                 jbe     loc_376
                 push    ds
                 mov     ax,2DE3h
@@ -5572,7 +5531,7 @@ loc_375:
 loc_376:
                 jmp     loc_386
 loc_377:
-                cmp     byte ptr data_309,1
+                cmp     byte ptr message_level,1
                 jbe     loc_378
                 push    cx
                 push    ds
@@ -5770,8 +5729,7 @@ sub_78          endp
 
 data_283        dw      0                       ; segment storage
 data_284        dw      128 dup (101h)          ; Data table (indexed access)
-data_285        db      0, 0
-data_286        dw      0
+data_285        dd      0
 data_287        dw      0, 0
 data_289        dw      0
 data_290        dw      0
@@ -6457,12 +6415,8 @@ loc_426:
                 retn
 sub_91          endp
 
-
-;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
-;                              SUBROUTINE
-;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
-
-sub_92          proc    near
+; I wonder if this calculates a message length (in dx:ax)
+msg_seek_index  proc    near
 
 PARAMETER_1     =       4                       ; bp+4
 
@@ -6477,19 +6431,21 @@ PARAMETER_1     =       4                       ; bp+4
                 mov     dx,[bp+PARAMETER_1]
                 cmp     data_439,dx
                 jb      loc_428
+
+                ; data_439 > dx
                 sub     cx,cx
                 add     dx,dx
                 add     dx,dx
-                add     dx,data_437
-                adc     cx,word ptr data_438
+                add     dx,data_437             ; dx = data_437 + PARAMETER_1 * 4
+                adc     cx,data_438
                 mov     ax,4200h
-                mov     bx,data_434
+                mov     bx,msg_file_handle
                 int     21h                     ; DOS Services  ah=function 42h
                                                 ;  move file ptr, bx=file handle
                                                 ;   al=method, cx,dx=offset
                 jc      loc_428
                 mov     ah,3Fh                  ; '?'
-                mov     dx,offset data_442
+                mov     dx,offset msgcur_offs_lo
                 mov     cx,8
                 int     21h                     ; DOS Services  ah=function 3Fh
                                                 ;  read file, bx=file handle
@@ -6497,10 +6453,10 @@ PARAMETER_1     =       4                       ; bp+4
                 jc      loc_428
                 cmp     ax,cx
                 jne     loc_428
-                mov     ax,data_444
-                mov     dx,data_445
-                sub     ax,data_442
-                sbb     dx,data_443
+                mov     ax,msgnxt_offs_lo
+                mov     dx,msgnxt_offs_hi
+                sub     ax,msgcur_offs_lo
+                sbb     dx,msgcur_offs_hi
 loc_427:
                 pop     ds
                 pop     cx
@@ -6511,14 +6467,11 @@ loc_428:
 ;*              or      ax,0FFFFh
                 db       0Dh,0FFh,0FFh
                 jmp     short loc_427
-sub_92          endp
+msg_seek_index  endp
 
+; reads message [PARAMETER_1] to buffer [PARAMETER_2] (max length PARAMETER_4)
 
-;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
-;                              SUBROUTINE
-;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
-
-sub_93          proc    near
+msg_read        proc    near
 
 PARAMETER_1     =       4                       ; bp+4
 PARAMETER_2     =       6                       ; bp+6
@@ -6531,7 +6484,7 @@ PARAMETER_4     =       0Ah                     ; bp+0Ah
                 push    cx
                 push    ds
                 push    word ptr [bp+PARAMETER_1]       ; PARAMETER_1
-                call    sub_92
+                call    msg_seek_index
                 add     sp,2
 ;*              cmp     ax,0FFFFh
                 db       3Dh,0FFh,0FFh
@@ -6540,17 +6493,16 @@ PARAMETER_4     =       0Ah                     ; bp+0Ah
                 jb      loc_431
                 push    ax
                 mov     ds,cs:data_283
-                mov     dx,data_442
-                mov     cx,data_443
+                mov     dx,msgcur_offs_lo
+                mov     cx,msgcur_offs_hi
                 add     dx,data_437
-                adc     cx,word ptr data_438
-                mov     ax,4200h
-                mov     bx,data_434
-                int     21h                     ; DOS Services  ah=function 42h
-                                                ;  move file ptr, bx=file handle
-                                                ;   al=method, cx,dx=offset
+                adc     cx,data_438
+                mov     ax,4200h                ; dos: seek from start (cx:dx)
+                mov     bx,msg_file_handle
+                int     21h
                 pop     cx
                 jc      loc_430
+
                 mov     ah,3Fh                  ; '?'
                 lds     dx,dword ptr [bp+PARAMETER_2]
                 int     21h                     ; DOS Services  ah=function 3Fh
@@ -6572,7 +6524,7 @@ loc_430:
 loc_431:
                 mov     ax,0FFFEh
                 jmp     short loc_429
-sub_93          endp
+msg_read        endp
 
                                                 ;* No entry point to code
                 push    bp
@@ -6603,7 +6555,7 @@ sub_93          endp
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_94          proc    near
+msg_show        proc    near
 
 PARAMETER_1     =       4                       ; bp+4
 
@@ -6637,14 +6589,14 @@ loc_432:
                 pop     si
                 pop     bp
                 retn
-sub_94          endp
+msg_show        endp
 
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
 ;                              SUBROUTINE
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
-sub_95          proc    near
+msg_show2       proc    near
 
 PARAMETER_1     =       4                       ; bp+4
 
@@ -6660,7 +6612,7 @@ PARAMETER_1     =       4                       ; bp+4
                 push    ds                      ; PARAMETER_3
                 push    si                      ; PARAMETER_2
                 push    word ptr [bp+PARAMETER_1]       ; PARAMETER_1
-                call    sub_93
+                call    msg_read
                 add     sp,8
                 cmp     ah,0FFh
                 je      loc_433
@@ -6668,14 +6620,14 @@ PARAMETER_1     =       4                       ; bp+4
                 call    sub_100
                 mov     dx,cs
                 mov     di,235Ch
-                call    sub_98
+                call    printf_like
 loc_433:
                 pop     ds
                 pop     di
                 pop     si
                 pop     bp
                 retn
-sub_95          endp
+msg_show2        endp
 
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
@@ -6696,7 +6648,7 @@ PARAMETER_1     =       4                       ; bp+4
                 call    sub_100
                 mov     dx,cs
                 mov     di,235Ch
-                call    sub_98
+                call    printf_like
                 pop     ds
                 pop     di
                 pop     si
@@ -6727,10 +6679,12 @@ PARAMETER_3     =       8                       ; bp+8
                 push    ds                      ; PARAMETER_3
                 push    si                      ; PARAMETER_2
                 push    word ptr [bp+PARAMETER_3]       ; PARAMETER_1
-                call    sub_93
+                call    msg_read
                 add     sp,8
                 cmp     ah,0FFh
                 je      loc_434
+
+                ; message successfully read
                 mov     ax,[bp+PARAMETER_1]
                 mov     dx,[bp+PARAMETER_2]
                 mov     cs:data_293,ax
@@ -6739,7 +6693,7 @@ PARAMETER_3     =       8                       ; bp+8
                 call    sub_100
                 mov     dx,cs
                 mov     di,2375h
-                call    sub_98
+                call    printf_like
 loc_434:
                 pop     ds
                 pop     di
@@ -6763,18 +6717,15 @@ sub_97          endp
                 call    sub_100
                 mov     dx,cs
                 mov     di,2375h
-                call    sub_98
+                call    printf_like
                 pop     ds
                 pop     di
                 pop     si
                 pop     bp
                 retn
 
-;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
-;                              SUBROUTINE
-;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
-
-sub_98          proc    near
+; input: ds:si = format string (stored in data_287), dx:di = output function
+printf_like     proc    near
                 cld
                 push    bx
                 push    cx
@@ -6783,7 +6734,7 @@ sub_98          proc    near
                 mov     cs:data_287,si
                 mov     word ptr cs:data_287+2,ds
                 mov     word ptr cs:data_285,di
-                mov     cs:data_286,dx
+                mov     word ptr cs:data_285+2,dx
 loc_435:
                 sub     bx,bx
                 lds     si,dword ptr cs:data_287
@@ -6791,14 +6742,19 @@ loc_436:
                 mov     bl,[si]
                 or      bl,bl
                 jz      loc_438
-                cmp     bl,25h                  ; '%'
+                cmp     bl,'%'
                 je      loc_437
+
+                ; not a '%'
                 mov     bl,byte ptr cs:data_284[bx]
                 add     si,bx
                 jmp     short loc_436
-loc_437:
-                cmp     byte ptr [si+1],25h     ; '%'
+
+loc_437:        ; got a '%'
+                cmp     byte ptr [si+1],'%'
                 jne     loc_440
+
+                ; got '%%'
                 lea     di,[si+1]
                 add     si,2
                 xchg    cs:data_287,si
@@ -6819,7 +6775,7 @@ loc_440:
                 mov     si,cs:data_287
                 call    dword ptr cs:data_285
                 inc     si
-                cmp     byte ptr [si],2Dh       ; '-'
+                cmp     byte ptr [si],'-'
                 jne     loc_441
                 or      bh,1
                 inc     si
@@ -6839,7 +6795,7 @@ loc_441:
                 mov     cs:data_289,ax
                 or      bh,2
 loc_442:
-                cmp     byte ptr [si],2Eh       ; '.'
+                cmp     byte ptr [si],'.'
                 jne     loc_443
                 inc     si
                 mov     ax,0Ah
@@ -6856,42 +6812,42 @@ loc_442:
                 or      bh,4
 loc_443:
                 lodsb
-                cmp     al,68h                  ; 'h'
+                cmp     al,'h'
                 jne     loc_444
                 or      bh,8
                 lodsb
 loc_444:
-                cmp     al,6Ch                  ; 'l'
+                cmp     al,'l'
                 jne     loc_445
                 or      bh,10h
                 lodsb
 loc_445:
                 mov     cs:data_287,si
-                cmp     al,73h                  ; 's'
+                cmp     al,'s'
                 je      loc_449
-                cmp     al,63h                  ; 'c'
+                cmp     al,'c'
                 je      loc_446
                 mov     di,0Ah
-                cmp     al,75h                  ; 'u'
+                cmp     al,'u'
                 je      loc_447
-                cmp     al,64h                  ; 'd'
+                cmp     al,'d'
                 je      loc_447
-                cmp     al,69h                  ; 'i'
+                cmp     al,'i'
                 je      loc_447
                 mov     di,offset data_252
-                mov     bl,61h                  ; 'a'
-                cmp     al,78h                  ; 'x'
+                mov     bl,'a'
+                cmp     al,'x'
                 je      loc_447
-                mov     bl,41h                  ; 'A'
-                cmp     al,58h                  ; 'X'
+                mov     bl,'A'
+                cmp     al,'X'
                 je      loc_447
-                cmp     al,6Eh                  ; 'n'
+                cmp     al,'n'
                 je      loc_448
                 mov     ax,0FFFDh
                 jmp     loc_439
-loc_446:
+loc_446:        ; '%c'
                 jmp     loc_457
-loc_447:
+loc_447:        ; '%[udixXn]'
                 jmp     loc_458
 loc_448:
                 lds     si,dword ptr [bp]
@@ -6899,7 +6855,7 @@ loc_448:
                 mov     ax,cs:data_291
                 mov     [si],ax
                 jmp     loc_435
-loc_449:
+loc_449:        ; '%s'
                 mov     ds,cs:data_283
                 push    word ptr [bp+2]
                 push    word ptr [bp]           ; PARAMETER_1
@@ -6957,7 +6913,7 @@ locloop_455:
 
 loc_456:
                 jmp     loc_435
-loc_457:
+loc_457:        ; '%c'
                 push    ss
                 push    bp                      ; PARAMETER_1
                 call    sub_80
@@ -6970,7 +6926,7 @@ loc_457:
                 call    dword ptr cs:data_285
                 add     bp,2
                 jmp     loc_435
-loc_458:
+loc_458:        ; '%[udixXn]'
                 mov     ds,cs:data_283
                 xchg    data_459,bl
                 mov     cx,[bp]
@@ -7065,7 +7021,7 @@ locloop_469:
 loc_470:
                 mov     data_459,bl
                 jmp     loc_435
-sub_98          endp
+printf_like     endp
 
 
 ;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
@@ -7110,9 +7066,9 @@ sub_99          endp
 ;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
 
 sub_100         proc    near
-                cmp     word ptr [si],444Ch
+                cmp     word ptr [si],'DL'
                 jne     loc_ret_471
-                cmp     word ptr [si+2],2148h
+                cmp     word ptr [si+2],'!H'
                 je      loc_472
 
 loc_ret_471:
@@ -7657,7 +7613,7 @@ sub_110         proc    near
                 jb      loc_531
                 push    ds
                 pop     es
-                mov     di,offset data_446
+                mov     di,offset msg_read_buffer
                 mov     cx,200h
                 or      dx,0FFFFh
                 mov     bx,dx
@@ -7974,9 +7930,9 @@ loc_552:
 ;*              cmp     ax,1
                 db       3Dh, 01h, 00h
                 jnz     loc_552
-                cmp     byte ptr [bx],5Ch       ; '\'
+                cmp     byte ptr [bx],'\'
                 je      loc_553
-                cmp     byte ptr [bx],3Ah       ; ':'
+                cmp     byte ptr [bx],':'
                 jne     loc_552
 loc_553:
                 inc     bx
@@ -8009,9 +7965,9 @@ loc_555:
                 call    sub_84
                 add     sp,4
                 mov     di,es:data_433
-                mov     ax,4C4Eh
+                mov     ax,'LN'
                 stosw
-                mov     ax,5C53h
+                mov     ax,'\S'
                 stosw
                 mov     bx,di
 loc_556:
@@ -8025,11 +7981,11 @@ loc_556:
                 lodsb
                 cmp     al,0
                 je      loc_559
-                cmp     al,3Bh                  ; ';'
+                cmp     al,';'
                 je      loc_558
-                cmp     al,2Ch                  ; ','
+                cmp     al,','
                 je      loc_558
-                cmp     al,20h                  ; ' '
+                cmp     al,' '
                 je      loc_558
                 cmp     al,9
                 je      loc_558
@@ -8047,7 +8003,7 @@ loc_559:
                 dec     si
                 mov     es:data_427,si
                 lds     si,dword ptr es:data_429
-                mov     al,5Ch                  ; '\'
+                mov     al,'\'
                 stosb
 loc_560:
                 lodsb
@@ -8078,10 +8034,10 @@ loc_562:
                                                 ;  open file, al=mode,name@ds:dx
                 jc      loc_564
 loc_563:
-                mov     data_434,ax
+                mov     msg_file_handle,ax
                 sub     dx,dx
                 sub     cx,cx
-                call    sub_115
+                call    msg_file_parse
                 jnc     loc_567
                 mov     byte ptr data_425,0FFh
 loc_564:
@@ -8093,23 +8049,23 @@ loc_564:
                                                 ;  open file, al=mode,name@ds:dx
                 pop     ds
                 jc      loc_568
-                mov     data_434,ax
+                mov     msg_file_handle,ax
                 mov     dx,data_423
                 mov     cx,word ptr data_424
-                call    sub_115
+                call    msg_file_parse
                 jc      loc_568
                 cmp     byte ptr data_425,0
                 je      loc_565
                 mov     ax,1
-                push    ax                      ; PARAMETER_1
-                call    sub_94
+                push    ax                      ; "The message file %s is invalid [...]"
+                call    msg_show
                 add     sp,2
                 push    ds
                 mov     ax,54C2h
                 push    ax
                 mov     ax,1
                 push    ax                      ; PARAMETER_1
-                call    sub_95
+                call    msg_show2
                 add     sp,6
                 stc
                 retn
@@ -8135,8 +8091,8 @@ loc_568:
                 call    sub_96
                 add     sp,4
                 mov     ax,0
-                push    ax                      ; PARAMETER_1
-                call    sub_94
+                push    ax                      ; "<beep>"
+                call    msg_show
                 add     sp,2
                 push    word ptr data_429+2
                 push    data_429
@@ -8150,87 +8106,90 @@ loc_568:
 sub_114         endp
 
 loc_569:
-                jmp     loc_570
+                jmp     msg_file_bad
 
-;ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
-;                              SUBROUTINE
-;‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
-
-sub_115         proc    near
-                mov     data_435,dx
-                mov     data_436,cx
-                mov     ax,4200h
-                mov     bx,data_434
-                int     21h                     ; DOS Services  ah=function 42h
-                                                ;  move file ptr, bx=file handle
-                                                ;   al=method, cx,dx=offset
+; returns: cf=0 on success
+msg_file_parse  proc    near
+                mov     msg_offs_lo,dx
+                mov     msg_offs_hi,cx
+                mov     ax,4200h                ; dos: seek from start
+                mov     bx,msg_file_handle
+                int     21h
                 jc      loc_569
-                mov     dx,offset data_446
-                mov     cx,78h
-                mov     ah,3Fh
-                int     21h                     ; DOS Services  ah=function 3Fh
-                                                ;  read file, bx=file handle
-                                                ;   cx=bytes to ds:dx buffer
+
+                mov     dx,offset msg_read_buffer
+                mov     cx,120
+                mov     ah,3Fh                  ; dos: read file
+                int     21h
                 jc      loc_569
                 cmp     ax,cx
-                jb      loc_569
+                jb      loc_569                 ; short read?
+
+                ; managed to read 120 bytes. verify signature
                 push    ds
                 pop     es
                 mov     si,dx
-                mov     di,offset data_419      ; ('DOS Client Message File:')
+                mov     di,offset s_dos_msg_file      ; ('DOS Client Message File:')
                 mov     cx,19h
                 repe    cmpsb
                 jnz     loc_569
-                cmp     data_451,cx
-                jne     loc_570
-                cmp     data_448,1
-                jne     loc_570
+
+                ; signature ok
+                cmp     msg_buf_6e,cx
+                jne     msg_file_bad
+                cmp     msg_buf_66,1
+                jne     msg_file_bad
                 mov     ax,[bp+8]
-                cmp     data_449,ax
-                jne     loc_570
-                mov     ax,data_450
+                cmp     msg_buf_6a,ax                   ; 0
+                jne     msg_file_bad
+
+                ; calculate offsets
+                mov     ax,msg_buf_6c                  ; 72
                 mov     data_439,ax
-                mov     ax,data_435
-                mov     dx,data_436
+                mov     ax,msg_offs_lo
+                mov     dx,msg_offs_hi
                 add     data_437,ax
-                adc     word ptr data_438,dx
+                adc     data_438,dx
                 mov     dx,data_439
                 add     dx,dx
                 add     dx,dx
-                sub     cx,cx
+                sub     cx,cx                           ; cx = 0
                 add     dx,data_437
-                adc     cx,word ptr data_438
-                mov     bx,data_434
-                mov     ax,4200h
-                int     21h                     ; DOS Services  ah=function 42h
-                                                ;  move file ptr, bx=file handle
-                                                ;   al=method, cx,dx=offset
-                jc      loc_570
-                mov     dx,offset data_446
+                adc     cx,data_438
+                mov     bx,msg_file_handle
+
+                mov     ax,4200h                ; dos: seek from start
+                int     21h
+                jc      msg_file_bad
+
+                mov     dx,offset msg_read_buffer
                 mov     cx,4
                 mov     ah,3Fh
                 int     21h                     ; DOS Services  ah=function 3Fh
                                                 ;  read file, bx=file handle
                                                 ;   cx=bytes to ds:dx buffer
-                jc      loc_570
+                jc      msg_file_bad
                 cmp     ax,cx
-                jb      loc_570
-                mov     ax,data_446
-                mov     dx,data_447
+                jb      msg_file_bad
+
+                ;
+                mov     ax,msg_read_buffer
+                mov     dx,word ptr msg_buf_02
                 sub     ax,data_452
                 sbb     dx,data_453
                 mov     data_440,ax
                 mov     data_441,dx
                 clc
                 retn
-loc_570:
-                mov     bx,data_434
+
+msg_file_bad:
+                mov     bx,msg_file_handle
                 mov     ah,3Eh
                 int     21h                     ; DOS Services  ah=function 3Eh
                                                 ;  close file, bx=file handle
                 stc
                 retn
-sub_115         endp
+msg_file_parse  endp
 
                 db      'DOSRQSTR.MSG', 0
                 db      'VLM', 0
@@ -8253,7 +8212,7 @@ data_307        db      0
                 db      'rsion 1.21 or delete existing fi'
                 db      'le.', 0Dh, 0Ah, 0Dh, 0Ah
                 db      7, 0
-data_309        db      1
+message_level   db      1
 data_310        db      0
                 db      48 dup (0)
 data_312        db      0
@@ -8272,6 +8231,7 @@ data_323        dw      0
 data_324        dw      0
 data_325        dw      0
 data_326        dw      0
+; available memory, or-ed 2 = ems, 4 = xms, 1 = conventional
 data_327        db      0
 data_328        dw      0
 data_329        dw      0
@@ -8375,8 +8335,8 @@ data_359        db      88h
                 db       00h,0CCh, 35h,0D4h, 35h, 11h
                 db       01h, 04h, 00h,0E5h, 35h,0EDh
                 db       35h, 1Eh, 00h, 04h, 00h, 0Bh
-                db       36h, 44h, 45h
-                db      'FAULT VLM NAME TABLE', 0
+                db       36h
+                db      'DEFAULT VLM NAME TABLE', 0
                 db      'CONN.VLM', 0
                 db      'IPXNCP.VLM', 0
                 db      'TRAN.VLM', 0
@@ -8676,8 +8636,7 @@ data_417        dw      0
 data_418        db      0
                 db      0, 0, 0, 0, 0, 0
                 db      0
-data_419        db      'DOS Client Message File: ', 0Dh, 0Ah
-                db      0
+s_dos_msg_file  db      'DOS Client Message File: ', 0Dh, 0Ah, 0
                 db      7
                 db      'Unable to loca'
                 db      'te message file %s', 0Dh, 0Ah, 'P'
@@ -8686,32 +8645,31 @@ data_422        db      'NWLANGUAGE=MsGtAcK='
 data_423        dw      6DEBh
 data_424        db      0, 0, 0
 data_425        db      0
-data_426        db      0
-                db      129 dup (0)
+data_426        db      130 dup (0)
 data_427        dw      0, 0
 data_429        dw      0, 0
 data_431        dd      00000h
 data_433        dw      54C2h
-data_434        dw      0
-data_435        dw      0
-data_436        dw      0
+msg_file_handle dw      0
+msg_offs_lo     dw      0
+msg_offs_hi     dw      0
 data_437        dw      70h
-data_438        db      0, 0
+data_438        dw      0
 data_439        dw      0
 data_440        dw      0
 data_441        dw      0
-data_442        dw      0
-data_443        dw      0
-data_444        dw      0
-data_445        dw      0
-data_446        dw      0
-data_447        dw      0
-                db      98 dup (0)
-data_448        dw      0
-                db      0, 0
-data_449        dw      0
-data_450        dw      0
-data_451        dw      0
+; 8 bytes of message file are read here
+msgcur_offs_lo  dw      0
+msgcur_offs_hi  dw      0
+msgnxt_offs_lo  dw      0
+msgnxt_offs_hi  dw      0
+; 78h bytes of message file are read here 
+msg_read_buffer dw      0
+msg_buf_02      db      100 dup (0)                 ; ascii text
+msg_buf_66      dw      0, 0                        ; must be 1
+msg_buf_6a      dw      0                           ; 0
+msg_buf_6c      dw      0                           ; 72 (number of messages?)
+msg_buf_6e      dw      0                           ; 0
                 db      0, 0, 0, 0
 data_452        dw      0
 data_453        dw      0
